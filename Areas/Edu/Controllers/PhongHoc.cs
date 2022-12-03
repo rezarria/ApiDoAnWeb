@@ -1,6 +1,8 @@
+using System.Collections;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using Api.Contexts;
+using Api.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.EntityFrameworkCore;
@@ -12,7 +14,7 @@ namespace Api.Areas.Edu.Controllers;
 [Area("Api")]
 [ApiController]
 [Route("[area]/[controller]")]
-public class PhongHoc : ControllerBase
+public partial class PhongHoc : ControllerBase
 {
 	private AppDbContext _context;
 
@@ -24,66 +26,61 @@ public class PhongHoc : ControllerBase
 	/// <summary>
 	/// Lấy thông tin về phòng học
 	/// </summary>
-	/// <param name="id">Nếu có giá trị sẽ trả thông tin về phòng học có id</param>
-	/// <returns>Trả về danh sách phòng học, hoặc trả về một phòng học nếu id có giá trị</returns>
-	/// <response code="200"></response>
-	/// <response code="404"></response>
-	[ProducesResponseType(StatusCodes.Status200OK)]
-	[ProducesResponseType(StatusCodes.Status404NotFound)]
+	/// <param name="ids">Nếu có giá trị sẽ trả thông tin về phòng học có id</param>
+	/// <returns>aaa</returns>
+	/// <response code="200">Trả về danh sách phòng học, hoặc trả về một phòng học nếu id có giá trị</response>
+	/// <response code="404">...</response>
+	[ProducesResponseType(typeof(DTO.Get[]), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
 	[HttpGet]
-	public async Task<IActionResult> Get(Guid? id)
+	public async Task<IActionResult> Get(string? ids)
 	{
-		return await (id is null ? GetAll() : GetSingle(id.Value));
+		Guid[]? array = ids?.Split(";").Select(x => new Guid(x)).ToArray() ?? null;
+		if (array is not null && array.Length > 0)
+			return Ok(GetMany(array));
+		return await GetAll();
 	}
 
 	private async Task<IActionResult> GetAll()
-	=> Ok(
-			await (
-				from x in _context.PhongHoc
-				select new
-				{
-					x.Id,
-					x.Ten,
-					x.ViTri
-				}
-			)
+	=> Ok(await
+			_context.PhongHoc
+			.Select(expressionGet)
 			.AsNoTracking()
 			.ToArrayAsync(HttpContext.RequestAborted)
 		);
 
+	private IEnumerable<dynamic> GetMany(Guid[] ids)
+	=> _context.PhongHoc
+		.Where(x => ids.Contains(x.Id))
+		.Select(expressionGet)
+		.AsNoTracking();
 
-	private async Task<IActionResult> GetSingle(Guid id)
-	{
-		var data = await (
-				from x in _context.PhongHoc
-				where x.Id == id
-				select new
-				{
-					x.Id,
-					x.Ten,
-					x.ViTri
-				}
-			)
-			.AsNoTracking()
-			.FirstOrDefaultAsync();
-		return data is null ? NotFound() : Ok(data);
-	}
-
+	/// <summary>
+	/// Tạo phòng học
+	/// </summary>
+	/// <param name="phongHoc"></param>
+	/// <returns>aaa</returns>
+	/// <response code="201">Tạo thành công</response>
+	/// <response code="500">...</response>
+	[ProducesResponseType(typeof(DTO.Get[]), StatusCodes.Status201Created)]
+	[ProducesResponseType(typeof(void), StatusCodes.Status500InternalServerError)]
 	[HttpPost]
 	public async Task<IActionResult> Post(
-		[Bind(
-			nameof(phongHoc.Id),
+	[Bind(
 			nameof(phongHoc.Ten),
 			nameof(phongHoc.ViTri)
 		)]
-		Models.PhongHoc phongHoc
-		)
+		DTO.Post phongHoc
+	)
 	{
 		IDbContextTransaction transaction = await _context.Database.BeginTransactionAsync(HttpContext.RequestAborted);
 		try
 		{
+			ModelState.ClearValidationState(nameof(DTO.Post));
+			if (!TryValidateModel(phongHoc.Convert(), nameof(Models.PhongHoc)))
+				return BadRequest(ModelState);
 			transaction.CreateSavepoint("begin");
-			_context.Attach(phongHoc);
+			_context.Attach(phongHoc.Convert());
 			await _context.SaveChangesAsync(HttpContext.RequestAborted);
 			transaction.Commit();
 			return Ok();
@@ -95,22 +92,29 @@ public class PhongHoc : ControllerBase
 		}
 	}
 
+
+	/// <summary>
+	/// Xoá về phòng học
+	/// </summary>
+	/// <param name="ids">Nếu có giá trị sẽ trả thông tin về phòng học có id</param>
+	/// <response code="204">Khi xoá thành công</response>
+	/// <response code="500">...</response>
+	[ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
+	[ProducesResponseType(typeof(void), StatusCodes.Status500InternalServerError)]
 	[HttpDelete]
-	public async Task<IActionResult> Delete(Guid id)
+	public async Task<IActionResult> Delete(Guid[] ids)
 	{
 
 		IDbContextTransaction transaction = await _context.Database.BeginTransactionAsync(HttpContext.RequestAborted);
 
-		Models.PhongHoc? phongHoc = await (
+		var phongHoc =
 			from x in _context.PhongHoc
-			where x.Id == id
+			where ids.Contains(x.Id)
 			select new Models.PhongHoc()
 			{
 				Id = x.Id,
 				RowVersion = x.RowVersion
-			}
-		)
-		.FirstOrDefaultAsync(HttpContext.RequestAborted);
+			};
 
 
 		transaction.CreateSavepoint("begin");
@@ -119,7 +123,7 @@ public class PhongHoc : ControllerBase
 			return NotFound();
 		try
 		{
-			_context.Entry(phongHoc).State = EntityState.Deleted;
+			await phongHoc.ForEachAsync(x => _context.Entry(x).State = EntityState.Deleted);
 			_context.SaveChanges();
 			transaction.Commit();
 			return NoContent();
