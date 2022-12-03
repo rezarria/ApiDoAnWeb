@@ -63,7 +63,7 @@ public class AppDbContext : DbContext
 
     /// <summary>
     /// </summary>
-    public DbSet<Lop> Lop { get; set; } = null!;
+    public DbSet<LopHoc> Lop { get; set; } = null!;
 
     /// <summary>
     /// </summary>
@@ -130,7 +130,7 @@ public class AppDbContext : DbContext
 
         builder.Entity<KhoaHoc>(entity => { entity.HasIndex(x => x.Ten).IsUnique(); });
 
-        builder.Entity<Lop>(entity => { entity.HasIndex(x => x.Ten).IsUnique(); });
+        builder.Entity<LopHoc>(entity => { entity.HasIndex(x => x.Ten).IsUnique(); });
 
         builder.Entity<Tinh>(entity => { entity.HasIndex(x => x.Ten).IsUnique(); });
 

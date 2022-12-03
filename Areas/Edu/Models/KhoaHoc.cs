@@ -26,7 +26,7 @@ public class KhoaHoc
 
     /// <summary>
     /// </summary>
-    public virtual ICollection<Lop>? Lop { get; set; }
+    public virtual ICollection<LopHoc>? Lop { get; set; }
 
     /// <summary>
     /// </summary>

@@ -13,7 +13,7 @@ public class PhongHoc
     [Required]
     public virtual CoSoDaoTao? CoSoDaoTao { get; set; }
 
-    public virtual ICollection<Lop>? Lop { get; set; }
+    public virtual ICollection<LopHoc>? Lop { get; set; }
     public virtual ICollection<Lich>? Lich { get; set; }
 
     [Timestamp]

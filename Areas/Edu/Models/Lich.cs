@@ -59,7 +59,7 @@ public class Lich
     /// </summary>
     public TinhTrang TinhTrangLich { get; set; } = TinhTrang.ChuaBatDau;
 
-    public virtual Lop? Lop { get; set; }
+    public virtual LopHoc? Lop { get; set; }
 
     public virtual CaHoc? CaHoc { get; set; }
 

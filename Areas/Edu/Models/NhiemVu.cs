@@ -9,7 +9,7 @@ public class NhiemVuHoc
     public virtual Nguoi? Nguoi { get; set; }
     public virtual NhomNguoi? Nhom { get; set; }
 
-    public virtual Lop? Lop { get; set; }
+    public virtual LopHoc? Lop { get; set; }
 
     public string? NoiDung { get; set; }
 

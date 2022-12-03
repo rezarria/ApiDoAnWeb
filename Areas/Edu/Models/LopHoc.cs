@@ -4,7 +4,7 @@ namespace Api.Models;
 
 /// <summary>
 /// </summary>
-public class Lop
+public class LopHoc
 {
     /// <summary>
     /// </summary>

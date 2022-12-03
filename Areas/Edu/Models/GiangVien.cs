@@ -15,5 +15,5 @@ public class GiangVien : Nguoi
     /// <summary>
     /// </summary>
     /// <value></value>
-    public virtual ICollection<Lop>? Lop { get; set; } = null!;
+    public virtual ICollection<LopHoc>? Lop { get; set; } = null!;
 }

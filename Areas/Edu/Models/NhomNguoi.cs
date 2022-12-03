@@ -17,7 +17,7 @@ public class NhomNguoi
 
     public TrangThaiHoatDong TrangThai { get; set; } = TrangThaiHoatDong.HoatDong;
 
-    public virtual ICollection<Lop>? Lop { get; set; }
+    public virtual ICollection<LopHoc>? Lop { get; set; }
 
     [Timestamp]
     public byte[]? RowVersion { get; set; } = null!;
