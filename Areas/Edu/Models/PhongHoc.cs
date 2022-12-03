@@ -10,7 +10,8 @@ public class PhongHoc
     [Required]
     public string Ten { get; set; } = string.Empty;
 
-    [Required]
+    public string ViTri { get; set; } = string.Empty;
+
     public virtual CoSoDaoTao? CoSoDaoTao { get; set; }
 
     public virtual ICollection<LopHoc>? Lop { get; set; }

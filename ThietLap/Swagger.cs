@@ -10,6 +10,7 @@ public static partial class ThietLap
     /// <param name="services"></param>
     public static void ThietLapSwagger(this IServiceCollection services)
     {
+		services.AddSwaggerDocument();
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(options =>
         {
