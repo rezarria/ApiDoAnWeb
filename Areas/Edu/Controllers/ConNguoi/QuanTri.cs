@@ -96,16 +96,6 @@ public class QuanTri : ControllerBase
     /// <summary>
     /// </summary>
     /// <param name="id"></param>
-    /// <returns></returns>
-    [HttpPut]
-    public IActionResult Put(Guid id)
-    {
-        return StatusCode(StatusCodes.Status405MethodNotAllowed);
-    }
-
-    /// <summary>
-    /// </summary>
-    /// <param name="id"></param>
     /// <param name="patch"></param>
     /// <returns></returns>
     [HttpPatch("{id}")]

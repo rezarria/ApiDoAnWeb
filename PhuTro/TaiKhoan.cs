@@ -1,6 +1,7 @@
 using Api.Contexts;
 using Api.Models;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace Api.PhuTro;
 
@@ -16,7 +17,7 @@ public static class TaiKhoan
 
 		matKhau ??= string.Format("{0:ddMMyyyy}", nguoi.SoYeuLyLich.SinhNgay) + string.Join("",
 			nguoi.SoYeuLyLich.HoVaTen.Trim().LoaiBoDau().Split(" ")
-				.Select(x => x[0].ToString().ToUpper() + x.Substring(1))).ToLower();
+				.Select(x => string.Concat(x[0].ToString().ToUpper(), x.AsSpan(1)))).ToLower();
 
 		nguoi.TaiKhoan = new Models.TaiKhoan
 		{

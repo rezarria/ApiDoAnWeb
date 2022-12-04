@@ -5,7 +5,7 @@ namespace Api.Areas.Edu.Controllers;
 
 public partial class PhongHoc : ControllerBase
 {
-	Expression<Func<Models.PhongHoc, DTO.Get>> expressionGet = x => new(
+	readonly Expression<Func<Models.PhongHoc, DTO.Get>> expressionGet = x => new(
 		x.Id, x.Ten, x.ViTri
 	)
 	;

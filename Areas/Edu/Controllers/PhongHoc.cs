@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Data;
 using Api.Contexts;
 using Api.Models;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.EntityFrameworkCore;
@@ -16,7 +17,7 @@ namespace Api.Areas.Edu.Controllers;
 [Route("[area]/[controller]")]
 public partial class PhongHoc : ControllerBase
 {
-	private AppDbContext _context;
+	private readonly AppDbContext _context;
 
 	public PhongHoc(AppDbContext context)
 	{
@@ -104,7 +105,6 @@ public partial class PhongHoc : ControllerBase
 	[HttpDelete]
 	public async Task<IActionResult> Delete(Guid[] ids)
 	{
-
 		IDbContextTransaction transaction = await _context.Database.BeginTransactionAsync(HttpContext.RequestAborted);
 
 		var phongHoc =
@@ -129,6 +129,44 @@ public partial class PhongHoc : ControllerBase
 			return NoContent();
 		}
 		catch (System.Exception)
+		{
+			transaction.Rollback();
+			return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+		}
+	}
+
+	/// <summary>
+	///     Cập nhật phòng học theo id
+	/// </summary>
+	/// <param name="id">Guid</param>
+	/// <param name="path">theo cấu trúc fast joson patch</param>
+	/// <returns></returns>
+	/// <response code="200">Cập nhật thành công và trả về kết quả</response>
+	/// <response code="404">Khi không tìm thấy</response>
+	[HttpPatch]
+	[ProducesResponseType(typeof(PhongHoc), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(PhongHoc), StatusCodes.Status404NotFound)]
+	public async Task<IActionResult> Patch([FromQuery] Guid id, [FromBody] JsonPatchDocument<Models.PhongHoc> path)
+	{
+		await using IDbContextTransaction transaction = await _context.Database.BeginTransactionAsync(IsolationLevel.Serializable, HttpContext.RequestAborted);
+		await transaction.CreateSavepointAsync("dau", HttpContext.RequestAborted);
+		try
+		{
+			var phongHoc = await _context.PhongHoc.FirstOrDefaultAsync(x => x.Id == id, HttpContext.RequestAborted);
+			if (phongHoc is null)
+				return NotFound();
+
+			path.ApplyTo(phongHoc, ModelState);
+
+			if (!ModelState.IsValid)
+				return BadRequest(ModelState);
+
+			await _context.SaveChangesAsync(HttpContext.RequestAborted);
+			transaction.Commit();
+
+			return Ok(phongHoc);
+		}
+		catch (Exception)
 		{
 			transaction.Rollback();
 			return new StatusCodeResult(StatusCodes.Status500InternalServerError);
