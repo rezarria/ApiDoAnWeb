@@ -6,7 +6,7 @@ namespace Api.Areas.Api.Controllers;
 
 [Area("Api")]
 [ApiController]
-[Route("[area]/ChiTietLich")]
+[Route("[area]/[controller]")]
 public partial class ChiTietLich : ControllerBase
 {
     private readonly AppDbContext _context;

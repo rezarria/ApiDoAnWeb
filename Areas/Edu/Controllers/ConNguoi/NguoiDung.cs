@@ -11,7 +11,7 @@ namespace Api.Areas.Api.Controllers;
 /// <summary>
 /// </summary>
 [Area("Api")]
-[Route("/[area]/NguoiDung")]
+[Route("/[area]/[controller]")]
 [ApiController]
 public class NguoiDung : ControllerBase
 {

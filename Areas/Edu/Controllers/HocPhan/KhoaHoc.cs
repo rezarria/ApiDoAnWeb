@@ -8,7 +8,7 @@ using System.Data;
 namespace Api.Areas.Api.Controllers;
 
 [Area("Api")]
-[Route("/[area]/KhoaHoc")]
+[Route("/[area]/[controller]")]
 [ApiController]
 public class KhoaHoc : ControllerBase
 {

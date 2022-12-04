@@ -7,7 +7,7 @@ namespace Api.Areas.Api.Controllers;
 /// <summary>
 /// </summary>
 [Area("Api")]
-[Route("/[area]/tinh")]
+[Route("/[area]/[controller]")]
 [ApiController]
 public class Tinh : ControllerBase
 {

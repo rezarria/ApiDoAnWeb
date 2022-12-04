@@ -12,7 +12,7 @@ namespace Api.Areas.Api.Controllers;
 /// </summary>
 [Area("Api")]
 [ApiController]
-[Route("/[area]/QuanTri")]
+[Route("/[area]/[controller]")]
 public class QuanTri : ControllerBase
 {
     private readonly AppDbContext _context;

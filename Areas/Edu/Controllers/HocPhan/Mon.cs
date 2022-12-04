@@ -14,7 +14,7 @@ namespace Api.Areas.Api.Controllers;
 /// </summary>
 [Area("Api")]
 [ApiController]
-[Route("/[area]/Mon/")]
+[Route("/[area]/[controller]")]
 public class MonController : ControllerBase
 {
     /// <summary>

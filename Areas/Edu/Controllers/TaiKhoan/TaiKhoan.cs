@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Api.Areas.Api.Controllers;
 
-[Route("api/[controller]")]
+[Route("[area]/[controller]")]
 [ApiController]
 public partial class TaiKhoan
 {

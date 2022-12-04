@@ -12,7 +12,7 @@ namespace Api.Areas.Api.Controllers;
 /// </summary>
 [Area("Api")]
 [ApiController]
-[Route("/[area]/hocvien")]
+[Route("/[area]/[controller]")]
 public class HocVien : ControllerBase
 {
 	private readonly AppDbContext _context;

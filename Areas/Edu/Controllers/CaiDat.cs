@@ -5,7 +5,7 @@ namespace Api.Areas.Api.Controllers;
 
 [Area("Api")]
 [ApiController]
-[Route("/[area]/CaiDat")]
+[Route("/[area]/[controller]")]
 public class CaiDat : ControllerBase
 {
     private readonly Contexts.AppDbContext _context;
