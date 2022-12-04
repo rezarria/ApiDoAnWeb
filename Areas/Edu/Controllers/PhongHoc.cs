@@ -59,7 +59,7 @@ public partial class PhongHoc : ControllerBase
 	/// <summary>
 	/// Tạo phòng học
 	/// </summary>
-	/// <param name="phongHoc"></param>
+	/// <param name="phongHocDTO"></param>
 	/// <returns>aaa</returns>
 	/// <response code="201">Tạo thành công</response>
 	/// <response code="500">...</response>
@@ -68,23 +68,24 @@ public partial class PhongHoc : ControllerBase
 	[HttpPost]
 	public async Task<IActionResult> Post(
 	[Bind(
-			nameof(phongHoc.Ten),
-			nameof(phongHoc.ViTri)
+			nameof(phongHocDTO.Ten),
+			nameof(phongHocDTO.ViTri)
 		)]
-		DTO.Post phongHoc
+		DTO.Post phongHocDTO
 	)
 	{
 		IDbContextTransaction transaction = await _context.Database.BeginTransactionAsync(HttpContext.RequestAborted);
 		try
 		{
 			ModelState.ClearValidationState(nameof(DTO.Post));
-			if (!TryValidateModel(phongHoc.Convert(), nameof(Models.PhongHoc)))
+			var phongHoc = phongHocDTO.Convert();
+			if (!TryValidateModel(phongHoc, nameof(Models.PhongHoc)))
 				return BadRequest(ModelState);
 			transaction.CreateSavepoint("begin");
-			_context.Attach(phongHoc.Convert());
+			_context.Attach(phongHoc);
 			await _context.SaveChangesAsync(HttpContext.RequestAborted);
 			transaction.Commit();
-			return Ok();
+			return CreatedAtAction(nameof(Get), new { ids = new Guid[] { phongHoc.Id } }, phongHoc);
 		}
 		catch (System.Exception)
 		{
