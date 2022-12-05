@@ -7,7 +7,8 @@ using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Api.Areas.Controllers;
 
-[Area("Admin")]
+[Area("Api")]
+[Route("/[area]/[controller]")]
 public partial class LopHoc : ControllerBase
 {
 	private readonly AppDbContext _context;
@@ -25,9 +26,9 @@ public partial class LopHoc : ControllerBase
 	/// <response code="200">Khi tạo lớp thành công</response>
 	[ProducesResponseType(typeof(DTO.Get[]), StatusCodes.Status200OK)]
 	[HttpGet]
-	public Task<IActionResult> Get(string ids)
+	public Task<IActionResult> Get(string? ids)
 	{
-		IEnumerable<Guid>? array = ids.Split(";").Select(x => new Guid(x));
+		IEnumerable<Guid>? array = ids?.Split(";").Select(x => new Guid(x));
 		if (array is null)
 			return Task.FromResult<IActionResult>(
 				Ok(_context.Lop.AsNoTracking().Select(DTO.Get.expression))
