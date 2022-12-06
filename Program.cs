@@ -16,7 +16,7 @@ if (app.Environment.IsDevelopment())
 {
     // app.UseSwagger();
     // app.UseSwaggerUI();
-	app.UseOpenApi();
+    app.UseOpenApi();
     app.UseSwaggerUi3();
 }
 app.UseHttpsRedirection();
