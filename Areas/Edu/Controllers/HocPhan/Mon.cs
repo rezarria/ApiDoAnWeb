@@ -47,6 +47,18 @@ public class MonController : ControllerBase
         }).ToArrayAsync(HttpContext.RequestAborted));
     }
 
+	[HttpGet]
+	[Route("ToiThieu")]
+    public async Task<IActionResult> GetToiThieu([FromQuery] int take = -1, [FromQuery] int skip = 0)
+    {
+        var data = take == -1 ? _database.Mon.Skip(skip).AsNoTracking() : _database.Mon.Skip(skip).Take(take).AsNoTracking();
+        return Ok(await data.Select(x => new
+        {
+            x.Id,
+            x.Ten
+        }).ToArrayAsync(HttpContext.RequestAborted));
+    }
+
     /// <summary>
     ///     Lấy môn theo id
     /// </summary>
@@ -81,12 +93,6 @@ public class MonController : ControllerBase
                 MieuTa = mon.MieuTa,
                 ThoiGianTao = DateTime.Now
             };
-
-            if (mon.DanhMucMon is not null)
-                monMoi.DanhMucMon = (from x in mon.DanhMucMon select new Models.DanhMucMon() { Id = x.Id }).ToList();
-
-            if (mon.KhoaHoc is not null)
-                monMoi.KhoaHoc = (from x in mon.KhoaHoc select new Models.KhoaHoc() { Id = x.Id }).ToList();
 
             _database.Attach(monMoi);
             await _database.SaveChangesAsync(HttpContext.RequestAborted);
