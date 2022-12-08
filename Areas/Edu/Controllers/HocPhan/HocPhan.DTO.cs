@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Areas.Api.Controllers;
 
-public partial class HocPhan : ControllerBase
+public partial class HocPhan
 {
     public static class DTO
     {

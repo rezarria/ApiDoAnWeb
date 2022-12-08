@@ -17,9 +17,13 @@ public class HocPhan
 
 	public string MieuTa { get; set; } = string.Empty;
 
+	[Required]
+	public Guid MonId { get; set; }
+
 	/// <summary>
 	/// 
 	/// </summary>
+	[Required]
 	public virtual Mon Mon { get; set; } = null!;
 
 	public int SoBuoi { get; set; }

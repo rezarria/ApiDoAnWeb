@@ -1,3 +1,7 @@
+using System;
+using System.Data;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 using Api.Contexts;
 using Api.Models;
 using Microsoft.AspNetCore.JsonPatch;
@@ -5,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Swashbuckle.AspNetCore.Filters;
-using System.Data;
+using LopHoc = Api.Areas.Controllers.LopHoc;
 
 namespace Api.Areas.Api.Controllers;
 
@@ -15,63 +19,60 @@ namespace Api.Areas.Api.Controllers;
 [Area("Api")]
 [ApiController]
 [Route("/[area]/[controller]")]
-public class MonController : ControllerBase
+public partial class MonController : ControllerBase
 {
     /// <summary>
     /// </summary>
-    private readonly AppDbContext _database;
+    private readonly AppDbContext _context;
 
     /// <summary>
     /// </summary>
-    /// <param name="database"></param>
-    public MonController(AppDbContext database)
+    /// <param name="context"></param>
+    public MonController(AppDbContext context)
     {
-        _database = database;
+        _context = context;
     }
 
     /// <summary>
-    /// 
+    /// lấy danh sách môn
     /// </summary>
+    /// <param name="ids"></param>
     /// <param name="take"></param>
     /// <param name="skip"></param>
     /// <returns></returns>
     [HttpGet]
-    public async Task<IActionResult> GetAll([FromQuery] int take = -1, [FromQuery] int skip = 0)
+    public async Task<IActionResult> Get([FromQuery] Guid[]? ids, [FromQuery] int take = -1, [FromQuery] int skip = 0)
+        => Ok(await Get(DTO.Get.expression, ids, take, skip));
+
+    private async Task<TOutputType[]> Get<TOutputType>(
+        Expression<Func<Models.Mon, TOutputType>> expression,
+        [FromQuery] Guid[]? ids,
+        [FromQuery] int take = -1,
+        [FromQuery] int skip = 0)
+        where TOutputType : class
     {
-        var data = take == -1 ? _database.Mon.Skip(skip).AsNoTracking() : _database.Mon.Skip(skip).Take(take).AsNoTracking();
-        return Ok(await data.Select(x => new
-        {
-            x.Id,
-            x.Ten,
-            x.MieuTa,
-        }).ToArrayAsync(HttpContext.RequestAborted));
+        var query = _context.Mon.AsQueryable();
+
+        if (ids is not null && ids.Any())
+            query = query.Where(x => ids.Contains(x.Id));
+
+        if (take > -1)
+            query = query.Take(take);
+
+        if (skip > 0)
+            query = query.Skip(skip);
+
+        return await query.Select(expression).AsNoTracking().ToArrayAsync(HttpContext.RequestAborted);
     }
 
-	[HttpGet]
-	[Route("ToiThieu")]
-    public async Task<IActionResult> GetToiThieu([FromQuery] int take = -1, [FromQuery] int skip = 0)
-    {
-        var data = take == -1 ? _database.Mon.Skip(skip).AsNoTracking() : _database.Mon.Skip(skip).Take(take).AsNoTracking();
-        return Ok(await data.Select(x => new
-        {
-            x.Id,
-            x.Ten
-        }).ToArrayAsync(HttpContext.RequestAborted));
-    }
-
-    /// <summary>
-    ///     Lấy môn theo id
-    /// </summary>
-    /// <param name="id">Mã GUID</param>
-    /// <returns>Môn theo id</returns>
-    /// <response code="200">Khi tìm thấy</response>
-    /// <response code="400">Khi không tìm thấy</response>
-    [HttpGet("{id}")]
-    [ProducesResponseType(typeof(Mon), 200)]
-    public async Task<IActionResult> Get(Guid id)
-    {
-        return Ok(await _database.Mon.SingleAsync(x => x.Id == id, HttpContext.RequestAborted));
-    }
+    [HttpGet]
+    [Route("ToiThieu")]
+    public async Task<IActionResult> GetToiThieu(
+        [FromQuery] Guid[] ids,
+        [FromQuery] int take = -1,
+        [FromQuery] int skip = 0)
+        => Ok(await Get(DTO.expressionToiThieu, ids, take, skip));
+    
 
     /// <summary>
     ///     Tạo môn mới
@@ -83,7 +84,8 @@ public class MonController : ControllerBase
     [ProducesResponseType(typeof(Mon), 201)]
     public async Task<IActionResult> Post([FromBody] Models.DTO.MonDTO mon)
     {
-        await using IDbContextTransaction transaction = await _database.Database.BeginTransactionAsync(IsolationLevel.ReadCommitted, HttpContext.RequestAborted);
+        await using IDbContextTransaction transaction =
+            await _context.Database.BeginTransactionAsync(IsolationLevel.ReadCommitted, HttpContext.RequestAborted);
         await transaction.CreateSavepointAsync("dau", HttpContext.RequestAborted);
         try
         {
@@ -94,8 +96,8 @@ public class MonController : ControllerBase
                 ThoiGianTao = DateTime.Now
             };
 
-            _database.Attach(monMoi);
-            await _database.SaveChangesAsync(HttpContext.RequestAborted);
+            _context.Attach(monMoi);
+            await _context.SaveChangesAsync(HttpContext.RequestAborted);
             await transaction.CommitAsync(HttpContext.RequestAborted);
 
             return CreatedAtAction(nameof(Get), new { id = monMoi.Id }, monMoi);
@@ -118,11 +120,12 @@ public class MonController : ControllerBase
     [ProducesResponseType(typeof(Mon), 200)]
     public async Task<IActionResult> Patch([FromQuery] Guid id, [FromBody] JsonPatchDocument<Mon> path)
     {
-        await using IDbContextTransaction transaction = await _database.Database.BeginTransactionAsync(IsolationLevel.Serializable, HttpContext.RequestAborted);
+        await using IDbContextTransaction transaction =
+            await _context.Database.BeginTransactionAsync(IsolationLevel.Serializable, HttpContext.RequestAborted);
         await transaction.CreateSavepointAsync("dau", HttpContext.RequestAborted);
         try
         {
-            var mon = await _database.Mon.FirstOrDefaultAsync(x => x.Id == id, HttpContext.RequestAborted);
+            var mon = await _context.Mon.FirstOrDefaultAsync(x => x.Id == id, HttpContext.RequestAborted);
             if (mon is null)
                 return NotFound();
 
@@ -131,7 +134,7 @@ public class MonController : ControllerBase
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            await _database.SaveChangesAsync(HttpContext.RequestAborted);
+            await _context.SaveChangesAsync(HttpContext.RequestAborted);
             transaction.Commit();
 
             return Ok(mon);
@@ -157,14 +160,15 @@ public class MonController : ControllerBase
     [SwaggerResponseHeader(400, "", "", "")]
     public async Task<IActionResult> Delete(Guid id)
     {
-        IDbContextTransaction transaction = await _database.Database.BeginTransactionAsync(IsolationLevel.Serializable, HttpContext.RequestAborted);
+        IDbContextTransaction transaction =
+            await _context.Database.BeginTransactionAsync(IsolationLevel.Serializable, HttpContext.RequestAborted);
         await transaction.CreateSavepointAsync("dau", HttpContext.RequestAborted);
         try
         {
-            var mon = _database.Mon.FirstOrDefault(x => x.Id == id);
+            var mon = _context.Mon.FirstOrDefault(x => x.Id == id);
             if (mon is null) return NotFound();
-            _database.Entry(mon).State = EntityState.Deleted;
-            await _database.SaveChangesAsync(HttpContext.RequestAborted);
+            _context.Entry(mon).State = EntityState.Deleted;
+            await _context.SaveChangesAsync(HttpContext.RequestAborted);
             await transaction.CommitAsync(HttpContext.RequestAborted);
             return Ok();
         }

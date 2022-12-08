@@ -22,12 +22,29 @@ public partial class HocPhan : ControllerBase
 	public IActionResult Get(string? ids)
 	{
 		if (ids is null)
-			return Ok(_context.HocPhan.AsNoTracking());
+			return Ok(_context.HocPhan.Select(x => new
+			{
+				x.Id,
+				x.Ten,
+				x.MieuTa,
+				x.ThoiGianTao,
+				x.MonId
+			}).AsNoTracking());
 		var array = from x in ids?.Split(";") select new Guid(x);
 		return Ok(
-			from x in _context.HocPhan
-			where array.Contains(x.Id)
-			select x
+			_context
+			.HocPhan
+			.Where(x => array.Contains(x.Id))
+			.Include(x => x.Mon)
+			.Select(x => new
+			{
+				x.Id,
+				x.Ten,
+				x.MieuTa,
+				x.ThoiGianTao,
+				x.MonId
+			})
+			.AsNoTracking()
 		);
 	}
 
