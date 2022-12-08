@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Api.Models;
+namespace Api.Areas.Edu.Models;
+
 
 /// <summary>
 /// </summary>

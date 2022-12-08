@@ -1,38 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Api.Areas.Edu.Interfaces;
 
-namespace Api.Models;
+namespace Api.Areas.Edu.Models;
 
 /// <summary>
 ///     Lịch
 /// </summary>
-public class Lich
+public class Lich : IMetadata, ILich
 {
-    /// <summary>
-    ///     Enum tình trạng
-    /// </summary>
-    public enum TinhTrang
-    {
-        /// <summary>
-        ///     Chưa bắt đầu
-        /// </summary>
-        ChuaBatDau,
-
-        /// <summary>
-        ///     Đang tiếp diễn
-        /// </summary>
-        DangTiepDien,
-
-        /// <summary>
-        ///     Đã xong
-        /// </summary>
-        DaXong,
-
-        /// <summary>
-        ///     Đã huỷ
-        /// </summary>
-        DaHuy
-    }
-
     /// <summary>
     ///     Guid
     /// </summary>
@@ -57,15 +32,13 @@ public class Lich
     /// <summary>
     ///     Tình trạng
     /// </summary>
-    public TinhTrang TinhTrangLich { get; set; } = TinhTrang.ChuaBatDau;
+    public ILichInfo.TinhTrang TinhTrangLich { get; set; } = ILichInfo.TinhTrang.ChuaBatDau;
 
-    public virtual LopHoc? Lop { get; set; }
+    public virtual ILopHoc? Lop { get; set; }
 
-    public virtual CaHoc? CaHoc { get; set; }
+    public virtual IPhongHoc? PhongHoc { get; set; }
 
-    public virtual PhongHoc? PhongHoc { get; set; }
-
-    public virtual ICollection<ChiTietLich>? ChiTietLich { get; set; }
+    public virtual ICollection<IChiTietLich> ChiTietLich { get; set; } = null!;
 
     /// <summary>
     /// </summary>

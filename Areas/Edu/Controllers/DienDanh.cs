@@ -1,17 +1,17 @@
-﻿using Api.Contexts;
+﻿using Api.Areas.Edu.Contexts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace Api.Areas.Api.Controllers;
+namespace Api.Areas.Edu.Controllers;
 
 [Area("Api")]
 [Route("/[area]/[controller]")]
 [ApiController]
-public class DiemDanh : ControllerBase
+public class DiemDanhController : ControllerBase
 {
     private readonly AppDbContext _context;
 
-    public DiemDanh(AppDbContext context)
+    public DiemDanhController(AppDbContext context)
     {
         _context = context;
     }

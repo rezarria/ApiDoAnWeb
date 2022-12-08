@@ -1,31 +1,32 @@
-using Api.Models.Interfaces;
 using System.ComponentModel.DataAnnotations;
+using Api.Areas.Edu.Interfaces;
 
-namespace Api.Models;
+namespace Api.Areas.Edu.Models;
 
 /// <summary>
 /// </summary>
-public class Mon : IMon
+public class MonHoc : IMetadata, IMonHoc
 {
     /// <summary>
     /// </summary>
     /// <returns></returns>
     [Key]
-    public virtual Guid Id { get; set; }
+    public Guid Id { get; set; }
 
     [Required]
-    public virtual string Ten { get; set; } = null!;
+    public string Ten { get; set; } = null!;
 
-    public virtual string? MieuTa { get; set; }
+    public int SoBuoi { get; set; }
+
+    public  string? MieuTa { get; set; }
 
     [DataType(DataType.Date)]
-    public virtual DateTime ThoiGianTao { get; set; }
+    public  DateTime ThoiGianTao { get; set; }
 
-    public virtual Nguoi? NguoiTao { get; set; }
+    public DateTime ThoiGianBatDau { get; set; }
+    public DateTime ThoiGianKetThuc { get; set; }
 
-    public virtual ICollection<DanhMucMon>? DanhMucMon { get; set; }
-
-    public virtual ICollection<KhoaHoc>? KhoaHoc { get; set; }
+    public virtual NguoiDung? NguoiTao { get; set; }
 
     [Timestamp]
     public virtual byte[]? RowVersion { get; set; } = null!;

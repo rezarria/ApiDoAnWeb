@@ -1,12 +1,12 @@
+using Api.Areas.Edu.Models;
 using Api.Contexts;
-using Api.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Api.PhuTro;
 
 public static class TaiKhoan
 {
-    public static void TaoTaiKhoan(this Nguoi nguoi, string? matKhau = null)
+    public static void TaoTaiKhoan(this NguoiDung nguoi, string? matKhau = null)
     {
         if (nguoi.SoYeuLyLich is null)
             throw new NullReferenceException("Không có sơ yếu lý lịch");
@@ -18,7 +18,7 @@ public static class TaiKhoan
             nguoi.SoYeuLyLich.HoVaTen.Trim().LoaiBoDau().Split(" ")
                 .Select(x => string.Concat(x[0].ToString().ToUpper(), x.AsSpan(1)))).ToLower();
 
-        nguoi.TaiKhoan = new Models.TaiKhoan
+        nguoi.TaiKhoan = new()
         {
             TaiKhoanDangNhap = nguoi.SoYeuLyLich.HoVaTen.ToLower().LoaiBoDau().Replace(" ", "") +
                                string.Format("{0:ddMMyyyy}", nguoi.SoYeuLyLich.SinhNgay),
@@ -26,16 +26,12 @@ public static class TaiKhoan
         };
     }
 
-    public static async Task<bool> ChuanBiThemAsync(this Nguoi nguoi, AppDbContext context,
+    public static async Task<bool> ChuanBiThemAsync(this NguoiDung nguoi, AppDbContext context,
         CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
         if (nguoi.SoYeuLyLich is not null && nguoi.SoYeuLyLich.ChoOHienNay is not null)
         {
-            if (nguoi.SoYeuLyLich.ChoOHienNay.Tinh is not null)
-                context.Entry(nguoi.SoYeuLyLich.ChoOHienNay.Tinh).State = EntityState.Unchanged;
-            if (nguoi.SoYeuLyLich.ChoOHienNay.QuanHuyen is not null)
-                context.Entry(nguoi.SoYeuLyLich.ChoOHienNay.QuanHuyen).State = EntityState.Unchanged;
         }
 
         // nguoi.TaoTaiKhoan();

@@ -1,8 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Api.Areas.Edu.Interfaces;
 
-namespace Api.Models;
+namespace Api.Areas.Edu.Models;
 
-public class HocPhan
+public class HocPhan : IMetadata, IHocPhan
 {
 	/// <summary>
 	/// </summary>
@@ -18,13 +19,13 @@ public class HocPhan
 	public string MieuTa { get; set; } = string.Empty;
 
 	[Required]
-	public Guid MonId { get; set; }
+	public Guid IdMon { get; set; }
 
 	/// <summary>
 	/// 
 	/// </summary>
 	[Required]
-	public virtual Mon Mon { get; set; } = null!;
+	public virtual MonHoc MonHoc { get; set; } = null!;
 
 	public int SoBuoi { get; set; }
 
@@ -34,13 +35,13 @@ public class HocPhan
 	[DataType(DataType.Date)]
 	public DateTime ThoiGianTao { get; set; }
 
-	public virtual Nguoi? NguoiTao { get; set; }
+	public virtual NguoiDung? NguoiTao { get; set; }
 
-	public virtual ICollection<GiangVien>? GiangVien { get; set; }
+	public virtual ICollection<NguoiDung> NguoThamGia { get; set; } = null!;
 
-	public virtual ICollection<ChungNhan>? ChungNhan { get; set; }
+	public virtual ICollection<ChungNhan> ChungNhan { get; set; } = null!;
 
-	public virtual ICollection<HocPhan>? HocPhanYeuCau { get; set; }
+	public virtual ICollection<HocPhan> HocPhanYeuCau { get; set; } = null!;
 
 	/// <summary>
 	/// </summary>

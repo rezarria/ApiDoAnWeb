@@ -23,7 +23,7 @@ public class Lich : ControllerBase
     /// <returns></returns>
     // GET: api/Lich
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Models.Lich>>> GetAll()
+    public async Task<ActionResult<IEnumerable<Edu.Models.Lich>>> GetAll()
     {
         return await _database.Lich.ToListAsync(HttpContext.RequestAborted);
     }
@@ -34,7 +34,7 @@ public class Lich : ControllerBase
     /// <returns></returns>
     // GET: api/Lich/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<Models.Lich>> Get(Guid id)
+    public async Task<ActionResult<Edu.Models.Lich>> Get(Guid id)
     {
         var lich = await _database.Lich.FindAsync(id, HttpContext.RequestAborted);
 
@@ -49,7 +49,7 @@ public class Lich : ControllerBase
     // PUT: api/Lich/5
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutLich(Guid id, Models.Lich lich)
+    public async Task<IActionResult> PutLich(Guid id, Edu.Models.Lich lich)
     {
         if (id != lich.Id) return BadRequest();
 
@@ -76,7 +76,7 @@ public class Lich : ControllerBase
     // POST: api/Liches
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPost]
-    public async Task<ActionResult<Models.Lich>> Post(Models.Lich lich)
+    public async Task<ActionResult<Edu.Models.Lich>> Post(Edu.Models.Lich lich)
     {
         _database.Lich.Add(lich);
         await _database.SaveChangesAsync(HttpContext.RequestAborted);

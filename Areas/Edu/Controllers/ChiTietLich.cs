@@ -1,13 +1,13 @@
-using Api.Contexts;
+using Api.Areas.Edu.Contexts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace Api.Areas.Api.Controllers;
+namespace Api.Areas.Edu.Controllers;
 
 [Area("Api")]
 [ApiController]
 [Route("[area]/[controller]")]
-public partial class ChiTietLich : ControllerBase
+public class ChiTietLich : ControllerBase
 {
     private readonly AppDbContext _context;
 

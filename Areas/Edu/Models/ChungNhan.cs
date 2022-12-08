@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Api.Models;
+namespace Api.Areas.Edu.Models;
 
 public class ChungNhan
 {
@@ -10,7 +10,7 @@ public class ChungNhan
 
     public string NoiDung { get; set; } = string.Empty;
 
-    public virtual Mon? Mon { get; set; }
+    public virtual MonHoc? Mon { get; set; }
     public virtual ICollection<HocPhan>? HocPhan { get; set; }
 
     public DateTime ThoiGianTao { get; set; }

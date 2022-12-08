@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Api.Models;
+namespace Api.Areas.Edu.Models;
 
 public class CaiDat
 {

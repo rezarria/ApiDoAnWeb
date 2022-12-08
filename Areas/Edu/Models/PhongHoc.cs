@@ -1,8 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Api.Areas.Edu.Interfaces;
 
-namespace Api.Models;
+namespace Api.Areas.Edu.Models;
 
-public class PhongHoc
+public class PhongHoc : IMetadata, IPhongHoc
 {
     [Key]
     public Guid Id { get; set; }
@@ -11,8 +12,6 @@ public class PhongHoc
     public string Ten { get; set; } = string.Empty;
 
     public string ViTri { get; set; } = string.Empty;
-
-    public virtual CoSoDaoTao? CoSoDaoTao { get; set; }
 
     public virtual ICollection<LopHoc>? Lop { get; set; }
     public virtual ICollection<Lich>? Lich { get; set; }

@@ -1,13 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Api.Areas.Edu.Interfaces;
 
-namespace Api.Models;
+namespace Api.Areas.Edu.Models;
 
-public class DiemDanh
+public class DiemDanh : IMetadata, IDiemDanh
 {
     [Key] public Guid Id { get; set; }
 
-    public TrangThaiDiemDanh TrangThai { get; set; } = TrangThaiDiemDanh.Vang;
+    public IDiemDanh.TrangThaiDiemDanh TrangThai { get; set; } = IDiemDanh.TrangThaiDiemDanh.Vang;
 
     public string? NhanXet { get; set; }
 
@@ -19,12 +20,4 @@ public class DiemDanh
 
     [ForeignKey(nameof(IdChiTietLich))]
     public virtual ChiTietLich? ChiTietLich { get; set; }
-
-    public enum TrangThaiDiemDanh
-    {
-        Vang,
-        CoMat,
-        CoPhep,
-        Muon
-    }
 }
