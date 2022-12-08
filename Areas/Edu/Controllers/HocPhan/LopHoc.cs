@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using System.Data;
+using System.Linq.Expressions;
 
 namespace Api.Areas.Controllers;
 
@@ -13,36 +14,41 @@ public partial class LopHoc : ControllerBase
 {
     private readonly AppDbContext _context;
 
+    private async Task<TOutputType[]> Get<TOutputType>(
+        Expression<Func<Models.LopHoc, TOutputType>> expression,
+        [FromQuery] Guid[]? ids,
+        [FromQuery] int take = -1,
+        [FromQuery] int skip = 0)
+        where TOutputType : class
+    {
+        var query = _context.Lop.AsQueryable();
+
+        if (ids is not null && ids.Any())
+            query = query.Where(x => ids.Contains(x.Id));
+
+        if (take > -1)
+            query = query.Take(take);
+
+        if (skip > 0)
+            query = query.Skip(skip);
+
+        return await query.Select(expression).AsNoTracking().ToArrayAsync(HttpContext.RequestAborted);
+    }
+
     public LopHoc(AppDbContext context)
     {
         _context = context;
     }
-
+    
     /// <summary>
-    ///    Lấy danh sách lớp học
+    /// Lấy danh sách lớp học
     /// </summary>
     /// <param name="ids"></param>
+    /// <param name="take"></param>
+    /// <param name="skip"></param>
     /// <returns></returns>
-    /// <response code="200">Khi tạo lớp thành công</response>
-    [ProducesResponseType(typeof(DTO.Get[]), StatusCodes.Status200OK)]
-    [HttpGet]
-    public Task<IActionResult> Get(string? ids)
-    {
-        IEnumerable<Guid>? array = ids?.Split(";").Select(x => new Guid(x));
-        if (array is null)
-            return Task.FromResult<IActionResult>(
-                Ok(_context.Lop.AsNoTracking().Select(DTO.Get.expression))
-            );
-        else
-            return Task.FromResult<IActionResult>(
-                Ok(
-                _context.Lop.Where(x => array
-                .Contains(x.Id))
-                .Select(DTO.Get.expression)
-                .AsNoTracking()
-            )
-            );
-    }
+    public async Task<IActionResult> Get(Guid[]? ids, int take = -1, int skip = 0)
+        => Ok(await Get(DTO.Get.expression, ids, take, skip));
 
     /// <summary>
     ///    Tạo lớp học
@@ -62,7 +68,8 @@ public partial class LopHoc : ControllerBase
         ModelState.ClearValidationState(nameof(DTO.Post));
         if (!TryValidateModel(lop, nameof(Models.LopHoc)))
             return BadRequest(ModelState);
-        using IDbContextTransaction transaction = await _context.Database.BeginTransactionAsync(HttpContext.RequestAborted);
+        using IDbContextTransaction transaction =
+            await _context.Database.BeginTransactionAsync(HttpContext.RequestAborted);
         try
         {
             transaction.CreateSavepoint("begin");
@@ -96,12 +103,12 @@ public partial class LopHoc : ControllerBase
         if (array.Any())
         {
             var danhSachLop = from x in _context.Lop
-                              where array.Contains(x.Id)
-                              select new Models.LopHoc()
-                              {
-                                  Id = x.Id,
-                                  RowVersion = x.RowVersion
-                              };
+                where array.Contains(x.Id)
+                select new Models.LopHoc()
+                {
+                    Id = x.Id,
+                    RowVersion = x.RowVersion
+                };
             if (!danhSachLop.Any())
                 return NotFound();
             await danhSachLop.ForEachAsync(lop => _context.Entry(lop).State = EntityState.Deleted);
@@ -109,6 +116,7 @@ public partial class LopHoc : ControllerBase
             await Response.WriteAsJsonAsync(array);
             return NoContent();
         }
+
         return BadRequest();
     }
 
@@ -125,7 +133,8 @@ public partial class LopHoc : ControllerBase
     [HttpPatch]
     public async Task<IActionResult> Patch([FromQuery] Guid id, [FromBody] JsonPatchDocument<Models.LopHoc> path)
     {
-        await using IDbContextTransaction transaction = await _context.Database.BeginTransactionAsync(IsolationLevel.Serializable, HttpContext.RequestAborted);
+        await using IDbContextTransaction transaction =
+            await _context.Database.BeginTransactionAsync(IsolationLevel.Serializable, HttpContext.RequestAborted);
         await transaction.CreateSavepointAsync("dau", HttpContext.RequestAborted);
         try
         {
