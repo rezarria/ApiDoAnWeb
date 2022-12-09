@@ -1,11 +1,15 @@
 namespace Api.Areas.Edu.Interfaces;
 
-public interface IMetadata : IMetadataKey
+public interface IMetadata : IMetadataKey, IMetadataConcurrency
 {
-    byte[]? RowVersion { get; set; }
 }
 
 public interface IMetadataKey
 {
     Guid Id { get; set; }
+}
+
+public interface IMetadataConcurrency
+{
+    byte[]? RowVersion { get; set; }
 }

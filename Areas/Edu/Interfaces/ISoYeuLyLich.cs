@@ -5,7 +5,15 @@ public enum GioiTinh
 	Nu
 }
 
-public interface ISoYeuLyLich
+public interface ISoYeuLyLichModel : IMetadataConcurrency, ISoYeuLyLich
+{
+}
+
+public interface ISoYeuLyLich : IMetadataKey, ISoYeuLyLichInfo
+{
+}
+
+public interface ISoYeuLyLichInfo
 {
 	public string? HoVaTen { get; set; }
 	public GioiTinh? GioiTinh { get; set; }
