@@ -68,11 +68,7 @@ public class AppDbContext : DbContext
     /// <param name="builder"></param>
     protected override void OnModelCreating(ModelBuilder builder)
     {
-
-        builder.Entity<MonHoc>(entity =>
-        {
-            entity.HasIndex(x => x.Ten).IsUnique();
-        });
+        builder.Entity<MonHoc>(entity => { entity.HasIndex(x => x.Ten).IsUnique(); });
 
         builder.Entity<KhoaHoc>(entity => { entity.HasIndex(x => x.Ten).IsUnique(); });
 
@@ -82,12 +78,26 @@ public class AppDbContext : DbContext
 
         builder.Entity<ChiTietLich>(entity =>
         {
-            entity.HasOne(x => x.NguoiDung).WithMany(x => x.ChiTietLich).IsRequired().OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(x => x.NguoiDung).WithMany(x => x.ChiTietLich).IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         builder.Entity<NguoiDung>(entity =>
         {
             entity.HasOne(x => (TaiKhoan?)x.TaiKhoan).WithOne(x => (NguoiDung)x.NguoiDung);
         });
+
+        builder.Entity<HocPhan>(entity =>
+        {
+            entity
+                .HasMany(x => x.ChungNhan)
+                .WithMany(x => x.HocPhan);
+            entity
+                .HasOne(x => x.MonHoc)
+                .WithMany(x => x.HocPhan)
+                .HasForeignKey(x => x.IdMon);
+        });
+
+        builder.Entity<ChungNhan>(entity => { });
     }
 }

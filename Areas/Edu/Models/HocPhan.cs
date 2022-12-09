@@ -37,11 +37,9 @@ public class HocPhan : IMetadata, IHocPhan
 
 	public virtual NguoiDung? NguoiTao { get; set; }
 
-	public virtual ICollection<NguoiDung> NguoThamGia { get; set; } = null!;
+	public virtual ICollection<ChungNhan> ChungNhan { get; set; } = new List<ChungNhan>();
 
-	public virtual ICollection<ChungNhan> ChungNhan { get; set; } = null!;
-
-	public virtual ICollection<HocPhan> HocPhanYeuCau { get; set; } = null!;
+	public virtual ICollection<HocPhan> HocPhanYeuCau { get; set; } = new List<HocPhan>();
 
 	/// <summary>
 	/// </summary>

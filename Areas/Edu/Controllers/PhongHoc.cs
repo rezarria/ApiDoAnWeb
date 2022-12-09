@@ -3,16 +3,39 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using System.Data;
+using System.Linq.Expressions;
 using Api.Areas.Edu.Contexts;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Api.Areas.Edu.Controllers;
 
 [Area("Api")]
 [ApiController]
 [Route("[area]/[controller]")]
-public partial class PhongHoc : ControllerBase
+public class PhongHoc : ControllerBase
 {
     private readonly AppDbContext _context;
+
+    private async Task<TOutputType[]> Get<TOutputType>(
+        Expression<Func<Models.PhongHoc, TOutputType>> expression,
+        [FromQuery] Guid[]? id,
+        [FromQuery] int take = -1,
+        [FromQuery] int skip = 0)
+        where TOutputType : class
+    {
+        var query = _context.PhongHoc.AsQueryable();
+
+        if (id is not null && id.Any())
+            query = query.Where(x => id.Contains(x.Id));
+
+        if (take > -1)
+            query = query.Take(take);
+
+        if (skip > 0)
+            query = query.Skip(skip);
+
+        return await query.Select(expression).AsNoTracking().ToArrayAsync(HttpContext.RequestAborted);
+    }
 
     public PhongHoc(AppDbContext context)
     {
@@ -20,69 +43,64 @@ public partial class PhongHoc : ControllerBase
     }
 
     /// <summary>
-    /// Lấy thông tin về phòng học
+    /// lấy danh sách phòng học
     /// </summary>
-    /// <param name="ids">Nếu có giá trị sẽ trả thông tin về phòng học có id</param>
-    /// <returns>aaa</returns>
-    /// <response code="200">Trả về danh sách phòng học, hoặc trả về một phòng học nếu id có giá trị</response>
-    /// <response code="404">...</response>
-    [ProducesResponseType(typeof(DTO.Get[]), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
+    /// <param name="id"></param>
+    /// <param name="take"></param>
+    /// <param name="skip"></param>
+    /// <returns></returns>
     [HttpGet]
-    public async Task<IActionResult> Get(string? ids)
-    {
-        Guid[]? array = ids?.Split(";").Select(x => new Guid(x)).ToArray() ?? null;
-        if (array is not null && array.Length > 0)
-            return Ok(GetMany(array));
-        return await GetAll();
-    }
+    public async Task<IActionResult> Get([FromQuery] Guid[]? id, [FromQuery] int take = -1, [FromQuery] int skip = 0)
+        => Ok(await Get(DTOs.PhongHoc.Get.Expression, id, take, skip));
 
-    private async Task<IActionResult> GetAll()
-    => Ok(await
-            _context.PhongHoc
-            .Select(expressionGet)
-            .AsNoTracking()
-            .ToArrayAsync(HttpContext.RequestAborted)
-        );
+    /// <summary>
+    ///     Lấy thông tin ở mức tối thiểu
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="take"></param>
+    /// <param name="skip"></param>
+    /// <returns></returns>
+    /// <response code="200"></response>
+    [ProducesResponseType(typeof(object), 200)]
+    [HttpGet]
+    [Route("ToiThieu")]
+    public async Task<IActionResult> GetToiThieu(
+        [FromQuery] Guid[] id,
+        [FromQuery] int take = -1,
+        [FromQuery] int skip = 0)
+        => Ok(await Get(DTOs.PhongHoc.Get.ExpressionToiThieu, id, take, skip));
 
-    private IEnumerable<dynamic> GetMany(Guid[] ids)
-    => _context.PhongHoc
-        .Where(x => ids.Contains(x.Id))
-        .Select(expressionGet)
-        .AsNoTracking();
 
     /// <summary>
     /// Tạo phòng học
     /// </summary>
-    /// <param name="phongHocDTO"></param>
+    /// <param name="phongHocDto"></param>
     /// <returns>aaa</returns>
     /// <response code="201">Tạo thành công</response>
+    /// <response code="400">Validate thất bại</response>
     /// <response code="500">...</response>
-    [ProducesResponseType(typeof(DTO.Get[]), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(DTOs.PhongHoc.Get[]), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ModelStateDictionary), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(void), StatusCodes.Status500InternalServerError)]
     [HttpPost]
     public async Task<IActionResult> Post(
-    [Bind(
-            nameof(phongHocDTO.Ten),
-            nameof(phongHocDTO.ViTri)
-        )]
-        DTO.Post phongHocDTO
+        DTOs.PhongHoc.Post phongHocDto
     )
     {
+        ModelState.ClearValidationState(nameof(DTOs.PhongHoc.Post));
+        var phongHoc = phongHocDto.Convert();
+        if (!TryValidateModel(phongHoc, nameof(Models.PhongHoc)))
+            return BadRequest(ModelState);
         IDbContextTransaction transaction = await _context.Database.BeginTransactionAsync(HttpContext.RequestAborted);
         try
         {
-            ModelState.ClearValidationState(nameof(DTO.Post));
-            var phongHoc = phongHocDTO.Convert();
-            if (!TryValidateModel(phongHoc, nameof(Models.PhongHoc)))
-                return BadRequest(ModelState);
             transaction.CreateSavepoint("begin");
             _context.Attach(phongHoc);
             await _context.SaveChangesAsync(HttpContext.RequestAborted);
             transaction.Commit();
-            return CreatedAtAction(nameof(Get), new { ids = new Guid[] { phongHoc.Id } }, phongHoc);
+            return CreatedAtAction(nameof(Get), new { ids = new [] { phongHoc.Id } }, phongHoc);
         }
-        catch (System.Exception)
+        catch (Exception)
         {
             transaction.Rollback();
             return new StatusCodeResult(StatusCodes.Status500InternalServerError);
@@ -115,7 +133,7 @@ public partial class PhongHoc : ControllerBase
 
         transaction.CreateSavepoint("begin");
 
-        if (phongHoc is null)
+        if (!phongHoc.Any())
             return NotFound();
         try
         {
@@ -124,7 +142,7 @@ public partial class PhongHoc : ControllerBase
             transaction.Commit();
             return NoContent();
         }
-        catch (System.Exception)
+        catch (Exception)
         {
             transaction.Rollback();
             return new StatusCodeResult(StatusCodes.Status500InternalServerError);
@@ -144,7 +162,8 @@ public partial class PhongHoc : ControllerBase
     [ProducesResponseType(typeof(PhongHoc), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Patch([FromQuery] Guid id, [FromBody] JsonPatchDocument<Models.PhongHoc> path)
     {
-        await using IDbContextTransaction transaction = await _context.Database.BeginTransactionAsync(IsolationLevel.Serializable, HttpContext.RequestAborted);
+        await using IDbContextTransaction transaction =
+            await _context.Database.BeginTransactionAsync(IsolationLevel.Serializable, HttpContext.RequestAborted);
         await transaction.CreateSavepointAsync("dau", HttpContext.RequestAborted);
         try
         {

@@ -40,6 +40,11 @@ public class LopHoc : IMetadata, ILopHoc
 	public ILopHoc.TrangThaiLopHoc TrangThai { get; set; }
 
 	/// <summary>
+	/// 
+	/// </summary>
+	public Guid IdHocPhan { get; set; }
+
+	/// <summary>
 	/// </summary>
 	public virtual HocPhan? HocPhan { get; set; }
 

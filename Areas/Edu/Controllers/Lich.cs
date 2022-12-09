@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace Api.Areas.Api.Controllers;
+namespace Api.Areas.Edu.Controllers;
 
 /// <summary>
 /// </summary>

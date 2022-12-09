@@ -1,17 +1,19 @@
 using System.Linq.Expressions;
+using Api.Areas.Edu.Interfaces;
 
 namespace Api.Areas.Edu.DTOs;
 
 public class LopHoc
 {
-    public class Get
+    public class Get : ILopHoc
     {
         public Guid Id { get; set; }
         public string Ten { get; set; } = string.Empty;
         public int SoBuoi { get; set; }
         public DateTime ThoiGianBatDau { get; set; }
         public DateTime ThoiGianKetThuc { get; set; }
-        public HocPhan.Get? HocPhan { get; set; }
+        public ILopHoc.TrangThaiLopHoc TrangThai { get; set; }
+        public Guid IdHocPhan { get; set; }
 
         public static Expression<Func<Models.LopHoc, Get>> Expression = lop => new Get()
         {
@@ -20,29 +22,29 @@ public class LopHoc
             SoBuoi = lop.SoBuoi,
             ThoiGianBatDau = lop.ThoiGianBatDau,
             ThoiGianKetThuc = lop.ThoiGianKetThuc,
-            HocPhan = new()
-            {
-                
-            }
+            TrangThai = lop.TrangThai,
+            IdHocPhan = lop.IdHocPhan
         };
     }
 
-    public class Post : Get
+    public class Post : ILopHoc
     {
+        public string Ten { get; set; } = string.Empty;
+        public int SoBuoi { get; set; }
+        public DateTime ThoiGianBatDau { get; set; } = DateTime.Now;
+        public DateTime ThoiGianKetThuc { get; set; } = DateTime.Now;
+        public ILopHoc.TrangThaiLopHoc TrangThai { get; set; } = ILopHoc.TrangThaiLopHoc.Chua;
+        public Guid IdHocPhan { get; set; }
+
         public Models.LopHoc Convert()
         {
             Models.LopHoc data = new()
             {
-                Id = Id,
                 SoBuoi = SoBuoi,
                 ThoiGianBatDau = ThoiGianBatDau,
                 ThoiGianKetThuc = ThoiGianKetThuc,
+                IdHocPhan = IdHocPhan
             };
-            if (HocPhan is not null)
-                data.HocPhan = new()
-                {
-                    Id = HocPhan.Id
-                };
             return data;
         }
     }
