@@ -1,4 +1,4 @@
-﻿using Api.Contexts;
+﻿using Api.Areas.Edu.Contexts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 

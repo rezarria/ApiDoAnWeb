@@ -16,15 +16,7 @@ public class MonHoc : IMetadata, IMonHoc
     [Required]
     public string Ten { get; set; } = null!;
 
-    public int SoBuoi { get; set; }
-
     public  string? MieuTa { get; set; }
-
-    [DataType(DataType.Date)]
-    public  DateTime ThoiGianTao { get; set; }
-
-    public DateTime ThoiGianBatDau { get; set; }
-    public DateTime ThoiGianKetThuc { get; set; }
 
     public virtual NguoiDung? NguoiTao { get; set; }
 

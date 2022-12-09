@@ -1,6 +1,6 @@
 using System.Data;
 using System.Linq.Expressions;
-using Api.Contexts;
+using Api.Areas.Edu.Contexts;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -49,7 +49,7 @@ public partial class LopHoc : ControllerBase
 	/// <returns></returns>
 	[HttpGet]
 	public async Task<IActionResult> Get(Guid[]? ids, int take = -1, int skip = 0)
-		=> Ok(await Get(DTO.Get.expression, ids, take, skip));
+		=> Ok(await Get(DTOs.LopHoc.Get.Expression, ids, take, skip));
 
 	/// <summary>
 	///    Tạo lớp học
@@ -63,10 +63,10 @@ public partial class LopHoc : ControllerBase
 	[ProducesResponseType(typeof(void), StatusCodes.Status500InternalServerError)]
 	[ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
 	[HttpPost]
-	public async Task<IActionResult> Post([FromBody] DTO.Post lopHoc)
+	public async Task<IActionResult> Post([FromBody] DTOs.LopHoc.Post lopHoc)
 	{
 		Models.LopHoc lop = lopHoc.Convert();
-		ModelState.ClearValidationState(nameof(DTO.Post));
+		ModelState.ClearValidationState(nameof(DTOs.LopHoc.Post));
 		if (!TryValidateModel(lop, nameof(Models.LopHoc)))
 			return BadRequest(ModelState);
 		using IDbContextTransaction transaction =

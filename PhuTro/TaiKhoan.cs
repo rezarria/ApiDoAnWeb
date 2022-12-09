@@ -1,5 +1,5 @@
+using Api.Areas.Edu.Contexts;
 using Api.Areas.Edu.Models;
-using Api.Contexts;
 using Microsoft.EntityFrameworkCore;
 
 namespace Api.PhuTro;

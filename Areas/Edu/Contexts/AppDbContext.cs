@@ -21,7 +21,7 @@ public class AppDbContext : DbContext
 
     /// <summary>
     /// </summary>
-    public DbSet<NguoiDung> Nguoi { get; set; } = null!;
+    public DbSet<NguoiDung> NguoiDung { get; set; } = null!;
 
     /// <summary>
     /// </summary>
@@ -38,10 +38,6 @@ public class AppDbContext : DbContext
     /// <summary>
     /// </summary>
     public DbSet<QuaTrinhDaoTao> QuaTrinhDaoTao { get; set; } = null!;
-
-    /// <summary>
-    /// </summary>
-    public DbSet<KhoaHoc> KhoaHoc { get; set; } = null!;
 
     /// <summary>
     /// </summary>

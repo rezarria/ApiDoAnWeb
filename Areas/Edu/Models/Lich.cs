@@ -32,13 +32,13 @@ public class Lich : IMetadata, ILich
     /// <summary>
     ///     Tình trạng
     /// </summary>
-    public ILichInfo.TinhTrang TinhTrangLich { get; set; } = ILichInfo.TinhTrang.ChuaBatDau;
+    public ILich.TinhTrang TinhTrangLich { get; set; } = ILich.TinhTrang.ChuaBatDau;
 
-    public virtual ILopHoc? Lop { get; set; }
+    public virtual LopHoc? Lop { get; set; }
 
-    public virtual IPhongHoc? PhongHoc { get; set; }
+    public virtual PhongHoc? PhongHoc { get; set; }
 
-    public virtual ICollection<IChiTietLich> ChiTietLich { get; set; } = null!;
+    public virtual ICollection<ChiTietLich> ChiTietLich { get; set; } = null!;
 
     /// <summary>
     /// </summary>

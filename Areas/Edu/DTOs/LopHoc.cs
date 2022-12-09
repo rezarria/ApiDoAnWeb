@@ -13,7 +13,7 @@ public class LopHoc
         public DateTime ThoiGianKetThuc { get; set; }
         public HocPhan.Get? HocPhan { get; set; }
 
-        public static Expression<Func<Models.LopHoc, Get>> expression = lop => new Get()
+        public static Expression<Func<Models.LopHoc, Get>> Expression = lop => new Get()
         {
             Id = lop.Id,
             Ten = lop.Ten,

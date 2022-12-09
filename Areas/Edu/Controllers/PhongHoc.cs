@@ -1,9 +1,9 @@
-using Api.Contexts;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using System.Data;
+using Api.Areas.Edu.Contexts;
 
 namespace Api.Areas.Edu.Controllers;
 

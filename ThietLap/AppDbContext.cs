@@ -1,4 +1,4 @@
-using Api.Contexts;
+using Api.Areas.Edu.Contexts;
 using Microsoft.EntityFrameworkCore;
 
 namespace Api.ThietLap;
