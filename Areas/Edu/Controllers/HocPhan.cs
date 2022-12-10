@@ -1,6 +1,7 @@
 using System.Data;
 using System.Linq.Expressions;
 using Api.Areas.Edu.Contexts;
+using Api.Areas.Edu.DTOs;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -57,7 +58,7 @@ public class HocPhan : ControllerBase
     public async Task<IActionResult> Post([FromBody] DTOs.HocPhan.Post data)
     {
         ModelState.ClearValidationState(nameof(DTOs.HocPhan.Post));
-        Edu.Models.HocPhan hocPhan = data.Convert();
+        Models.HocPhan hocPhan = data.Convert<DTOs.HocPhan.Post, Models.HocPhan>();
         TryValidateModel(hocPhan, nameof(Models.HocPhan));
         ModelState.Remove(ModelState
             .FirstOrDefault(x => x.Key.StartsWith($"{nameof(Models.HocPhan)}.{nameof(hocPhan.MonHoc)}")).Key);

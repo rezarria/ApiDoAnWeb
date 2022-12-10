@@ -35,17 +35,5 @@ public class LopHoc
         public DateTime ThoiGianKetThuc { get; set; } = DateTime.Now;
         public ILopHoc.TrangThaiLopHoc TrangThai { get; set; } = ILopHoc.TrangThaiLopHoc.Chua;
         public Guid IdHocPhan { get; set; }
-
-        public Models.LopHoc Convert()
-        {
-            Models.LopHoc data = new()
-            {
-                SoBuoi = SoBuoi,
-                ThoiGianBatDau = ThoiGianBatDau,
-                ThoiGianKetThuc = ThoiGianKetThuc,
-                IdHocPhan = IdHocPhan
-            };
-            return data;
-        }
     }
 }

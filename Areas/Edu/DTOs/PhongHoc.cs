@@ -31,12 +31,5 @@ public static class PhongHoc
     {
         public string Ten { get; set; } = string.Empty;
         public string ViTri { get; set; } = string.Empty;
-
-        public Models.PhongHoc Convert()
-            => new()
-            {
-                Ten = Ten,
-                ViTri = ViTri
-            };
     }
 }

@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore.Storage;
 using System.Data;
 using System.Linq.Expressions;
 using Api.Areas.Edu.Contexts;
+using Api.Areas.Edu.DTOs;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Api.Areas.Edu.Controllers;
@@ -88,7 +89,7 @@ public class PhongHoc : ControllerBase
     )
     {
         ModelState.ClearValidationState(nameof(DTOs.PhongHoc.Post));
-        var phongHoc = phongHocDto.Convert();
+        var phongHoc = phongHocDto.Convert<DTOs.PhongHoc.Post, Models.PhongHoc>();
         if (!TryValidateModel(phongHoc, nameof(Models.PhongHoc)))
             return BadRequest(ModelState);
         IDbContextTransaction transaction = await _context.Database.BeginTransactionAsync(HttpContext.RequestAborted);

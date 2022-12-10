@@ -94,7 +94,7 @@ public class MonHocController : ControllerBase
     [ProducesResponseType(typeof(void), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Post([FromBody] MonHoc.Post mon)
     {
-        Models.MonHoc monMoi = mon.Convert();
+        Models.MonHoc monMoi = mon.Convert<MonHoc.Post, Models.MonHoc>();
         ModelState.ClearValidationState(nameof(MonHoc.Post));
         if (!TryValidateModel(monMoi, nameof(Models.MonHoc)))
         {

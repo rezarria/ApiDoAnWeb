@@ -56,17 +56,5 @@ public static class SoYeuLyLich
         public string? CSVN_NoiKetNap { get; set; }
         public string? KhenThuong_KyLuat { get; set; }
         public string? SoTruong { get; set; }
-
-        public Models.SoYeuLyLich Convert()
-        {
-            Models.SoYeuLyLich soYeuLyLich = new();
-            var obj = soYeuLyLich as object;
-            foreach (var property in typeof(ISoYeuLyLichInfo).GetProperties())
-            {
-                property.SetValue(obj, property.GetValue(this));
-            }
-
-            return soYeuLyLich;
-        }
     }
 }

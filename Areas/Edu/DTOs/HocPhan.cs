@@ -13,19 +13,7 @@ public class HocPhan
         public Guid IdMon { get; set; }
         public int SoBuoi { get; set; }
 
-        public Models.HocPhan Convert()
-            => new()
-            {
-                Ten = Ten,
-                SoBuoi = SoBuoi,
-                MieuTa = MieuTa,
-                MonHoc = new()
-                {
-                    Id = IdMon
-                }
-            };
-
-        public static Expression<Func<Models.HocPhan, Get>> Expression = hocPhan => new()
+        public static readonly Expression<Func<Models.HocPhan, Get>> Expression = hocPhan => new()
         {
             Id = hocPhan.Id,
             Ten = hocPhan.Ten,
@@ -41,14 +29,5 @@ public class HocPhan
         public string MieuTa { get; set; } = string.Empty;
         public Guid IdMon { get; set; }
         public int SoBuoi { get; set; }
-
-        public Models.HocPhan Convert()
-            => new()
-            {
-                Ten = Ten,
-                MieuTa = MieuTa,
-                IdMon = IdMon,
-                SoBuoi = SoBuoi
-            };
     }
 }
