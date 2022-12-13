@@ -10,6 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Api.Areas.Edu.Controllers;
 
+[Area("Api")]
+[Route("/[area]/[controller]")]
 public class TruongThongTinTaiKhoanController : ControllerBase
 {
     private readonly AppDbContext _context;
@@ -106,13 +108,13 @@ public class TruongThongTinTaiKhoanController : ControllerBase
             var danhSachTruong = await (
                 from x in _context.TruongThongTinNguoiDung
                 where id.Contains(x.Id)
-                select new Models.LopHoc()
+                select new Models.TruongThongTinNguoiDung()
                 {
                     Id = x.Id,
                     RowVersion = x.RowVersion
                 }
             ).ToListAsync(HttpContext.RequestAborted);
-            danhSachTruong.ForEach(lop => _context.Entry(lop).State = EntityState.Deleted);
+            danhSachTruong.ForEach(truongThongTin => _context.Entry(truongThongTin).State = EntityState.Deleted);
             await _context.SaveChangesAsync(HttpContext.RequestAborted);
             return Ok(danhSachTruong.Select(x => x.Id));
         }
