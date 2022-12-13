@@ -21,7 +21,7 @@ public class TaiKhoan : IMetadata, ITaiKhoan
 	public Guid IdNguoiDung { get; set; }
 
 	[ForeignKey(nameof(IdNguoiDung))]
-	public virtual INguoiDung NguoiDung { get; set; } = null!;
+	public virtual NguoiDung NguoiDung { get; set; } = null!;
 
 	[Timestamp]
 	public byte[]? RowVersion { get; set; } = null!;
