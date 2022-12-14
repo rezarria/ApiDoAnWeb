@@ -114,7 +114,7 @@ public class MonHocController : ControllerBase
         }
         catch (Exception)
         {
-            transaction.Rollback();
+            await transaction.RollbackAsync();
             return new StatusCodeResult(StatusCodes.Status500InternalServerError);
         }
     }
@@ -145,13 +145,13 @@ public class MonHocController : ControllerBase
                 return BadRequest(ModelState);
 
             await _context.SaveChangesAsync(HttpContext.RequestAborted);
-            transaction.Commit();
+            await transaction.CommitAsync();
 
             return Ok(mon);
         }
         catch (Exception)
         {
-            transaction.Rollback();
+            await transaction.RollbackAsync();
             return new StatusCodeResult(StatusCodes.Status500InternalServerError);
         }
     }

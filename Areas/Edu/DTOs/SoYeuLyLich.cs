@@ -26,10 +26,10 @@ public static class SoYeuLyLich
         public string? KhenThuong_KyLuat { get; set; }
         public string? SoTruong { get; set; }
 
-        public static Expression<Func<Models.SoYeuLyLich, ISoYeuLyLich>> Expression = soYeuLyLich =>
+        public static readonly Expression<Func<Models.SoYeuLyLich, ISoYeuLyLich>> Expression = soYeuLyLich =>
             soYeuLyLich;
 
-        public static Expression<Func<Models.SoYeuLyLich, dynamic>> ExpressionToiThieu = soYeuLyLich =>
+        public static readonly Expression<Func<Models.SoYeuLyLich, dynamic>> ExpressionToiThieu = soYeuLyLich =>
             new
             {
                 soYeuLyLich.Id,

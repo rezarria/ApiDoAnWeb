@@ -6,6 +6,8 @@ public interface IGiaTriTruongThongTinNguoiDungModel : IMetadata, IGiaTriTruongT
 
 public interface IGiaTriTruongThongTinNguoiDung
 {
-    public Guid IdNguoiDung { get; set; }
-    public Guid IdTruongThongTinNguoiDung { get; set; }
+	public Guid IdNguoiDung { get; set; }
+	public Guid IdTruongThongTinNguoiDung { get; set; }
+
+	public string GiaTri { get; set; }
 }

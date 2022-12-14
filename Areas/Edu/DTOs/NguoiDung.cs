@@ -1,31 +1,74 @@
 ﻿using System.Linq.Expressions;
 using Api.Areas.Edu.Interfaces;
+using Microsoft.Build.Framework;
 
 namespace Api.Areas.Edu.DTOs;
 
 public static class NguoiDung
 {
-    public class Get
-    {
-        public Get(ISoYeuLyLich? soYeuLyLich)
-        {
-            if (soYeuLyLich is not null)
-                this.SoYeuLyLich = soYeuLyLich.Convert<ISoYeuLyLich, DTOs.SoYeuLyLich.Get>();
-        }
+	public class Get
+	{
+		public class GiaTriTruongThongTinNguoiDungDto
+		{
+			public Guid Id { get; set; }
+			public string GiaTri { get; set; } = string.Empty;
+		}
 
-        public SoYeuLyLich.Get? SoYeuLyLich { get; set; }
+		public Get(ISoYeuLyLich? soYeuLyLich,
+			ICollection<Models.GiaTriTruongThongTinNguoiDung>? giaTriTruongThongTinNguoiDung)
+		{
+			if (soYeuLyLich is not null)
+				SoYeuLyLich = soYeuLyLich.Convert<ISoYeuLyLich, SoYeuLyLich.Get>();
 
-        public static readonly Expression<Func<Models.NguoiDung, Get>> Expression = nguoiDung =>
-            new(nguoiDung.SoYeuLyLich);
-    }
+			if (giaTriTruongThongTinNguoiDung is not null)
+				GiaTriTruongThongTinNguoiDung = giaTriTruongThongTinNguoiDung
+					.Select(x => new GiaTriTruongThongTinNguoiDungDto
+					{
+						Id = x.IdTruongThongTinNguoiDung,
+						GiaTri = x.GiaTri
+					}).ToList();
+		}
 
-    public class Post
-    {
-        public DTOs.SoYeuLyLich.Post SoYeuLyLich { get; set; } = null!;
+		public SoYeuLyLich.Get? SoYeuLyLich { get; }
 
-        public Models.NguoiDung Convert() => new()
-        {
-            SoYeuLyLich = SoYeuLyLich.Convert<DTOs.SoYeuLyLich.Post, Models.SoYeuLyLich>()
-        };
-    }
+		public ICollection<GiaTriTruongThongTinNguoiDungDto>? GiaTriTruongThongTinNguoiDung { get; }
+
+		public static readonly Expression<Func<Models.NguoiDung, Get>> Expression = nguoiDung =>
+			new(nguoiDung.SoYeuLyLich, nguoiDung.GiaTriTruongThongTinNguoiDung);
+	}
+
+	public class Post
+	{
+		public class TruongGiaTriDTO
+		{
+			[Required]
+			public Guid Id { get; set; }
+
+			[Required]
+			public string GiaTri { get; set; } = string.Empty;
+		}
+
+		public SoYeuLyLich.Post SoYeuLyLich { get; set; } = null!;
+
+		public ICollection<TruongGiaTriDTO>? TruongGiaTri { get; set; }
+
+		public Models.NguoiDung Convert()
+		{
+			Models.NguoiDung data = new()
+			{
+				SoYeuLyLich = SoYeuLyLich.Convert<SoYeuLyLich.Post, Models.SoYeuLyLich>()
+			};
+
+			if (TruongGiaTri is not null)
+			{
+				data.GiaTriTruongThongTinNguoiDung = TruongGiaTri.Select(x => new Models.GiaTriTruongThongTinNguoiDung()
+				{
+					IdTruongThongTinNguoiDung = x.Id,
+					GiaTri = x.GiaTri
+				}).ToList();
+			}
+
+			return data;
+		}
+	}
 }

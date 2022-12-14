@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Data;
 using System.Linq.Expressions;
 using Api.Areas.Edu.Contexts;
@@ -8,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-using NuGet.Packaging;
 
 namespace Api.Areas.Edu.Controllers;
 
@@ -56,6 +54,23 @@ public class KieuNguoiDungController : ControllerBase
 		=> Ok(await Get(KieuNguoiDung.Get.Expression, id, take, skip));
 
 	/// <summary>
+	/// Lấy danh sách trường thông tin của kiểu tài khoản
+	/// </summary>
+	/// <param name="id"></param>
+	/// <returns></returns>
+	[HttpGet]
+	[Route("TruongThongTinNguoiDung")]
+	public Task<Guid[]?> TruongThongTinNguoiDung(Guid id)
+	{
+		var danhSach = _context.KieuNguoiDung
+						   .Include(x => x.TruongThongTin)
+						   .FirstOrDefault(x => x.Id == id)?
+						   .TruongThongTin
+						   .Select(x => x.Id);
+		return Task.FromResult(danhSach?.ToArray() ?? null);
+	}
+
+	/// <summary>
 	///    Tạo kiểu người dùng mới
 	/// </summary>
 	/// <param name="kieuNguoiDungDto"></param>
@@ -71,7 +86,7 @@ public class KieuNguoiDungController : ControllerBase
 	{
 		Models.KieuNguoiDung kieuNguoiDung =
 			kieuNguoiDungDto.Convert();
-		ModelState.ClearValidationState(nameof(TruongThongTinNguoiDung.Post));
+		ModelState.ClearValidationState(nameof(DTOs.TruongThongTinNguoiDung.Post));
 		if (!TryValidateModel(kieuNguoiDung, nameof(Models.KieuNguoiDung)))
 			return BadRequest(ModelState);
 		await using IDbContextTransaction transaction =
@@ -142,7 +157,8 @@ public class KieuNguoiDungController : ControllerBase
 		await transaction.CreateSavepointAsync("dau", HttpContext.RequestAborted);
 		try
 		{
-			var kieuNguoiDung = await _context.KieuNguoiDung.FirstOrDefaultAsync(x => x.Id == id, HttpContext.RequestAborted);
+			var kieuNguoiDung =
+				await _context.KieuNguoiDung.FirstOrDefaultAsync(x => x.Id == id, HttpContext.RequestAborted);
 			if (kieuNguoiDung is null)
 				return NotFound();
 
@@ -172,13 +188,13 @@ public class KieuNguoiDungController : ControllerBase
 			}
 
 			await _context.SaveChangesAsync(HttpContext.RequestAborted);
-			transaction.Commit();
+			await transaction.CommitAsync();
 
 			return Ok(kieuNguoiDung);
 		}
 		catch (Exception)
 		{
-			transaction.Rollback();
+			await transaction.RollbackAsync();
 			return new StatusCodeResult(StatusCodes.Status500InternalServerError);
 		}
 	}

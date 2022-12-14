@@ -148,13 +148,13 @@ public class LopHoc : ControllerBase
 				return BadRequest(ModelState);
 
 			await _context.SaveChangesAsync(HttpContext.RequestAborted);
-			transaction.Commit();
+			await transaction.CommitAsync();
 
 			return Ok(lopHoc);
 		}
 		catch (Exception)
 		{
-			transaction.Rollback();
+			await transaction.RollbackAsync();
 			return new StatusCodeResult(StatusCodes.Status500InternalServerError);
 		}
 	}

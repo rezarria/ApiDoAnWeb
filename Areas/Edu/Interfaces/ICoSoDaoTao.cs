@@ -12,5 +12,5 @@ public interface ICoSoDaoTaoInfo
 
 public interface ICoSoDaoTaoCollection
 {
-    public abstract ICollection<IPhongHoc>? PhongHoc { get; set; }
+    public  ICollection<IPhongHoc>? PhongHoc { get; set; }
 }

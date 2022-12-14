@@ -95,15 +95,15 @@ public class PhongHoc : ControllerBase
         IDbContextTransaction transaction = await _context.Database.BeginTransactionAsync(HttpContext.RequestAborted);
         try
         {
-            transaction.CreateSavepoint("begin");
+            await transaction.CreateSavepointAsync("begin");
             _context.Attach(phongHoc);
             await _context.SaveChangesAsync(HttpContext.RequestAborted);
-            transaction.Commit();
+            await transaction.CommitAsync();
             return CreatedAtAction(nameof(Get), new { ids = new [] { phongHoc.Id } }, phongHoc);
         }
         catch (Exception)
         {
-            transaction.Rollback();
+            await transaction.RollbackAsync();
             return new StatusCodeResult(StatusCodes.Status500InternalServerError);
         }
     }
@@ -132,20 +132,20 @@ public class PhongHoc : ControllerBase
             };
 
 
-        transaction.CreateSavepoint("begin");
+        await transaction.CreateSavepointAsync("begin");
 
         if (!phongHoc.Any())
             return NotFound();
         try
         {
             await phongHoc.ForEachAsync(x => _context.Entry(x).State = EntityState.Deleted);
-            _context.SaveChanges();
-            transaction.Commit();
+            await _context.SaveChangesAsync();
+            await transaction.CommitAsync();
             return NoContent();
         }
         catch (Exception)
         {
-            transaction.Rollback();
+            await transaction.RollbackAsync();
             return new StatusCodeResult(StatusCodes.Status500InternalServerError);
         }
     }
@@ -178,13 +178,13 @@ public class PhongHoc : ControllerBase
                 return BadRequest(ModelState);
 
             await _context.SaveChangesAsync(HttpContext.RequestAborted);
-            transaction.Commit();
+            await transaction.CommitAsync();
 
             return Ok(phongHoc);
         }
         catch (Exception)
         {
-            transaction.Rollback();
+            await transaction.RollbackAsync();
             return new StatusCodeResult(StatusCodes.Status500InternalServerError);
         }
     }
