@@ -44,9 +44,13 @@ public static class NguoiDung
 			[Required]
 			public Guid Id { get; set; }
 
+
 			[Required]
 			public string GiaTri { get; set; } = string.Empty;
 		}
+
+		[Required]
+		public Guid IdKieuNguoiDung { get; set; }
 
 		public SoYeuLyLich.Post SoYeuLyLich { get; set; } = null!;
 

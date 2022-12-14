@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Api.Areas.Edu.Controllers;
 
 [Area("Api")]
+[Route("/[area]/[controller]")]
 public class DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung : ControllerBase
 {
 	private readonly AppDbContext _context;
@@ -15,7 +16,7 @@ public class DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung : ControllerBase
 	}
 
 	[HttpGet]
-	[Route("TheoKieuTaiKhoan")]
+	[Route("TheoKieuNguoiDung")]
 	public async Task<DTOs.DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung.TruongThongTinNguoiDung[]> LayTheoKieuTaiKhoan(Guid id)
 	=> await _context
 			.DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung

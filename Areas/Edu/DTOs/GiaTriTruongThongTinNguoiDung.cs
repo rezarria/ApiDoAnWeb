@@ -23,6 +23,18 @@ public static class GiaTriTruongThongTinNguoiDung
 			};
 	}
 
+	public class GetPhuTro
+	{
+		public Guid IdTruongThongTinNguoiDung { get; set; }
+		public string GiaTri { get; set; } = string.Empty;
+
+		public static readonly Expression<Func<Models.GiaTriTruongThongTinNguoiDung, GetPhuTro>> Expression = truongGiaTri => new()
+		{
+			IdTruongThongTinNguoiDung = truongGiaTri.IdTruongThongTinNguoiDung,
+			GiaTri = truongGiaTri.GiaTri
+		};
+	}
+
 	public class Post : IGiaTriTruongThongTinNguoiDung
 	{
 		[Required]

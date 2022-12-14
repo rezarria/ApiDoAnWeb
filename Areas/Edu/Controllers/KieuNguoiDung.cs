@@ -52,9 +52,20 @@ public class KieuNguoiDungController : ControllerBase
 	/// <param name="take"></param>
 	/// <param name="skip"></param>
 	/// <returns></returns>
+	/// <response code="200"></response>
+	[ProducesResponseType(typeof(KieuNguoiDung.Get[]), StatusCodes.Status200OK)]
 	[HttpGet]
 	public async Task<IActionResult> Get([FromQuery] Guid[]? id, [FromQuery] int take = -1, [FromQuery] int skip = 0)
 		=> Ok(await Get(KieuNguoiDung.Get.Expression, id, take, skip));
+
+	/// <response code="200"></response>
+	[HttpGet("toithieu")]
+	public async Task<IActionResult> GetToiThieu(Guid[]? id, int take = -1, int skip = 0)
+		=> Ok(await Get(data => new
+		{
+			data.Id,
+			data.Ten
+		}, id, take, skip));
 
 	/// <summary>
 	///    Tạo kiểu người dùng mới

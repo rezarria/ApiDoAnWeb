@@ -15,7 +15,7 @@ public class GiaTriTruongThongTinNguoiDung : IGiaTriTruongThongTinNguoiDungModel
 
 	[Required]
 	public string GiaTri { get; set; } = string.Empty;
-	public NguoiDung NguoiDung { get; set; } = null!;
-	public TruongThongTinNguoiDung TruongThongTinNguoiDung { get; set; } = null!;
+	public NguoiDung? NguoiDung { get; set; }
+	public TruongThongTinNguoiDung? TruongThongTinNguoiDung { get; set; }
 	public byte[]? RowVersion { get; set; }
 }
