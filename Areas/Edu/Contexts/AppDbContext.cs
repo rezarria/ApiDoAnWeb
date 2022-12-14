@@ -69,6 +69,8 @@ public class AppDbContext : DbContext
 
 	public DbSet<KieuNguoiDung> KieuNguoiDung { get; set; } = null!;
 
+	public DbSet<DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung> DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung { get; set; } = null!;
+
 	/// <summary>
 	/// </summary>
 	/// <param name="builder"></param>
@@ -119,14 +121,26 @@ public class AppDbContext : DbContext
 				.WithOne(x => x.TruongThongTinNguoiDung)
 				.HasForeignKey(x => x.IdTruongThongTinNguoiDung);
 
-			entity
-				.HasMany(x => x.KieuNguoiDung)
-				.WithMany(x => x.TruongThongTin);
 		});
 
 		builder.Entity<GiaTriTruongThongTinNguoiDung>(entity =>
 		{
 			entity.HasIndex(x => new { x.IdNguoiDung, x.IdTruongThongTinNguoiDung });
+		});
+
+		builder.Entity<DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung>(entity =>
+		{
+			entity
+				.HasOne(x => x.KieuNguoiDung)
+				.WithMany(x => x.DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung)
+				.HasForeignKey(x => x.IdKieuNguoiDung);
+
+			entity
+				.HasOne(x => x.TruongThongTinNguoiDung)
+				.WithMany(x => x.DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung)
+				.HasForeignKey(x => x.IdTruongThongTinNguoiDung);
+
+			entity.HasIndex(x => new { x.IdKieuNguoiDung, x.IdTruongThongTinNguoiDung }).IsUnique();
 		});
 
 	}

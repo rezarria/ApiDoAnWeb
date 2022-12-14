@@ -23,7 +23,10 @@ public class KieuNguoiDungController : ControllerBase
 		[FromQuery] int skip = 0)
 		where TOutputType : class
 	{
-		var query = _context.KieuNguoiDung.Include(x => x.TruongThongTin).AsQueryable();
+		var query = _context.KieuNguoiDung
+		.Include(x => x.DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung)
+		.ThenInclude(x => x.TruongThongTinNguoiDung)
+		.AsQueryable();
 
 		if (ids is not null && ids.Any())
 			query = query.Where(x => ids.Contains(x.Id));
@@ -52,23 +55,6 @@ public class KieuNguoiDungController : ControllerBase
 	[HttpGet]
 	public async Task<IActionResult> Get([FromQuery] Guid[]? id, [FromQuery] int take = -1, [FromQuery] int skip = 0)
 		=> Ok(await Get(KieuNguoiDung.Get.Expression, id, take, skip));
-
-	/// <summary>
-	/// Lấy danh sách trường thông tin của kiểu tài khoản
-	/// </summary>
-	/// <param name="id"></param>
-	/// <returns></returns>
-	[HttpGet]
-	[Route("TruongThongTinNguoiDung")]
-	public Task<Guid[]?> TruongThongTinNguoiDung(Guid id)
-	{
-		var danhSach = _context.KieuNguoiDung
-						   .Include(x => x.TruongThongTin)
-						   .FirstOrDefault(x => x.Id == id)?
-						   .TruongThongTin
-						   .Select(x => x.Id);
-		return Task.FromResult(danhSach?.ToArray() ?? null);
-	}
 
 	/// <summary>
 	///    Tạo kiểu người dùng mới
@@ -167,9 +153,9 @@ public class KieuNguoiDungController : ControllerBase
 			if (!ModelState.IsValid)
 				return BadRequest(ModelState);
 
-			if (kieuNguoiDung.TruongThongTin.Any())
+			if (kieuNguoiDung.DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung.Any())
 			{
-				var danhSachId = kieuNguoiDung.TruongThongTin.Select(x => x.Id);
+				var danhSachId = kieuNguoiDung.DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung.Select(x => x.IdTruongThongTinNguoiDung);
 				var rowVersions = (
 					from x in _context.TruongThongTinNguoiDung
 					where danhSachId.Contains(x.Id)
@@ -181,7 +167,7 @@ public class KieuNguoiDungController : ControllerBase
 
 				await rowVersions.ForEachAsync(x =>
 				{
-					var obj = kieuNguoiDung.TruongThongTin.First(y => y.Id == x.Key);
+					var obj = kieuNguoiDung.DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung.First(y => y.IdTruongThongTinNguoiDung == x.Key);
 					obj.RowVersion = x.Value;
 					_context.Entry(obj).State = EntityState.Unchanged;
 				});

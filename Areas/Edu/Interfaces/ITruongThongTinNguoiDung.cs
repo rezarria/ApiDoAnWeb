@@ -6,6 +6,6 @@ public interface ITruongThongTinNguoiDungInfoModel : IMetadata, ITruongThongTinN
 
 public interface ITruongThongTinNguoiDungInfo
 {
-	public string TieuDe { get; set; }
+	public string? Ten { get; set; }
 	public string KieuDuLieu { get; set; }
 }

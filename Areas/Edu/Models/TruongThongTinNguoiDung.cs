@@ -6,19 +6,17 @@ namespace Api.Areas.Edu.Models;
 
 public class TruongThongTinNguoiDung : ITruongThongTinNguoiDungInfoModel
 {
-    [Key]
-    public Guid Id { get; set; }
+	[Key]
+	public Guid Id { get; set; }
+	public string? Ten { get; set; }
 
-    [Required(AllowEmptyStrings = false)]
-    public string TieuDe { get; set; } = null!;
+	[Required(AllowEmptyStrings = false)]
+	public string KieuDuLieu { get; set; } = null!;
 
-    [Required(AllowEmptyStrings = false)]
-    public string KieuDuLieu { get; set; } = null!;
+	public virtual ICollection<DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung> DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung { get; set; } = new List<DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung>();
 
-    public virtual ICollection<KieuNguoiDung> KieuNguoiDung { get; set; } = new List<KieuNguoiDung>();
+	public virtual ICollection<GiaTriTruongThongTinNguoiDung> GiaTri { get; set; } = new List<GiaTriTruongThongTinNguoiDung>();
 
-    public virtual ICollection<GiaTriTruongThongTinNguoiDung> GiaTri { get; set; } = new List<GiaTriTruongThongTinNguoiDung>();
-    
-    [Timestamp]
-    public byte[]? RowVersion { get; set; }
+	[Timestamp]
+	public byte[]? RowVersion { get; set; }
 }

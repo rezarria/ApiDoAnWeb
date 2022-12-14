@@ -19,7 +19,7 @@ public static class KieuNguoiDung
 			{
 				Id = kieuNguoiDung.Id,
 				Ten = kieuNguoiDung.Ten,
-				IdTruongThongTinNguoiDung = kieuNguoiDung.TruongThongTin.Select(x => x.Id).ToList()
+				IdTruongThongTinNguoiDung = kieuNguoiDung.DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung.Select(x => x.IdTruongThongTinNguoiDung).ToList()
 			};
 
 	}
@@ -33,7 +33,7 @@ public static class KieuNguoiDung
 		=> new()
 		{
 			Ten = Ten,
-			TruongThongTin = IdTruongThongTinNguoiDung.Select(x => new Models.TruongThongTinNguoiDung() { Id = x }).ToList()
+			DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung = IdTruongThongTinNguoiDung.Select(x => new Models.DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung() { IdTruongThongTinNguoiDung = x }).ToList()
 		};
 	}
 }

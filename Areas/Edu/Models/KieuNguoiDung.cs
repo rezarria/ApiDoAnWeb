@@ -7,15 +7,15 @@ namespace Api.Areas.Edu.Models;
 
 public class KieuNguoiDung : IKieuNguoiDungModel
 {
-    [Key]
-    public Guid Id { get; set; }
+	[Key]
+	public Guid Id { get; set; }
 
-    [Required]
-    public string Ten { get; set; } = string.Empty;
+	[Required]
+	public string Ten { get; set; } = string.Empty;
 	[ValidateNever]
 
-    public ICollection<TruongThongTinNguoiDung> TruongThongTin { get; set; } = new List<TruongThongTinNguoiDung>();
+	public virtual ICollection<DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung> DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung { get; set; } = new List<DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung>();
 
-    [Timestamp]
-    public byte[]? RowVersion { get; set; }
+	[Timestamp]
+	public byte[]? RowVersion { get; set; }
 }
