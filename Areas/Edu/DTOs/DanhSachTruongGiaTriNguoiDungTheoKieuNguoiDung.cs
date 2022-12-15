@@ -10,6 +10,7 @@ public static class DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung
 		public Guid Id { get; set; }
 		public string? Ten { get; set; }
 		public string KieuDuLieu { get; set; } = string.Empty;
+		public string? Alias { get; set; }	
 
 		public readonly static Expression<Func<Models.DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung, TruongThongTinNguoiDung>> Expression = danhSach => new()
 		{
