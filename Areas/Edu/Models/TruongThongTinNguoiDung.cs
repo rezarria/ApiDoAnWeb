@@ -10,6 +10,8 @@ public class TruongThongTinNguoiDung : ITruongThongTinNguoiDungInfoModel
 	public Guid Id { get; set; }
 	public string? Ten { get; set; }
 
+	public string? Alias { get; set; }
+
 	[Required(AllowEmptyStrings = false)]
 	public string KieuDuLieu { get; set; } = null!;
 

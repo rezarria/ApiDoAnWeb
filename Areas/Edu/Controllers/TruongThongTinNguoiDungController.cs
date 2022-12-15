@@ -12,7 +12,7 @@ namespace Api.Areas.Edu.Controllers;
 
 [Area("Api")]
 [Route("/[area]/[controller]")]
-public class TruongThongTinTaiKhoanController : ControllerBase
+public class TruongThongTinNguoiDungController : ControllerBase
 {
     private readonly AppDbContext _context;
 
@@ -37,7 +37,7 @@ public class TruongThongTinTaiKhoanController : ControllerBase
         return await query.Select(expression).AsNoTracking().ToArrayAsync(HttpContext.RequestAborted);
     }
 
-    public TruongThongTinTaiKhoanController(AppDbContext context)
+    public TruongThongTinNguoiDungController(AppDbContext context)
     {
         _context = context;
     }
