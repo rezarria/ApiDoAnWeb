@@ -100,18 +100,6 @@ public class SoYeuLyLich : ISoYeuLyLichModel
 
     /// <summary>
     /// </summary>
-    public virtual ICollection<QuanHeGiaDinh>? QuanHeGiaDinh { get; set; }
-
-    /// <summary>
-    /// </summary>
-    public virtual ICollection<QuaTrinhDaoTao>? QuaTrinhDaoTao { get; set; }
-
-    /// <summary>
-    /// </summary>
-    public virtual ICollection<QuaTrinhCongTac>? QuaTrinhCongTac { get; set; }
-
-    /// <summary>
-    /// </summary>
     [Timestamp]
     public byte[]? RowVersion { get; set; }
 }
