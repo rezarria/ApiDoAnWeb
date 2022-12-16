@@ -17,5 +17,6 @@ public class ChiTietLich : IChiTietLich
 
     public virtual NguoiDung? NguoiThaoTac { get; set; }
 
-    [Timestamp] public byte[]? RowVersion { get; set; } = null!;
+    [Timestamp]
+	public byte[]? RowVersion { get; set; } = null!;
 }

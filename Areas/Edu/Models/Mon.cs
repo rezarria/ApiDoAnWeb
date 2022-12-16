@@ -4,6 +4,7 @@ using Api.Areas.Edu.Interfaces;
 namespace Api.Areas.Edu.Models;
 
 /// <summary>
+/// Model Môn học
 /// </summary>
 public class MonHoc : IMetadata, IMonHoc
 {
@@ -21,7 +22,7 @@ public class MonHoc : IMetadata, IMonHoc
 
     /// <summary>
     /// Miêu tả
-    /// /// </summary>
+    /// </summary>
     public  string? MieuTa { get; set; }
     
     /// <summary>
