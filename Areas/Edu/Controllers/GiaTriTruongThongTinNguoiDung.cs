@@ -1,6 +1,10 @@
+#region
+
 using Api.Areas.Edu.Contexts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+
+#endregion
 
 namespace Api.Areas.Edu.Controllers;
 
@@ -18,7 +22,7 @@ public class GiaTriTruongThongTinNguoiDung : ControllerBase
 	[HttpGet]
 	[Route("phutro")]
 	public async Task<DTOs.GiaTriTruongThongTinNguoiDung.GetPhuTro[]> LayTheoKieuTaiKhoan(Guid id)
-	=> await _context
+		=> await _context
 			.GiaTriTruongThongTinNguoiDung
 			.Where(x => x.IdNguoiDung == id)
 			.Select(DTOs.GiaTriTruongThongTinNguoiDung.GetPhuTro.Expression)

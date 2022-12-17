@@ -1,5 +1,9 @@
-﻿using Api.Areas.Edu.Models;
+﻿#region
+
+using Api.Areas.Edu.Models;
 using Microsoft.EntityFrameworkCore;
+
+#endregion
 
 namespace Api.Areas.Edu.Contexts;
 
@@ -57,7 +61,11 @@ public class AppDbContext : DbContext
 
 	public DbSet<KieuNguoiDung> KieuNguoiDung { get; set; } = null!;
 
-	public DbSet<DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung> DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung { get; set; } = null!;
+	public DbSet<DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung> DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung
+	{
+		get;
+		set;
+	} = null!;
 
 	/// <summary>
 	/// </summary>
@@ -106,7 +114,6 @@ public class AppDbContext : DbContext
 				.HasMany(x => x.GiaTri)
 				.WithOne(x => x.TruongThongTinNguoiDung)
 				.HasForeignKey(x => x.IdTruongThongTinNguoiDung);
-
 		});
 
 		builder.Entity<GiaTriTruongThongTinNguoiDung>(entity =>
@@ -128,6 +135,5 @@ public class AppDbContext : DbContext
 
 			entity.HasIndex(x => new { x.IdKieuNguoiDung, x.IdTruongThongTinNguoiDung }).IsUnique();
 		});
-
 	}
 }

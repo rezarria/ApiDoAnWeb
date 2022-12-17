@@ -1,12 +1,17 @@
+#region
+
 using System.Data;
 using System.Linq.Expressions;
 using Api.Areas.Edu.Contexts;
-using Api.Areas.Edu.DTOs;
+using Api.Areas.Edu.Models;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using TruongThongTinNguoiDung = Api.Areas.Edu.DTOs.TruongThongTinNguoiDung;
+
+#endregion
 
 namespace Api.Areas.Edu.Controllers;
 
@@ -17,16 +22,16 @@ public class KieuNguoiDungController : ControllerBase
 	private readonly AppDbContext _context;
 
 	private async Task<TOutputType[]> Get<TOutputType>(
-		Expression<Func<Models.KieuNguoiDung, TOutputType>> expression,
+		Expression<Func<KieuNguoiDung, TOutputType>> expression,
 		[FromQuery] Guid[]? ids,
 		[FromQuery] int take = -1,
 		[FromQuery] int skip = 0)
 		where TOutputType : class
 	{
 		var query = _context.KieuNguoiDung
-		.Include(x => x.DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung)
-		.ThenInclude(x => x.TruongThongTinNguoiDung)
-		.AsQueryable();
+			.Include(x => x.DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung)
+			.ThenInclude(x => x.TruongThongTinNguoiDung)
+			.AsQueryable();
 
 		if (ids is not null && ids.Any())
 			query = query.Where(x => ids.Contains(x.Id));
@@ -46,17 +51,17 @@ public class KieuNguoiDungController : ControllerBase
 	}
 
 	/// <summary>
-	/// Lấy danh sách kiểu người dùng
+	///     Lấy danh sách kiểu người dùng
 	/// </summary>
 	/// <param name="id"></param>
 	/// <param name="take"></param>
 	/// <param name="skip"></param>
 	/// <returns></returns>
 	/// <response code="200"></response>
-	[ProducesResponseType(typeof(KieuNguoiDung.Get[]), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(DTOs.KieuNguoiDung.Get[]), StatusCodes.Status200OK)]
 	[HttpGet]
 	public async Task<IActionResult> Get([FromQuery] Guid[]? id, [FromQuery] int take = -1, [FromQuery] int skip = 0)
-		=> Ok(await Get(KieuNguoiDung.Get.Expression, id, take, skip));
+		=> Ok(await Get(DTOs.KieuNguoiDung.Get.Expression, id, take, skip));
 
 	/// <response code="200"></response>
 	[HttpGet("toithieu")]
@@ -68,7 +73,7 @@ public class KieuNguoiDungController : ControllerBase
 		}, id, take, skip));
 
 	/// <summary>
-	///    Tạo kiểu người dùng mới
+	///     Tạo kiểu người dùng mới
 	/// </summary>
 	/// <param name="kieuNguoiDungDto"></param>
 	/// <returns></returns>
@@ -79,12 +84,12 @@ public class KieuNguoiDungController : ControllerBase
 	[ProducesResponseType(typeof(void), StatusCodes.Status500InternalServerError)]
 	[ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
 	[HttpPost]
-	public async Task<IActionResult> Post([FromBody] KieuNguoiDung.Post kieuNguoiDungDto)
+	public async Task<IActionResult> Post([FromBody] DTOs.KieuNguoiDung.Post kieuNguoiDungDto)
 	{
-		Models.KieuNguoiDung kieuNguoiDung =
+		KieuNguoiDung kieuNguoiDung =
 			kieuNguoiDungDto.Convert();
-		ModelState.ClearValidationState(nameof(DTOs.TruongThongTinNguoiDung.Post));
-		if (!TryValidateModel(kieuNguoiDung, nameof(Models.KieuNguoiDung)))
+		ModelState.ClearValidationState(nameof(TruongThongTinNguoiDung.Post));
+		if (!TryValidateModel(kieuNguoiDung, nameof(KieuNguoiDung)))
 			return BadRequest(ModelState);
 		await using IDbContextTransaction transaction =
 			await _context.Database.BeginTransactionAsync(HttpContext.RequestAborted);
@@ -104,7 +109,7 @@ public class KieuNguoiDungController : ControllerBase
 	}
 
 	/// <summary>
-	///    Xoá trường thông tin người dùng học theo id
+	///     Xoá trường thông tin người dùng học theo id
 	/// </summary>
 	/// <param name="id">các id đối tượng muốn xoá</param>
 	/// <returns></returns>
@@ -122,7 +127,7 @@ public class KieuNguoiDungController : ControllerBase
 			var danhSachTruong = await (
 				from x in _context.TruongThongTinNguoiDung
 				where id.Contains(x.Id)
-				select new Models.TruongThongTinNguoiDung()
+				select new Models.TruongThongTinNguoiDung
 				{
 					Id = x.Id,
 					RowVersion = x.RowVersion
@@ -147,7 +152,7 @@ public class KieuNguoiDungController : ControllerBase
 	[ProducesResponseType(typeof(DTOs.LopHoc.Get), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ModelStateDictionary), StatusCodes.Status400BadRequest)]
 	[HttpPatch]
-	public async Task<IActionResult> Patch([FromQuery] Guid id, [FromBody] JsonPatchDocument<Models.KieuNguoiDung> path)
+	public async Task<IActionResult> Patch([FromQuery] Guid id, [FromBody] JsonPatchDocument<KieuNguoiDung> path)
 	{
 		await using IDbContextTransaction transaction =
 			await _context.Database.BeginTransactionAsync(IsolationLevel.Serializable, HttpContext.RequestAborted);
@@ -178,7 +183,7 @@ public class KieuNguoiDungController : ControllerBase
 	}
 
 	/// <summary>
-	/// Cập nhật trường thông tin người dùng của kiểu người dùng theo id
+	///     Cập nhật trường thông tin người dùng của kiểu người dùng theo id
 	/// </summary>
 	/// <param name="id">Id kiểu người dùng</param>
 	/// <param name="idTruongThongTinNguoiDung">Mảng id trường thông tin được sử dụng</param>
@@ -191,7 +196,8 @@ public class KieuNguoiDungController : ControllerBase
 	[ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
 	[ProducesResponseType(typeof(void), StatusCodes.Status500InternalServerError)]
 	[Route("TruongThongTinNguoiDung")]
-	public async Task<IActionResult> CapNhatTruongThongTinNguoiDung(Guid id, [FromBody] Guid[] idTruongThongTinNguoiDung)
+	public async Task<IActionResult> CapNhatTruongThongTinNguoiDung(Guid id,
+		[FromBody] Guid[] idTruongThongTinNguoiDung)
 	{
 		if (!await _context.KieuNguoiDung.AnyAsync(x => x.Id == id, HttpContext.RequestAborted))
 			return NotFound();
@@ -200,7 +206,7 @@ public class KieuNguoiDungController : ControllerBase
 
 		var doiTuongXoa = query
 			.Where(x => !idTruongThongTinNguoiDung.Contains(x.IdTruongThongTinNguoiDung))
-			.Select(x => new Models.DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung()
+			.Select(x => new Models.DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung
 			{
 				Id = x.Id,
 				RowVersion = x.RowVersion
@@ -209,17 +215,19 @@ public class KieuNguoiDungController : ControllerBase
 
 		var doiTuongThem = idTruongThongTinNguoiDung
 			.Where(x => !query.Any(y => y.IdTruongThongTinNguoiDung == x))
-			.Select(x => new Models.DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung()
+			.Select(x => new Models.DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung
 			{
 				IdKieuNguoiDung = id,
 				IdTruongThongTinNguoiDung = x
 			});
 
-		await using IDbContextTransaction transaction = await _context.Database.BeginTransactionAsync(HttpContext.RequestAborted);
+		await using IDbContextTransaction transaction =
+			await _context.Database.BeginTransactionAsync(HttpContext.RequestAborted);
 		try
 		{
 			await transaction.CreateSavepointAsync("begin", HttpContext.RequestAborted);
-			await doiTuongXoa.ForEachAsync(x => _context.Entry(x).State = EntityState.Deleted, HttpContext.RequestAborted);
+			await doiTuongXoa.ForEachAsync(x => _context.Entry(x).State = EntityState.Deleted,
+				HttpContext.RequestAborted);
 			_context.AttachRange(doiTuongThem);
 			await _context.SaveChangesAsync(HttpContext.RequestAborted);
 			await transaction.CommitAsync(HttpContext.RequestAborted);

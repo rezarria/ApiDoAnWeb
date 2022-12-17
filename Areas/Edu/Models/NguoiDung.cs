@@ -1,63 +1,66 @@
+#region
+
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Api.Areas.Edu.Interfaces;
 
+#endregion
+
 namespace Api.Areas.Edu.Models;
 
 /// <summary>
-/// Model người dùng
+///     Model người dùng
 /// </summary>
 public class NguoiDung : IMetadata, INguoiDung
 {
 	/// <summary>
-	/// Id
+	///     Id
 	/// </summary>
 	[Key]
 	public Guid Id { get; set; }
 
 	/// <summary>
-	/// Id sơ yếu lý lịch
+	///     Id sơ yếu lý lịch
 	/// </summary>
 	public Guid? IdSoYeuLyLich { get; set; }
 
 	/// <summary>
-	/// Id kiểu người dùng
+	///     Id kiểu người dùng
 	/// </summary>
 	public Guid? IdKieuNguoiDung { get; set; }
 
 	/// <summary>
-	/// Id tài khoản
+	///     Id tài khoản
 	/// </summary>
 	public Guid? IdTaiKhoan { get; set; }
 
 	/// <summary>
-	/// Sơ yếu lý lịch của người dùng
+	///     Sơ yếu lý lịch của người dùng
 	/// </summary>
 	[ForeignKey(nameof(IdSoYeuLyLich))]
 	public virtual SoYeuLyLich? SoYeuLyLich { get; set; }
 
 	/// <summary>
-	/// Tài khoản của người dùng
+	///     Tài khoản của người dùng
 	/// </summary>
 	public virtual TaiKhoan? TaiKhoan { get; set; } = null!;
 
 	/// <summary>
-	/// Danh sách lịch của người dùng
+	///     Danh sách lịch của người dùng
 	/// </summary>
 	public virtual ICollection<ChiTietLich> ChiTietLich { get; set; } = new List<ChiTietLich>();
 
 	/// <summary>
-	/// Trường thông tin người dùng
+	///     Trường thông tin người dùng
 	/// </summary>
-	public virtual ICollection<GiaTriTruongThongTinNguoiDung> GiaTriTruongThongTinNguoiDung { get; set; } = new List<GiaTriTruongThongTinNguoiDung>();
+	public virtual ICollection<GiaTriTruongThongTinNguoiDung> GiaTriTruongThongTinNguoiDung { get; set; } =
+		new List<GiaTriTruongThongTinNguoiDung>();
 
 	/// <summary>
-	/// Timestamp
+	///     Timestamp
 	/// </summary>
 	[Timestamp]
 	public byte[]? RowVersion { get; set; } = null!;
 
-	[NotMapped]
-	public string PhanLoai => GetType().Name;
-
+	[NotMapped] public string PhanLoai => GetType().Name;
 }

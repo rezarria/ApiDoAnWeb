@@ -1,4 +1,5 @@
 namespace Api.Areas.Edu.Interfaces;
+
 public enum GioiTinh
 {
 	Nam,

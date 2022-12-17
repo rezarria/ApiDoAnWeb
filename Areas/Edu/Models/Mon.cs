@@ -1,40 +1,43 @@
+#region
+
 using System.ComponentModel.DataAnnotations;
 using Api.Areas.Edu.Interfaces;
+
+#endregion
 
 namespace Api.Areas.Edu.Models;
 
 /// <summary>
-/// Model Môn học
+///     Model Môn học
 /// </summary>
 public class MonHoc : IMetadata, IMonHoc
 {
     /// <summary>
-    /// Id
+    ///     Id
     /// </summary>
     [Key]
-    public Guid Id { get; set; }
-    
-    /// <summary>
-    /// Tên
-    /// </summary>
-    [Required]
-    public string Ten { get; set; } = null!;
+	public Guid Id { get; set; }
 
     /// <summary>
-    /// Miêu tả
+    ///     Tên
     /// </summary>
-    public  string? MieuTa { get; set; }
-    
+    [Required]
+	public string Ten { get; set; } = null!;
+
     /// <summary>
-    /// Người tạo
+    ///     Miêu tả
+    /// </summary>
+    public string? MieuTa { get; set; }
+
+    /// <summary>
+    ///     Người tạo
     /// </summary>
     public virtual NguoiDung? NguoiTao { get; set; }
-    
+
     /// <summary>
-    /// Học phần
+    ///     Học phần
     /// </summary>
     public virtual ICollection<HocPhan> HocPhan { get; } = new List<HocPhan>();
 
-    [Timestamp]
-    public virtual byte[]? RowVersion { get; set; } = null!;
+	[Timestamp] public virtual byte[]? RowVersion { get; set; } = null!;
 }

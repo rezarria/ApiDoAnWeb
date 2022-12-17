@@ -1,6 +1,10 @@
+#region
+
 using System.Linq.Expressions;
 using Api.Areas.Edu.Interfaces;
 using Microsoft.Build.Framework;
+
+#endregion
 
 namespace Api.Areas.Edu.DTOs;
 
@@ -28,21 +32,18 @@ public static class GiaTriTruongThongTinNguoiDung
 		public Guid IdTruongThongTinNguoiDung { get; set; }
 		public string GiaTri { get; set; } = string.Empty;
 
-		public static readonly Expression<Func<Models.GiaTriTruongThongTinNguoiDung, GetPhuTro>> Expression = truongGiaTri => new()
-		{
-			IdTruongThongTinNguoiDung = truongGiaTri.IdTruongThongTinNguoiDung,
-			GiaTri = truongGiaTri.GiaTri
-		};
+		public static readonly Expression<Func<Models.GiaTriTruongThongTinNguoiDung, GetPhuTro>> Expression =
+			truongGiaTri => new()
+			{
+				IdTruongThongTinNguoiDung = truongGiaTri.IdTruongThongTinNguoiDung,
+				GiaTri = truongGiaTri.GiaTri
+			};
 	}
 
 	public class Post : IGiaTriTruongThongTinNguoiDung
 	{
-		[Required]
-		public Guid IdNguoiDung { get; set; }
-		[Required]
-		public Guid IdTruongThongTinNguoiDung { get; set; }
-		[Required]
-		public string GiaTri { get; set; } = string.Empty;
-
+		[Required] public Guid IdNguoiDung { get; set; }
+		[Required] public Guid IdTruongThongTinNguoiDung { get; set; }
+		[Required] public string GiaTri { get; set; } = string.Empty;
 	}
 }

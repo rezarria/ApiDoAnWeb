@@ -1,11 +1,16 @@
+#region
+
 using System.Data;
 using System.Linq.Expressions;
 using Api.Areas.Edu.Contexts;
+using Api.Areas.Edu.Models;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+
+#endregion
 
 namespace Api.Areas.Edu.Controllers;
 
@@ -16,7 +21,7 @@ public class NguoiDungController : ControllerBase
 	private readonly AppDbContext _context;
 
 	private async Task<TOutputType[]> Get<TOutputType>(
-		Expression<Func<Models.NguoiDung, TOutputType>> expression,
+		Expression<Func<NguoiDung, TOutputType>> expression,
 		[FromQuery] Guid[]? ids,
 		[FromQuery] int take = -1,
 		[FromQuery] int skip = 0)
@@ -42,7 +47,7 @@ public class NguoiDungController : ControllerBase
 	}
 
 	/// <summary>
-	/// Lấy danh sách người dùng
+	///     Lấy danh sách người dùng
 	/// </summary>
 	/// <param name="id">danh sách id cần lấy</param>
 	/// <param name="take">số lượng lấy</param>
@@ -53,7 +58,7 @@ public class NguoiDungController : ControllerBase
 		=> Ok(await Get(DTOs.NguoiDung.Get.Expression, id, take, skip));
 
 	/// <summary>
-	///    Tạo người dùng
+	///     Tạo người dùng
 	/// </summary>
 	/// <param name="nguoiDungDto"></param>
 	/// <returns></returns>
@@ -66,9 +71,9 @@ public class NguoiDungController : ControllerBase
 	[HttpPost]
 	public async Task<IActionResult> Post([FromBody] DTOs.NguoiDung.Post nguoiDungDto)
 	{
-		Models.NguoiDung nguoiDung = nguoiDungDto.Convert();
+		NguoiDung nguoiDung = nguoiDungDto.Convert();
 		ModelState.ClearValidationState(nameof(DTOs.NguoiDung.Post));
-		if (!TryValidateModel(nguoiDung, nameof(Models.NguoiDung)))
+		if (!TryValidateModel(nguoiDung, nameof(NguoiDung)))
 			return BadRequest(ModelState);
 		await using IDbContextTransaction transaction =
 			await _context.Database.BeginTransactionAsync(HttpContext.RequestAborted);
@@ -88,7 +93,7 @@ public class NguoiDungController : ControllerBase
 	}
 
 	/// <summary>
-	///    Xoá người dùng theo id
+	///     Xoá người dùng theo id
 	/// </summary>
 	/// <param name="id">các id đối tượng muốn xoá</param>
 	/// <returns></returns>
@@ -106,7 +111,7 @@ public class NguoiDungController : ControllerBase
 			var danhSachNguoiDung = await (
 				from x in _context.Lop
 				where id.Contains(x.Id)
-				select new Models.NguoiDung()
+				select new NguoiDung
 				{
 					Id = x.Id,
 					RowVersion = x.RowVersion
@@ -116,6 +121,7 @@ public class NguoiDungController : ControllerBase
 			await _context.SaveChangesAsync(HttpContext.RequestAborted);
 			return Ok(danhSachNguoiDung.Select(x => x.Id));
 		}
+
 		return BadRequest();
 	}
 
@@ -130,7 +136,7 @@ public class NguoiDungController : ControllerBase
 	[ProducesResponseType(typeof(DTOs.NguoiDung.Get), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ModelStateDictionary), StatusCodes.Status400BadRequest)]
 	[HttpPatch]
-	public async Task<IActionResult> Patch([FromQuery] Guid id, [FromBody] JsonPatchDocument<Models.NguoiDung> path)
+	public async Task<IActionResult> Patch([FromQuery] Guid id, [FromBody] JsonPatchDocument<NguoiDung> path)
 	{
 		await using IDbContextTransaction transaction =
 			await _context.Database.BeginTransactionAsync(IsolationLevel.Serializable, HttpContext.RequestAborted);

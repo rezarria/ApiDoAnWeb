@@ -1,6 +1,10 @@
-﻿using System.Linq.Expressions;
+﻿#region
+
+using System.Linq.Expressions;
 using Api.Areas.Edu.Interfaces;
 using Microsoft.Build.Framework;
+
+#endregion
 
 namespace Api.Areas.Edu.DTOs;
 
@@ -41,16 +45,13 @@ public static class NguoiDung
 	{
 		public class TruongGiaTriDTO
 		{
-			[Required]
-			public Guid Id { get; set; }
+			[Required] public Guid Id { get; set; }
 
 
-			[Required]
-			public string GiaTri { get; set; } = string.Empty;
+			[Required] public string GiaTri { get; set; } = string.Empty;
 		}
 
-		[Required]
-		public Guid IdKieuNguoiDung { get; set; }
+		[Required] public Guid IdKieuNguoiDung { get; set; }
 
 		public SoYeuLyLich.Post SoYeuLyLich { get; set; } = null!;
 
@@ -64,13 +65,11 @@ public static class NguoiDung
 			};
 
 			if (TruongGiaTri is not null)
-			{
-				data.GiaTriTruongThongTinNguoiDung = TruongGiaTri.Select(x => new Models.GiaTriTruongThongTinNguoiDung()
+				data.GiaTriTruongThongTinNguoiDung = TruongGiaTri.Select(x => new Models.GiaTriTruongThongTinNguoiDung
 				{
 					IdTruongThongTinNguoiDung = x.Id,
 					GiaTri = x.GiaTri
 				}).ToList();
-			}
 
 			return data;
 		}

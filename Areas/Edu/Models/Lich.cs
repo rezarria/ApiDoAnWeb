@@ -1,5 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿#region
+
+using System.ComponentModel.DataAnnotations;
 using Api.Areas.Edu.Interfaces;
+
+#endregion
 
 namespace Api.Areas.Edu.Models;
 
@@ -12,7 +16,7 @@ public class Lich : IMetadata, ILich
     ///     Guid
     /// </summary>
     [Key]
-    public Guid Id { get; set; }
+	public Guid Id { get; set; }
 
     /// <summary>
     ///     Thời gian lịch bắt đầu
@@ -25,7 +29,6 @@ public class Lich : IMetadata, ILich
     public DateTime ThoiGianKetThuc { get; set; }
 
     /// <summary>
-    /// 
     /// </summary>
     public string? MoTa { get; set; }
 
@@ -34,14 +37,14 @@ public class Lich : IMetadata, ILich
     /// </summary>
     public ILich.TinhTrang TinhTrangLich { get; set; } = ILich.TinhTrang.ChuaBatDau;
 
-    public virtual LopHoc? Lop { get; set; }
+	public virtual LopHoc? Lop { get; set; }
 
-    public virtual PhongHoc? PhongHoc { get; set; }
+	public virtual PhongHoc? PhongHoc { get; set; }
 
-    public virtual ICollection<ChiTietLich> ChiTietLich { get; set; } = null!;
+	public virtual ICollection<ChiTietLich> ChiTietLich { get; set; } = null!;
 
     /// <summary>
     /// </summary>
     [Timestamp]
-    public byte[]? RowVersion { get; set; } = null!;
+	public byte[]? RowVersion { get; set; } = null!;
 }

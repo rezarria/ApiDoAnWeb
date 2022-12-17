@@ -6,5 +6,5 @@ public interface IKieuNguoiDungModel : IMetadata, IKieuNguoiDung
 
 public interface IKieuNguoiDung
 {
-    public string Ten { get; set; }
+	public string Ten { get; set; }
 }

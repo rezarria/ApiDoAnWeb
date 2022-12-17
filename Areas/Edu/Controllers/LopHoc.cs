@@ -1,3 +1,5 @@
+#region
+
 using System.Data;
 using System.Linq.Expressions;
 using Api.Areas.Edu.Contexts;
@@ -7,6 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+
+#endregion
 
 namespace Api.Areas.Edu.Controllers;
 
@@ -43,7 +47,7 @@ public class LopHoc : ControllerBase
 	}
 
 	/// <summary>
-	/// Lấy danh sách lớp học
+	///     Lấy danh sách lớp học
 	/// </summary>
 	/// <param name="id"></param>
 	/// <param name="take"></param>
@@ -54,7 +58,7 @@ public class LopHoc : ControllerBase
 		=> Ok(await Get(DTOs.LopHoc.Get.Expression, id, take, skip));
 
 	/// <summary>
-	///    Tạo lớp học
+	///     Tạo lớp học
 	/// </summary>
 	/// <param name="lopHoc"></param>
 	/// <returns></returns>
@@ -89,7 +93,7 @@ public class LopHoc : ControllerBase
 	}
 
 	/// <summary>
-	///    Xoá lớp học theo id
+	///     Xoá lớp học theo id
 	/// </summary>
 	/// <param name="id">các id đối tượng muốn xoá</param>
 	/// <returns></returns>
@@ -107,7 +111,7 @@ public class LopHoc : ControllerBase
 			var danhSachLop = await (
 				from x in _context.Lop
 				where id.Contains(x.Id)
-				select new Models.LopHoc()
+				select new Models.LopHoc
 				{
 					Id = x.Id,
 					RowVersion = x.RowVersion
@@ -117,6 +121,7 @@ public class LopHoc : ControllerBase
 			await _context.SaveChangesAsync(HttpContext.RequestAborted);
 			return Ok(danhSachLop.Select(x => x.Id));
 		}
+
 		return BadRequest();
 	}
 

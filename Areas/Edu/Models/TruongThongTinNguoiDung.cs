@@ -1,48 +1,55 @@
+#region
+
 using System.ComponentModel.DataAnnotations;
 using Api.Areas.Edu.Interfaces;
+
+#endregion
 
 namespace Api.Areas.Edu.Models;
 
 /// <summary>
-/// Model trường thông tin người dùng
+///     Model trường thông tin người dùng
 /// </summary>
 public class TruongThongTinNguoiDung : ITruongThongTinNguoiDungInfoModel
 {
 	/// <summary>
-	/// Id
+	///     Id
 	/// </summary>
 	[Key]
 	public Guid Id { get; set; }
 
 	/// <summary>
-	/// Tên
+	///     Tên
 	/// </summary>
 	public string? Ten { get; set; }
 
 	/// <summary>
-	/// Alias
+	///     Alias
 	/// </summary>
 	public string? Alias { get; set; }
 
 	/// <summary>
-	/// Kiểu dữ liệu
+	///     Kiểu dữ liệu
 	/// </summary>
 	/// <value></value>
 	[Required(AllowEmptyStrings = false)]
 	public string KieuDuLieu { get; set; } = null!;
 
 	/// <summary>
-	/// Quan hệ mới người dùng
+	///     Quan hệ mới người dùng
 	/// </summary>
-	public virtual ICollection<DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung> DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung { get; set; } = new HashSet<DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung>();
+	public virtual ICollection<DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung>
+		DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung { get; set; } =
+		new HashSet<DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung>();
 
 	/// <summary>
-	/// Giá trị trường với người dùng
+	///     Giá trị trường với người dùng
 	/// </summary>
-	public virtual ICollection<GiaTriTruongThongTinNguoiDung> GiaTri { get; set; } = new HashSet<GiaTriTruongThongTinNguoiDung>();
+	public virtual ICollection<GiaTriTruongThongTinNguoiDung> GiaTri { get; set; } =
+		new HashSet<GiaTriTruongThongTinNguoiDung>();
 
 	/// <summary>
-	/// Timestamp
+	///     Timestamp
 	/// </summary>
 	[Timestamp]
 	public byte[]? RowVersion { get; set; }

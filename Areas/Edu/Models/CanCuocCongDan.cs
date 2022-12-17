@@ -1,6 +1,10 @@
+#region
+
 using System.ComponentModel.DataAnnotations;
 using Api.Areas.Edu.Interfaces;
 using Api.Areas.Edu.Interfaces.SoYeuLyLich;
+
+#endregion
 
 namespace Api.Areas.Edu.Models;
 
@@ -12,7 +16,7 @@ public class CanCuocCongDan : IMetadata, ICanCuocCongDan
     /// </summary>
     /// <value></value>
     [Key]
-    public Guid Id { get; set; }
+	public Guid Id { get; set; }
 
     /// <summary>
     /// </summary>
@@ -33,5 +37,5 @@ public class CanCuocCongDan : IMetadata, ICanCuocCongDan
     /// </summary>
     /// <value></value>
     [Timestamp]
-    public byte[]? RowVersion { get; set; } = null!;
+	public byte[]? RowVersion { get; set; } = null!;
 }

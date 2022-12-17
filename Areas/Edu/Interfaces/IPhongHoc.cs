@@ -2,6 +2,6 @@
 
 public interface IPhongHoc
 {
-    public string Ten { get; set; }
-    public string ViTri { get; set; }
+	public string Ten { get; set; }
+	public string ViTri { get; set; }
 }

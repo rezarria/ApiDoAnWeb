@@ -1,4 +1,8 @@
+#region
+
 using Newtonsoft.Json;
+
+#endregion
 
 namespace Api.ThietLap;
 
@@ -10,14 +14,14 @@ public static partial class ThietLap
     /// </summary>
     /// <param name="services"></param>
     public static void ThietLapMVCJSON(this IServiceCollection services)
-    {
-        services.AddControllersWithViews().AddNewtonsoftJson(x =>
-        {
-            x.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-            x.SerializerSettings.DateFormatHandling = DateFormatHandling.IsoDateFormat;
-            x.SerializerSettings.ConstructorHandling = ConstructorHandling.Default;
-            x.SerializerSettings.Formatting = Formatting.Indented;
-            x.SerializerSettings.ObjectCreationHandling = ObjectCreationHandling.Reuse;
-        });
-    }
+	{
+		services.AddControllersWithViews().AddNewtonsoftJson(x =>
+		{
+			x.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+			x.SerializerSettings.DateFormatHandling = DateFormatHandling.IsoDateFormat;
+			x.SerializerSettings.ConstructorHandling = ConstructorHandling.Default;
+			x.SerializerSettings.Formatting = Formatting.Indented;
+			x.SerializerSettings.ObjectCreationHandling = ObjectCreationHandling.Reuse;
+		});
+	}
 }

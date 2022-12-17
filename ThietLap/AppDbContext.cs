@@ -1,5 +1,9 @@
+#region
+
 using Api.Areas.Edu.Contexts;
 using Microsoft.EntityFrameworkCore;
+
+#endregion
 
 namespace Api.ThietLap;
 
@@ -11,12 +15,12 @@ public static partial class ThietLap
     /// </summary>
     /// <param name="builder"></param>
     public static void ThemAppDbContext(this WebApplicationBuilder builder)
-    {
-        builder.Services.AddDbContext<AppDbContext>(options =>
-        {
-            // string connectionString = builder.Configuration.GetConnectionString("AppDb_Mysql") ?? throw new Exception();
-            // options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+	{
+		builder.Services.AddDbContext<AppDbContext>(options =>
+		{
+			// string connectionString = builder.Configuration.GetConnectionString("AppDb_Mysql") ?? throw new Exception();
+			// options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
 			options.UseSqlite(builder.Configuration.GetConnectionString("AppDb_Sqlite"));
-        });
-    }
+		});
+	}
 }

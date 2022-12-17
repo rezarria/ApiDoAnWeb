@@ -1,49 +1,54 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿#region
+
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Api.Areas.Edu.Interfaces;
+
+#endregion
 
 namespace Api.Areas.Edu.Models;
 
 /// <summary>
-/// Model điểm danh
+///     Model điểm danh
 /// </summary>
 public class DiemDanh : IMetadata, IDiemDanh
 {
 	/// <summary>
-	/// Id
+	///     Id
 	/// </summary>
-    [Key]
+	[Key]
 	public Guid Id { get; set; }
 
 	/// <summary>
-	/// Trạng thái
+	///     Trạng thái
 	/// </summary>
-    public IDiemDanh.TrangThaiDiemDanh TrangThai { get; set; } = IDiemDanh.TrangThaiDiemDanh.Vang;
+	public IDiemDanh.TrangThaiDiemDanh TrangThai { get; set; } = IDiemDanh.TrangThaiDiemDanh.Vang;
 
 
 	/// <summary>
-	/// Nhận xét
+	///     Nhận xét
 	/// </summary>
-    public string? NhanXet { get; set; }
+	public string? NhanXet { get; set; }
 
 	/// <summary>
-	/// Thời điểm điểm danh
+	///     Thời điểm điểm danh
 	/// </summary>
-    public DateTime ThoiDiemDiemDanh { get; set; } = DateTime.Now;
+	public DateTime ThoiDiemDiemDanh { get; set; } = DateTime.Now;
 
 	/// <summary>
-	/// Timestamp
+	///     Timestamp
 	/// </summary>
-    [Timestamp] public byte[]? RowVersion { get; set; } = null!;
+	[Timestamp]
+	public byte[]? RowVersion { get; set; } = null!;
 
 	/// <summary>
-	/// Id chi tiết lịch
+	///     Id chi tiết lịch
 	/// </summary>
-    public Guid? IdChiTietLich { get; set; }
+	public Guid? IdChiTietLich { get; set; }
 
 	/// <summary>
-	/// Chi tiết lịch
+	///     Chi tiết lịch
 	/// </summary>
-    [ForeignKey(nameof(IdChiTietLich))]
-    public virtual ChiTietLich? ChiTietLich { get; set; }
+	[ForeignKey(nameof(IdChiTietLich))]
+	public virtual ChiTietLich? ChiTietLich { get; set; }
 }

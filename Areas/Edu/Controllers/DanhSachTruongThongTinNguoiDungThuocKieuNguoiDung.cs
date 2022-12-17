@@ -1,6 +1,10 @@
+#region
+
 using Api.Areas.Edu.Contexts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+
+#endregion
 
 namespace Api.Areas.Edu.Controllers;
 
@@ -17,8 +21,9 @@ public class DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung : ControllerBase
 
 	[HttpGet]
 	[Route("TheoKieuNguoiDung")]
-	public async Task<DTOs.DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung.TruongThongTinNguoiDung[]> LayTheoKieuTaiKhoan(Guid id)
-	=> await _context
+	public async Task<DTOs.DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung.TruongThongTinNguoiDung[]>
+		LayTheoKieuTaiKhoan(Guid id)
+		=> await _context
 			.DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung
 			.Where(x => x.IdKieuNguoiDung == id)
 			.Select(DTOs.DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung.TruongThongTinNguoiDung.Expression)

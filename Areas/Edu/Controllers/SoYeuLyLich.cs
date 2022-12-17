@@ -1,4 +1,6 @@
-﻿using System.Data;
+﻿#region
+
+using System.Data;
 using System.Linq.Expressions;
 using Api.Areas.Edu.Contexts;
 using Api.Areas.Edu.DTOs;
@@ -7,6 +9,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using MonHoc = Api.Areas.Edu.Models.MonHoc;
+
+#endregion
 
 namespace Api.Areas.Edu.Controllers;
 
@@ -46,7 +51,7 @@ public class SoYeuLyLich : ControllerBase
 	}
 
 	/// <summary>
-	/// lấy danh sách sơ yếu lý lịch
+	///     lấy danh sách sơ yếu lý lịch
 	/// </summary>
 	/// <param name="id"></param>
 	/// <param name="take"></param>
@@ -90,10 +95,7 @@ public class SoYeuLyLich : ControllerBase
 	{
 		Models.SoYeuLyLich soYeuLyLich = soYeuLyLichDto.Convert<DTOs.SoYeuLyLich.Post, Models.SoYeuLyLich>();
 		ModelState.ClearValidationState(nameof(DTOs.SoYeuLyLich.Post));
-		if (!TryValidateModel(soYeuLyLich, nameof(Models.SoYeuLyLich)))
-		{
-			return BadRequest(ModelState);
-		}
+		if (!TryValidateModel(soYeuLyLich, nameof(Models.SoYeuLyLich))) return BadRequest(ModelState);
 
 		await using IDbContextTransaction transaction =
 			await _context.Database.BeginTransactionAsync(IsolationLevel.ReadCommitted, HttpContext.RequestAborted);
@@ -129,7 +131,8 @@ public class SoYeuLyLich : ControllerBase
 		await transaction.CreateSavepointAsync("dau", HttpContext.RequestAborted);
 		try
 		{
-			var soYeuLyLich = await _context.SoYeuLyLich.FirstOrDefaultAsync(x => x.Id == id, HttpContext.RequestAborted);
+			var soYeuLyLich =
+				await _context.SoYeuLyLich.FirstOrDefaultAsync(x => x.Id == id, HttpContext.RequestAborted);
 			if (soYeuLyLich is null)
 				return NotFound();
 
@@ -169,9 +172,9 @@ public class SoYeuLyLich : ControllerBase
 		await transaction.CreateSavepointAsync("dau", HttpContext.RequestAborted);
 		try
 		{
-			List<Models.MonHoc> cacSoYeuLyLichBiXoa = await _context.SoYeuLyLich
+			List<MonHoc> cacSoYeuLyLichBiXoa = await _context.SoYeuLyLich
 				.Where(x => id.Contains(x.Id))
-				.Select(x => new Models.MonHoc()
+				.Select(x => new MonHoc
 				{
 					Id = x.Id,
 					RowVersion = x.RowVersion

@@ -1,4 +1,9 @@
+#region
+
 using Api.ThietLap;
+using Newtonsoft.Json;
+
+#endregion
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,7 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.Cors();
 builder.Services.AddControllers().AddNewtonsoftJson(options =>
 {
-	options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+	options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
 });
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -23,6 +28,7 @@ if (app.Environment.IsDevelopment())
 	app.UseOpenApi();
 	app.UseSwaggerUi3();
 }
+
 app.UseHttpsRedirection();
 app.UseCors(x => x.AllowAnyOrigin().AllowAnyHeader().WithMethods("DELETE", "PATCH", "GET", "POST"));
 app.UseAuthorization();
