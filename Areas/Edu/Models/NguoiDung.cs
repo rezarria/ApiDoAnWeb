@@ -23,7 +23,12 @@ public class NguoiDung : IMetadata, INguoiDung
 	/// <summary>
 	/// Id kiểu người dùng
 	/// </summary>
-	public Guid? IdKieuNguoiDung {get;set;}
+	public Guid? IdKieuNguoiDung { get; set; }
+
+	/// <summary>
+	/// Id tài khoản
+	/// </summary>
+	public Guid? IdTaiKhoan { get; set; }
 
 	/// <summary>
 	/// Sơ yếu lý lịch của người dùng
@@ -35,7 +40,7 @@ public class NguoiDung : IMetadata, INguoiDung
 	/// Tài khoản của người dùng
 	/// </summary>
 	public virtual TaiKhoan? TaiKhoan { get; set; } = null!;
-	
+
 	/// <summary>
 	/// Danh sách lịch của người dùng
 	/// </summary>

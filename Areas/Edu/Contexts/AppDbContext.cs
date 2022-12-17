@@ -29,18 +29,6 @@ public class AppDbContext : DbContext
 
 	/// <summary>
 	/// </summary>
-	public DbSet<QuanHeGiaDinh> QuanHeGiaDinh { get; set; } = null!;
-
-	/// <summary>
-	/// </summary>
-	public DbSet<QuaTrinhCongTac> QuaTrinhCongTac { get; set; } = null!;
-
-	/// <summary>
-	/// </summary>
-	public DbSet<QuaTrinhDaoTao> QuaTrinhDaoTao { get; set; } = null!;
-
-	/// <summary>
-	/// </summary>
 	public DbSet<LopHoc> Lop { get; set; } = null!;
 
 	/// <summary>
@@ -78,11 +66,9 @@ public class AppDbContext : DbContext
 	{
 		builder.Entity<MonHoc>(entity => { entity.HasIndex(x => x.Ten).IsUnique(); });
 
-		builder.Entity<KhoaHoc>(entity => { entity.HasIndex(x => x.Ten).IsUnique(); });
-
 		builder.Entity<LopHoc>(entity => { entity.HasIndex(x => x.Ten).IsUnique(); });
 
-		builder.Entity<TaiKhoan>(entity => { entity.HasIndex(x => x.TaiKhoanDangNhap).IsUnique(); });
+		builder.Entity<TaiKhoan>(entity => { entity.HasIndex(x => x.Username).IsUnique(); });
 
 		builder.Entity<ChiTietLich>(entity =>
 		{

@@ -10,11 +10,11 @@ public static class SoYeuLyLich
         public Guid Id { get; set; }
         public string? HoVaTen { get; set; }
         public GioiTinh? GioiTinh { get; set; }
-        public DateTime? SinhNgay { get; set; }
+        public DateTime? NgaySinh { get; set; }
         public string? NoiSinh { get; set; }
         public string? NguyenQuan { get; set; }
-        public string? NoiDangKyHoKhauThuongTru { get; set; }
-        public string? DienThoai { get; set; }
+        public string? ThuongTru { get; set; }
+        public string? SoDienThoai { get; set; }
         public string? Email { get; set; }
         public string? DanToc { get; set; }
         public string? TonGiao { get; set; }
@@ -41,11 +41,11 @@ public static class SoYeuLyLich
     {
         public string? HoVaTen { get; set; }
         public GioiTinh? GioiTinh { get; set; }
-        public DateTime? SinhNgay { get; set; }
+        public DateTime? NgaySinh { get; set; }
         public string? NoiSinh { get; set; }
         public string? NguyenQuan { get; set; }
-        public string? NoiDangKyHoKhauThuongTru { get; set; }
-        public string? DienThoai { get; set; }
+        public string? ThuongTru { get; set; }
+        public string? SoDienThoai { get; set; }
         public string? Email { get; set; }
         public string? DanToc { get; set; }
         public string? TonGiao { get; set; }

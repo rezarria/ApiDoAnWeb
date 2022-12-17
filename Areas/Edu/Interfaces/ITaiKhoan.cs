@@ -2,7 +2,7 @@ namespace Api.Areas.Edu.Interfaces;
 
 public interface ITaiKhoan
 {
-	string TaiKhoanDangNhap { get; set; }
+	string Username { get; set; }
 	byte[]? MatKhau { get; set; }
 	DateTime ThoiGianTao { get; set; }
 	DateTime ThoiGianDangNhapGanNhat { get; set; }
