@@ -44,9 +44,9 @@ public class NguoiDungController : ControllerBase
 	/// <summary>
 	/// Lấy danh sách người dùng
 	/// </summary>
-	/// <param name="id"></param>
-	/// <param name="take"></param>
-	/// <param name="skip"></param>
+	/// <param name="id">danh sách id cần lấy</param>
+	/// <param name="take">số lượng lấy</param>
+	/// <param name="skip">số lượng bỏ qua</param>
 	/// <returns></returns>
 	[HttpGet]
 	public async Task<IActionResult> Get([FromQuery] Guid[]? id, [FromQuery] int take = -1, [FromQuery] int skip = 0)
