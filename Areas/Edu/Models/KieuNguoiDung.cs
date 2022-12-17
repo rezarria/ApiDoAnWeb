@@ -1,5 +1,6 @@
 #region
 
+using System.Collections;
 using System.ComponentModel.DataAnnotations;
 using Api.Areas.Edu.Interfaces;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
@@ -11,8 +12,7 @@ namespace Api.Areas.Edu.Models;
 /// <summary>
 ///     Model kiểu người dùng
 /// </summary>
-public class KieuNguoiDung : IKieuNguoiDungModel
-{
+public class KieuNguoiDung : IKieuNguoiDungModel {
 	/// <summary>
 	///     Id
 	/// </summary>
@@ -28,10 +28,12 @@ public class KieuNguoiDung : IKieuNguoiDungModel
 	/// <summary>
 	///     Danh sách trường thông tin người dùng
 	/// </summary>
-	[ValidateNever]
-	public virtual ICollection<DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung>
-		DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung { get; set; } =
-		new List<DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung>();
+	public virtual ICollection<DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung> DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung { get; set; } = new HashSet<DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung>();
+	
+	/// <summary>
+	///		Danh sách người dùng
+	/// </summary>
+	public virtual ICollection<NguoiDung> DanhSachNguoiDung { get; set; } = new HashSet<NguoiDung>();
 
 	/// <summary>
 	///     Timestamp

@@ -37,7 +37,6 @@ public class NguoiDung : IMetadata, INguoiDung
 	/// <summary>
 	///     Sơ yếu lý lịch của người dùng
 	/// </summary>
-	[ForeignKey(nameof(IdSoYeuLyLich))]
 	public virtual SoYeuLyLich? SoYeuLyLich { get; set; }
 
 	/// <summary>
@@ -53,8 +52,12 @@ public class NguoiDung : IMetadata, INguoiDung
 	/// <summary>
 	///     Trường thông tin người dùng
 	/// </summary>
-	public virtual ICollection<GiaTriTruongThongTinNguoiDung> GiaTriTruongThongTinNguoiDung { get; set; } =
-		new List<GiaTriTruongThongTinNguoiDung>();
+	public virtual ICollection<GiaTriTruongThongTinNguoiDung> GiaTriTruongThongTinNguoiDung { get; set; } = new HashSet<GiaTriTruongThongTinNguoiDung>();
+	
+	/// <summary>
+	///		Kiểu người dùng
+	/// </summary>
+	public virtual KieuNguoiDung? KieuNguoiDung { get; set; }
 
 	/// <summary>
 	///     Timestamp

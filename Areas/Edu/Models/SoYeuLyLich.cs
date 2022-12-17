@@ -1,5 +1,6 @@
 #region
 
+using System.Collections;
 using System.ComponentModel.DataAnnotations;
 using Api.Areas.Edu.Interfaces;
 
@@ -103,4 +104,6 @@ public class SoYeuLyLich : ISoYeuLyLichModel
 	/// </summary>
 	[Timestamp]
 	public byte[]? RowVersion { get; set; }
+	
+	public virtual NguoiDung? NguoiDung { get; set; }
 }

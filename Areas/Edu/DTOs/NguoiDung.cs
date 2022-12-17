@@ -8,50 +8,53 @@ using Microsoft.Build.Framework;
 
 namespace Api.Areas.Edu.DTOs;
 
-public static class NguoiDung
-{
-	public class Get
-	{
-		public class GiaTriTruongThongTinNguoiDungDto
-		{
+public static class NguoiDung {
+	public class Get : IMetadataKey {
+		public class GiaTriTruongThongTinNguoiDungDto {
 			public Guid Id { get; set; }
 			public string GiaTri { get; set; } = string.Empty;
 		}
 
-		public Get(ISoYeuLyLich? soYeuLyLich,
-			ICollection<Models.GiaTriTruongThongTinNguoiDung>? giaTriTruongThongTinNguoiDung)
+		public Get(Guid id, Guid? idKieuNguoiDung, ISoYeuLyLich? soYeuLyLich, ICollection<Models.GiaTriTruongThongTinNguoiDung>? giaTriTruongThongTinNguoiDung)
 		{
+			Id = id;
+			IdKieuNguoiDung = idKieuNguoiDung;
 			if (soYeuLyLich is not null)
 				SoYeuLyLich = soYeuLyLich.Convert<ISoYeuLyLich, SoYeuLyLich.Get>();
 
 			if (giaTriTruongThongTinNguoiDung is not null)
 				GiaTriTruongThongTinNguoiDung = giaTriTruongThongTinNguoiDung
-					.Select(x => new GiaTriTruongThongTinNguoiDungDto
-					{
-						Id = x.IdTruongThongTinNguoiDung,
-						GiaTri = x.GiaTri
-					}).ToList();
+											   .Select(x => new GiaTriTruongThongTinNguoiDungDto
+												{
+													Id = x.IdTruongThongTinNguoiDung,
+													GiaTri = x.GiaTri
+												}).ToList();
 		}
+
+		public Guid Id { get; set; }
+
+		public Guid? IdKieuNguoiDung { get; set; }
 
 		public SoYeuLyLich.Get? SoYeuLyLich { get; }
 
 		public ICollection<GiaTriTruongThongTinNguoiDungDto>? GiaTriTruongThongTinNguoiDung { get; }
 
 		public static readonly Expression<Func<Models.NguoiDung, Get>> Expression = nguoiDung =>
-			new(nguoiDung.SoYeuLyLich, nguoiDung.GiaTriTruongThongTinNguoiDung);
+			new(nguoiDung.Id, nguoiDung.IdKieuNguoiDung, nguoiDung.SoYeuLyLich, nguoiDung.GiaTriTruongThongTinNguoiDung);
 	}
 
-	public class Post
-	{
-		public class TruongGiaTriDTO
-		{
-			[Required] public Guid Id { get; set; }
+	public class Post {
+		public class TruongGiaTriDTO {
+			[Required]
+			public Guid Id { get; set; }
 
 
-			[Required] public string GiaTri { get; set; } = string.Empty;
+			[Required]
+			public string GiaTri { get; set; } = string.Empty;
 		}
 
-		[Required] public Guid IdKieuNguoiDung { get; set; }
+		[Required]
+		public Guid IdKieuNguoiDung { get; set; }
 
 		public SoYeuLyLich.Post SoYeuLyLich { get; set; } = null!;
 
@@ -61,6 +64,7 @@ public static class NguoiDung
 		{
 			Models.NguoiDung data = new()
 			{
+				IdKieuNguoiDung = IdKieuNguoiDung,
 				SoYeuLyLich = SoYeuLyLich.Convert<SoYeuLyLich.Post, Models.SoYeuLyLich>()
 			};
 
