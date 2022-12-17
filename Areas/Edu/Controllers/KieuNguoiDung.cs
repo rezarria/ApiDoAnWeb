@@ -156,6 +156,7 @@ public class KieuNguoiDungController : ControllerBase
 		{
 			var kieuNguoiDung =
 				await _context.KieuNguoiDung.FirstOrDefaultAsync(x => x.Id == id, HttpContext.RequestAborted);
+
 			if (kieuNguoiDung is null)
 				return NotFound();
 
@@ -163,26 +164,6 @@ public class KieuNguoiDungController : ControllerBase
 
 			if (!ModelState.IsValid)
 				return BadRequest(ModelState);
-
-			if (kieuNguoiDung.DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung.Any())
-			{
-				var danhSachId = kieuNguoiDung.DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung.Select(x => x.IdTruongThongTinNguoiDung);
-				var rowVersions = (
-					from x in _context.TruongThongTinNguoiDung
-					where danhSachId.Contains(x.Id)
-					select new KeyValuePair<Guid, byte[]?>(x.Id, x.RowVersion)
-				);
-
-				if (rowVersions.Count() != danhSachId.Count())
-					throw new Exception();
-
-				await rowVersions.ForEachAsync(x =>
-				{
-					var obj = kieuNguoiDung.DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung.First(y => y.IdTruongThongTinNguoiDung == x.Key);
-					obj.RowVersion = x.Value;
-					_context.Entry(obj).State = EntityState.Unchanged;
-				});
-			}
 
 			await _context.SaveChangesAsync(HttpContext.RequestAborted);
 			await transaction.CommitAsync();
@@ -193,6 +174,61 @@ public class KieuNguoiDungController : ControllerBase
 		{
 			await transaction.RollbackAsync();
 			return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+		}
+	}
+
+	/// <summary>
+	/// Cập nhật trường thông tin người dùng của kiểu người dùng theo id
+	/// </summary>
+	/// <param name="id">Id kiểu người dùng</param>
+	/// <param name="idTruongThongTinNguoiDung">Mảng id trường thông tin được sử dụng</param>
+	/// <returns></returns>
+	/// <response code="200">Cập nhật thành công</response>
+	/// <response code="404">Không tìm thấy kiểu tài khoản</response>
+	/// <response code="500">Có vấn đề phát sinh</response>
+	[HttpPatch]
+	[ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
+	[ProducesResponseType(typeof(void), StatusCodes.Status500InternalServerError)]
+	[Route("TruongThongTinNguoiDung")]
+	public async Task<IActionResult> CapNhatTruongThongTinNguoiDung(Guid id, [FromBody] Guid[] idTruongThongTinNguoiDung)
+	{
+		if (!await _context.KieuNguoiDung.AnyAsync(x => x.Id == id, HttpContext.RequestAborted))
+			return NotFound();
+
+		var query = _context.DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung.Where(x => x.IdKieuNguoiDung == id);
+
+		var doiTuongXoa = query
+			.Where(x => !idTruongThongTinNguoiDung.Contains(x.IdTruongThongTinNguoiDung))
+			.Select(x => new Models.DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung()
+			{
+				Id = x.Id,
+				RowVersion = x.RowVersion
+			})
+			.AsNoTracking();
+
+		var doiTuongThem = idTruongThongTinNguoiDung
+			.Where(x => !query.Any(y => y.IdTruongThongTinNguoiDung == x))
+			.Select(x => new Models.DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung()
+			{
+				IdKieuNguoiDung = id,
+				IdTruongThongTinNguoiDung = x
+			});
+
+		await using IDbContextTransaction transaction = await _context.Database.BeginTransactionAsync(HttpContext.RequestAborted);
+		try
+		{
+			await transaction.CreateSavepointAsync("begin", HttpContext.RequestAborted);
+			await doiTuongXoa.ForEachAsync(x => _context.Entry(x).State = EntityState.Deleted, HttpContext.RequestAborted);
+			_context.AttachRange(doiTuongThem);
+			await _context.SaveChangesAsync(HttpContext.RequestAborted);
+			await transaction.CommitAsync(HttpContext.RequestAborted);
+			return Ok();
+		}
+		catch (Exception)
+		{
+			await transaction.RollbackAsync();
+			return Problem();
 		}
 	}
 }
