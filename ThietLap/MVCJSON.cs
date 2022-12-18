@@ -13,7 +13,7 @@ public static partial class ThietLap
     /// <summary>
     /// </summary>
     /// <param name="services"></param>
-    public static void ThietLapMVCJSON(this IServiceCollection services)
+    public static void ThietLapMvcjson(this IServiceCollection services)
 	{
 		services.AddControllersWithViews().AddNewtonsoftJson(x =>
 		{

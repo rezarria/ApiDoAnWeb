@@ -23,11 +23,6 @@ public static class SoYeuLyLich
 		public string? DanToc { get; set; }
 		public string? TonGiao { get; set; }
 		public string? TrinhDoVanHoa { get; set; }
-		public DateTime? TNCS_NgayKetNap { get; set; }
-		public string? TNCS_NoiKetNap { get; set; }
-		public DateTime? CSVN_NgayKetNap { get; set; }
-		public string? CSVN_NoiKetNap { get; set; }
-		public string? KhenThuong_KyLuat { get; set; }
 		public string? SoTruong { get; set; }
 
 		public static readonly Expression<Func<Models.SoYeuLyLich, ISoYeuLyLich>> Expression = soYeuLyLich =>
@@ -54,11 +49,6 @@ public static class SoYeuLyLich
 		public string? DanToc { get; set; }
 		public string? TonGiao { get; set; }
 		public string? TrinhDoVanHoa { get; set; }
-		public DateTime? TNCS_NgayKetNap { get; set; }
-		public string? TNCS_NoiKetNap { get; set; }
-		public DateTime? CSVN_NgayKetNap { get; set; }
-		public string? CSVN_NoiKetNap { get; set; }
-		public string? KhenThuong_KyLuat { get; set; }
 		public string? SoTruong { get; set; }
 	}
 }

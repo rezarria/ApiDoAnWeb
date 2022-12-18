@@ -4,7 +4,6 @@ using System.Linq.Expressions;
 using Api.Areas.Edu.Contexts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage;
 
 #endregion
@@ -78,7 +77,7 @@ public class GiaTriTruongThongTinNguoiDung : ControllerBase
 			{
 				var entity = _context.Entry(x);
 				entity.State = EntityState.Unchanged;
-				entity.Property(x => x.GiaTri).EntityEntry.State = EntityState.Modified;
+				entity.Property(y => y.GiaTri).EntityEntry.State = EntityState.Modified;
 			});
 
 			await transaction.CreateSavepointAsync("begin", HttpContext.RequestAborted);

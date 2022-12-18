@@ -49,7 +49,7 @@ public class CaiDat : ControllerBase
 	}
 
 	[HttpPost]
-	public async Task<IActionResult> Post([FromBody] CaiDatDTO caiDat)
+	public async Task<IActionResult> Post([FromBody] CaiDatDto caiDat)
 	{
 		if (await _context.CaiDat.AnyAsync(x => x.Key == caiDat.Key, HttpContext.RequestAborted))
 			return Conflict();
@@ -59,7 +59,7 @@ public class CaiDat : ControllerBase
 	}
 
 	[HttpPut]
-	public async Task<IActionResult> Put([FromBody] CaiDatDTO caiDat)
+	public async Task<IActionResult> Put([FromBody] CaiDatDto caiDat)
 	{
 		Models.CaiDat? caiDatMoi =
 			await _context.CaiDat.Where(x => true).Take(1).FirstOrDefaultAsync(HttpContext.RequestAborted);
@@ -90,12 +90,12 @@ public class CaiDat : ControllerBase
 	}
 
 	[NonAction]
-	public async Task<bool> IsExists(Guid id)
+	private async Task<bool> IsExists(Guid id)
 	{
 		return await _context.CaiDat.AnyAsync(x => x.Id == id, HttpContext.RequestAborted);
 	}
 
-	public class CaiDatDTO : Models.CaiDat
+	public class CaiDatDto : Models.CaiDat
 	{
 	}
 }

@@ -140,7 +140,7 @@ public class AppDbContext : DbContext {
 			entity
 			   .HasOne(x => x.NguoiDung)
 			   .WithOne(x => x.SoYeuLyLich)
-			   .HasForeignKey<Models.NguoiDung>(x => x.IdSoYeuLyLich);
+			   .HasForeignKey<NguoiDung>(x => x.IdSoYeuLyLich);
 		});
 	}
 }

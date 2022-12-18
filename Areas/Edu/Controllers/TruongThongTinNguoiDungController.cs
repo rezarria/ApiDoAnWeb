@@ -146,7 +146,7 @@ public class TruongThongTinNguoiDungController : ControllerBase
 		await transaction.CreateSavepointAsync("dau", HttpContext.RequestAborted);
 		try
 		{
-			var truongThongTinNguoiDung =
+			TruongThongTinNguoiDung? truongThongTinNguoiDung =
 				await _context.TruongThongTinNguoiDung.FirstOrDefaultAsync(x => x.Id == id, HttpContext.RequestAborted);
 			if (truongThongTinNguoiDung is null)
 				return NotFound();
@@ -157,13 +157,13 @@ public class TruongThongTinNguoiDungController : ControllerBase
 				return BadRequest(ModelState);
 
 			await _context.SaveChangesAsync(HttpContext.RequestAborted);
-			transaction.Commit();
+			await transaction.CommitAsync(HttpContext.RequestAborted);
 
 			return Ok(truongThongTinNguoiDung);
 		}
 		catch (Exception)
 		{
-			transaction.Rollback();
+			await transaction.RollbackAsync();
 			return new StatusCodeResult(StatusCodes.Status500InternalServerError);
 		}
 	}

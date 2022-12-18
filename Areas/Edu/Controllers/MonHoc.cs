@@ -136,7 +136,7 @@ public class MonHocController : ControllerBase
 		await transaction.CreateSavepointAsync("dau", HttpContext.RequestAborted);
 		try
 		{
-			var mon = await _context.Mon.FirstOrDefaultAsync(x => x.Id == id, HttpContext.RequestAborted);
+			Models.MonHoc? mon = await _context.Mon.FirstOrDefaultAsync(x => x.Id == id, HttpContext.RequestAborted);
 			if (mon is null)
 				return NotFound();
 

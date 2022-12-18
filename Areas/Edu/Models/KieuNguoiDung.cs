@@ -1,9 +1,7 @@
 #region
 
-using System.Collections;
 using System.ComponentModel.DataAnnotations;
 using Api.Areas.Edu.Interfaces;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 #endregion
 

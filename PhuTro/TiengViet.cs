@@ -2,7 +2,7 @@ namespace Api.PhuTro;
 
 public static class TiengViet
 {
-	private static readonly string[] bangChu =
+	private static readonly string[] BangChu =
 	{
 		"aAeEoOuUiIdDyY",
 		"áàạảãâấầậẩẫăắằặẳẵ",
@@ -23,9 +23,9 @@ public static class TiengViet
 
 	public static string LoaiBoDau(this string xau)
 	{
-		for (var i = 1; i < bangChu.Length; i++)
-		for (var j = 0; j < bangChu[i].Length; j++)
-			xau = xau.Replace(bangChu[i][j], bangChu[0][i - 1]);
+		for (var i = 1; i < BangChu.Length; i++)
+		for (var j = 0; j < BangChu[i].Length; j++)
+			xau = xau.Replace(BangChu[i][j], BangChu[0][i - 1]);
 		return xau;
 	}
 }

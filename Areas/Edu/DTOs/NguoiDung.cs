@@ -44,7 +44,7 @@ public static class NguoiDung {
 	}
 
 	public class Post {
-		public class TruongGiaTriDTO {
+		public class TruongGiaTriDto {
 			[Required]
 			public Guid Id { get; set; }
 
@@ -58,7 +58,7 @@ public static class NguoiDung {
 
 		public SoYeuLyLich.Post SoYeuLyLich { get; set; } = null!;
 
-		public ICollection<TruongGiaTriDTO>? TruongGiaTri { get; set; }
+		public ICollection<TruongGiaTriDto>? TruongGiaTri { get; set; }
 
 		public Models.NguoiDung Convert()
 		{
