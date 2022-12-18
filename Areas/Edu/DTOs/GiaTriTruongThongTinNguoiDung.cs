@@ -42,8 +42,19 @@ public static class GiaTriTruongThongTinNguoiDung
 
 	public class Post : IGiaTriTruongThongTinNguoiDung
 	{
-		[Required] public Guid IdNguoiDung { get; set; }
-		[Required] public Guid IdTruongThongTinNguoiDung { get; set; }
-		[Required] public string GiaTri { get; set; } = string.Empty;
+		[Required]
+		public Guid IdNguoiDung { get; set; }
+		[Required]
+		public Guid IdTruongThongTinNguoiDung { get; set; }
+		[Required]
+		public string GiaTri { get; set; } = string.Empty;
+	}
+
+	public class Patch : IMetadataKey
+	{
+		[Required]
+		public Guid Id { get; set; }
+		[Required]
+		public string GiaTri { get; set; } = string.Empty;
 	}
 }
