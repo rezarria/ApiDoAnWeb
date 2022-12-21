@@ -4,6 +4,7 @@ using System.Linq.Expressions;
 using Api.Areas.Edu.Contexts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.EntityFrameworkCore.Storage;
 
 #endregion
@@ -57,8 +58,10 @@ public class GiaTriTruongThongTinNguoiDung : ControllerBase
 
 	[HttpPatch]
 	[Route("CapNhatNho")]
-	public async Task<IActionResult> CapNhatNho(DTOs.GiaTriTruongThongTinNguoiDung.Patch[] danhSach)
+	public async Task<IActionResult> CapNhatNho([FromBody] DTOs.GiaTriTruongThongTinNguoiDung.Patch[] danhSach)
 	{
+		if (!danhSach.Any() || !ModelState.IsValid) return BadRequest();
+
 		await using IDbContextTransaction transaction = await _context.Database.BeginTransactionAsync(HttpContext.RequestAborted);
 		try
 		{
@@ -67,17 +70,21 @@ public class GiaTriTruongThongTinNguoiDung : ControllerBase
 				.Select(x => new Models.GiaTriTruongThongTinNguoiDung()
 				{
 					Id = x.Id,
-					GiaTri = danhSach.First(y => y.Id == x.Id).GiaTri,
 					RowVersion = x.RowVersion
 				})
 				.AsNoTracking()
 				.ToListAsync(HttpContext.RequestAborted);
 
+			danhSachDoiTuong.ForEach(x => x.GiaTri = danhSach.First(y => y.Id == x.Id).GiaTri);
+
 			danhSachDoiTuong.ForEach(x =>
 			{
 				var entity = _context.Entry(x);
-				entity.State = EntityState.Unchanged;
-				entity.Property(y => y.GiaTri).EntityEntry.State = EntityState.Modified;
+				entity.Property(y => y.GiaTri).IsModified = true;
+				entity.Property(y => y.Id).IsModified =
+				entity.Property(y => y.IdNguoiDung).IsModified =
+				entity.Property(y => y.IdTruongThongTinNguoiDung).IsModified =
+				entity.Property(y => y.RowVersion).IsModified = false;
 			});
 
 			await transaction.CreateSavepointAsync("begin", HttpContext.RequestAborted);
@@ -86,10 +93,10 @@ public class GiaTriTruongThongTinNguoiDung : ControllerBase
 			await transaction.CommitAsync(HttpContext.RequestAborted);
 			return Ok();
 		}
-		catch (Exception)
+		catch (Exception e)
 		{
 			await transaction.RollbackAsync();
-			return Problem();
+			return Problem(e.Message);
 		}
 	}
 }
