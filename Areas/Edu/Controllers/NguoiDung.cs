@@ -16,8 +16,7 @@ namespace Api.Areas.Edu.Controllers;
 
 [Area("Api")]
 [Route("/[area]/[controller]")]
-public class NguoiDungController : ControllerBase
-{
+public class NguoiDungController : ControllerBase {
 	private readonly AppDbContext _context;
 
 	private async Task<TOutputType[]> Get<TOutputType>(
@@ -27,7 +26,7 @@ public class NguoiDungController : ControllerBase
 		[FromQuery] int skip = 0)
 		where TOutputType : class
 	{
-		var query = _context.NguoiDung.AsQueryable();
+		IQueryable<NguoiDung> query = _context.NguoiDung.AsQueryable();
 
 		if (ids is not null && ids.Any())
 			query = query.Where(x => ids.Contains(x.Id));
@@ -77,16 +76,14 @@ public class NguoiDungController : ControllerBase
 			return BadRequest(ModelState);
 		await using IDbContextTransaction transaction =
 			await _context.Database.BeginTransactionAsync(HttpContext.RequestAborted);
-		try
-		{
+		try{
 			await transaction.CreateSavepointAsync("begin");
 			_context.NguoiDung.Attach(nguoiDung);
 			await _context.SaveChangesAsync(HttpContext.RequestAborted);
 			await transaction.CommitAsync();
-			return CreatedAtAction(nameof(Get), new { ids = nguoiDung.Id.ToString() }, nguoiDung);
+			return CreatedAtAction(nameof(Get), new {ids = nguoiDung.Id.ToString()}, nguoiDung);
 		}
-		catch (Exception)
-		{
+		catch (Exception){
 			await transaction.RollbackAsync();
 			return new StatusCodeResult(StatusCodes.Status500InternalServerError);
 		}
@@ -106,48 +103,43 @@ public class NguoiDungController : ControllerBase
 	[HttpDelete]
 	public async Task<IActionResult> Delete([FromBody] Guid[] id)
 	{
-		if (id.Any())
-		{
-			var danhSachNguoiDung = await (
-				from x in _context.NguoiDung
-				where id.Contains(x.Id)
-				select new NguoiDung
-				{
-					Id = x.Id,
-					RowVersion = x.RowVersion
-				}
-			).ToListAsync(HttpContext.RequestAborted);
-			danhSachNguoiDung.ForEach(lop => _context.Entry(lop).State = EntityState.Deleted);
-			await _context.SaveChangesAsync(HttpContext.RequestAborted);
-			return Ok(danhSachNguoiDung.Select(x => x.Id));
-		}
+		if (!id.Any()) return BadRequest();
+		List<NguoiDung> danhSachNguoiDung = await (
+			from x in _context.NguoiDung
+			where id.Contains(x.Id)
+			select new NguoiDung
+			{
+				Id = x.Id,
+				RowVersion = x.RowVersion
+			}
+		).ToListAsync(HttpContext.RequestAborted);
+		danhSachNguoiDung.ForEach(lop => _context.Entry(lop).State = EntityState.Deleted);
+		await _context.SaveChangesAsync(HttpContext.RequestAborted);
+		return Ok(danhSachNguoiDung.Select(x => x.Id));
 
-		return BadRequest();
 	}
 
 	/// <summary>
 	///     Cập nhật người dùng theo id
 	/// </summary>
 	/// <param name="id">Guid</param>
-	/// <param name="path">theo cấu trúc fast joson patch</param>
+	/// <param name="patch">theo cấu trúc fast joson patch</param>
 	/// <returns></returns>
 	/// <response code="200">Cập nhật thành công và trả về kết quả</response>
 	/// <response code="400">Khi validate thất bại</response>
 	[ProducesResponseType(typeof(DTOs.NguoiDung.Get), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ModelStateDictionary), StatusCodes.Status400BadRequest)]
 	[HttpPatch]
-	public async Task<IActionResult> Patch([FromQuery] Guid id, [FromBody] JsonPatchDocument<NguoiDung> path)
+	public async Task<IActionResult> Patch([FromQuery] Guid id, [FromBody] JsonPatchDocument<NguoiDung> patch)
 	{
-		await using IDbContextTransaction transaction =
-			await _context.Database.BeginTransactionAsync(IsolationLevel.Serializable, HttpContext.RequestAborted);
+		await using IDbContextTransaction transaction = await _context.Database.BeginTransactionAsync(IsolationLevel.Serializable, HttpContext.RequestAborted);
 		await transaction.CreateSavepointAsync("dau", HttpContext.RequestAborted);
-		try
-		{
-			var nguoiDung = await _context.NguoiDung.FirstOrDefaultAsync(x => x.Id == id, HttpContext.RequestAborted);
+		try{
+			NguoiDung? nguoiDung = await _context.NguoiDung.FirstOrDefaultAsync(x => x.Id == id, HttpContext.RequestAborted);
 			if (nguoiDung is null)
 				return NotFound();
 
-			path.ApplyTo(nguoiDung, ModelState);
+			patch.ApplyTo(nguoiDung, ModelState);
 
 			if (!ModelState.IsValid)
 				return BadRequest(ModelState);
@@ -157,8 +149,7 @@ public class NguoiDungController : ControllerBase
 
 			return Ok(nguoiDung);
 		}
-		catch (Exception)
-		{
+		catch (Exception){
 			await transaction.RollbackAsync();
 			return new StatusCodeResult(StatusCodes.Status500InternalServerError);
 		}

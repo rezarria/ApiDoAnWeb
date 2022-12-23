@@ -1,12 +1,10 @@
 #region
 
-using System;
 using System.Linq.Expressions;
 using Api.Areas.Edu.Contexts;
-using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage;
 
 #endregion
@@ -85,10 +83,10 @@ public class GiaTriTruongThongTinNguoiDung : ControllerBase
 
 	private async Task XuLyKoCoId(Guid idNguoiDung, DTOs.GiaTriTruongThongTinNguoiDung.Patch[] danhSach)
 	{
-		var koCoId = danhSach
-			.Where(x => !x.Id.HasValue)
-			.Select(DTOs.GiaTriTruongThongTinNguoiDung.Patch.Convert)
-			.ToList();
+		List<Models.GiaTriTruongThongTinNguoiDung> koCoId = danhSach
+														   .Where(x => !x.Id.HasValue)
+														   .Select(DTOs.GiaTriTruongThongTinNguoiDung.Patch.Convert)
+														   .ToList();
 
 		if (koCoId.Any())
 		{
@@ -106,35 +104,33 @@ public class GiaTriTruongThongTinNguoiDung : ControllerBase
 
 	private void XuLyCoId(Guid idNguoiDung, DTOs.GiaTriTruongThongTinNguoiDung.Patch[] danhSach)
 	{
-		var coId = danhSach
-			.Where(x => x.Id.HasValue)
-			.Select(DTOs.GiaTriTruongThongTinNguoiDung.Patch.Convert)
-			.ToList();
+		List<Models.GiaTriTruongThongTinNguoiDung> coId = danhSach
+														 .Where(x => x.Id.HasValue)
+														 .Select(DTOs.GiaTriTruongThongTinNguoiDung.Patch.Convert)
+														 .ToList();
 
 		if (coId.Any())
 		{
-			var danhSachKey = coId.Select(x => x.Id);
+			IEnumerable<Guid> danhSachKey = coId.Select(x => x.Id);
 
-			var a = new Dictionary<Guid, byte[]>();
-
-			var danhSachRowVersion = _context.GiaTriTruongThongTinNguoiDung
-				.Where(x => danhSachKey.Contains(x.Id) && x.IdNguoiDung == idNguoiDung)
-				.Select(x => new KeyValuePair<Guid, byte[]?>(x.Id, x.RowVersion))
-				.ToList();
+			List<KeyValuePair<Guid, byte[]?>> danhSachRowVersion = _context.GiaTriTruongThongTinNguoiDung
+																		   .Where(x => danhSachKey.Contains(x.Id) && x.IdNguoiDung == idNguoiDung)
+																		   .Select(x => new KeyValuePair<Guid, byte[]?>(x.Id, x.RowVersion))
+																		   .ToList();
 
 			if (danhSachRowVersion.Count() != danhSachKey.Count())
 				throw new Exception("Không thuộc về người dùng này");
 
 			danhSachRowVersion.ForEach(x =>
 			{
-				var giaTri = coId.First(y => y.Id == x.Key);
+				Models.GiaTriTruongThongTinNguoiDung giaTri = coId.First(y => y.Id == x.Key);
 				giaTri.RowVersion = x.Value;
 
-				var entity = _context.Entry(giaTri);
+				EntityEntry<Models.GiaTriTruongThongTinNguoiDung> entity = _context.Entry(giaTri);
 
-				entity.Properties.AsQueryable().ForEachAsync(x => x.IsModified = false);
+				entity.Properties.AsQueryable().ForEachAsync(y => y.IsModified = false);
 
-				entity.Property(x => x.GiaTri).IsModified = true;
+				entity.Property(y => y.GiaTri).IsModified = true;
 			});
 		}
 	}

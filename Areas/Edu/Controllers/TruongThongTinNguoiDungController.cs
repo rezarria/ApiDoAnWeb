@@ -108,30 +108,27 @@ public class TruongThongTinNguoiDungController : ControllerBase
 	[HttpDelete]
 	public async Task<IActionResult> Delete([FromBody] Guid[] id)
 	{
-		if (id.Any())
-		{
-			var danhSachTruong = await (
-				from x in _context.TruongThongTinNguoiDung
-				where id.Contains(x.Id)
-				select new TruongThongTinNguoiDung
-				{
-					Id = x.Id,
-					RowVersion = x.RowVersion
-				}
-			).ToListAsync(HttpContext.RequestAborted);
-			danhSachTruong.ForEach(truongThongTin => _context.Entry(truongThongTin).State = EntityState.Deleted);
-			await _context.SaveChangesAsync(HttpContext.RequestAborted);
-			return Ok(danhSachTruong.Select(x => x.Id));
-		}
+		if (!id.Any()) return BadRequest();
+		List<TruongThongTinNguoiDung> danhSachTruong = await (
+			from x in _context.TruongThongTinNguoiDung
+			where id.Contains(x.Id)
+			select new TruongThongTinNguoiDung
+			{
+				Id = x.Id,
+				RowVersion = x.RowVersion
+			}
+		).ToListAsync(HttpContext.RequestAborted);
+		danhSachTruong.ForEach(truongThongTin => _context.Entry(truongThongTin).State = EntityState.Deleted);
+		await _context.SaveChangesAsync(HttpContext.RequestAborted);
+		return Ok(danhSachTruong.Select(x => x.Id));
 
-		return BadRequest();
 	}
 
     /// <summary>
     ///     Cập nhật trường thông tin người dùng học theo id
     /// </summary>
     /// <param name="id">Guid</param>
-    /// <param name="path">theo cấu trúc fast joson patch</param>
+    /// <param name="patch">theo cấu trúc fast joson patch</param>
     /// <returns></returns>
     /// <response code="200">Cập nhật thành công và trả về kết quả</response>
     /// <response code="400">Khi validate thất bại</response>
@@ -139,7 +136,7 @@ public class TruongThongTinNguoiDungController : ControllerBase
 	[ProducesResponseType(typeof(ModelStateDictionary), StatusCodes.Status400BadRequest)]
 	[HttpPatch]
 	public async Task<IActionResult> Patch([FromQuery] Guid id,
-		[FromBody] JsonPatchDocument<TruongThongTinNguoiDung> path)
+		[FromBody] JsonPatchDocument<TruongThongTinNguoiDung> patch)
 	{
 		await using IDbContextTransaction transaction =
 			await _context.Database.BeginTransactionAsync(IsolationLevel.Serializable, HttpContext.RequestAborted);
@@ -151,7 +148,7 @@ public class TruongThongTinNguoiDungController : ControllerBase
 			if (truongThongTinNguoiDung is null)
 				return NotFound();
 
-			path.ApplyTo(truongThongTinNguoiDung, ModelState);
+			patch.ApplyTo(truongThongTinNguoiDung, ModelState);
 
 			if (!ModelState.IsValid)
 				return BadRequest(ModelState);

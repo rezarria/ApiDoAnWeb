@@ -33,7 +33,7 @@ public class HocPhan : IMetadata, IHocPhan
 	///     Id môn học
 	/// </summary>
 	[Required]
-	public Guid IdMon { get; set; }
+	public Guid IdMonHoc { get; set; }
 
 	/// <summary>
 	///     Môn học

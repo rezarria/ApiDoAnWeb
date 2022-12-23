@@ -47,14 +47,14 @@ public class HocPhan : ControllerBase
 		_context = context;
 	}
 
-    /// <summary>
-    ///     Lấy danh sách lớp học
-    /// </summary>
-    /// <param name="id"></param>
-    /// <param name="take"></param>
-    /// <param name="skip"></param>
-    /// <returns></returns>
-    [HttpGet]
+	/// <summary>
+	///     Lấy danh sách lớp học
+	/// </summary>
+	/// <param name="id"></param>
+	/// <param name="take"></param>
+	/// <param name="skip"></param>
+	/// <returns></returns>
+	[HttpGet]
 	public async Task<IActionResult> Get([FromQuery] Guid[]? id, [FromQuery] int take = -1, [FromQuery] int skip = 0)
 		=> Ok(await Get(DTOs.HocPhan.Get.Expression, id, take, skip));
 
@@ -64,12 +64,10 @@ public class HocPhan : ControllerBase
 		ModelState.ClearValidationState(nameof(DTOs.HocPhan.Post));
 		Models.HocPhan hocPhan = data.Convert<DTOs.HocPhan.Post, Models.HocPhan>();
 		TryValidateModel(hocPhan, nameof(Models.HocPhan));
-		ModelState.Remove(ModelState
-			.FirstOrDefault(x => x.Key.StartsWith($"{nameof(Models.HocPhan)}.{nameof(hocPhan.MonHoc)}")).Key);
+		ModelState.Remove(ModelState.FirstOrDefault(x => x.Key.StartsWith($"{nameof(Models.HocPhan)}.{nameof(hocPhan.MonHoc)}")).Key);
 		if (!ModelState.IsValid)
 			return BadRequest(ModelState);
-		await using IDbContextTransaction transaction =
-			await _context.Database.BeginTransactionAsync(HttpContext.RequestAborted);
+		await using IDbContextTransaction transaction = await _context.Database.BeginTransactionAsync(HttpContext.RequestAborted);
 		try
 		{
 			await transaction.CreateSavepointAsync("begin");
@@ -88,15 +86,15 @@ public class HocPhan : ControllerBase
 		}
 	}
 
-    /// <summary>
-    ///     Xoá lớp học theo id
-    /// </summary>
-    /// <param name="id">các id đối tượng muốn xoá</param>
-    /// <returns></returns>
-    /// <response code="200">trả về danh sách id thành công</response>
-    /// <response code="404">Khi không tìm thấy</response>
-    /// <response code="400">Khi không có id</response>
-    [ProducesResponseType(typeof(Guid[]), StatusCodes.Status200OK)]
+	/// <summary>
+	///     Xoá lớp học theo id
+	/// </summary>
+	/// <param name="id">các id đối tượng muốn xoá</param>
+	/// <returns></returns>
+	/// <response code="200">trả về danh sách id thành công</response>
+	/// <response code="404">Khi không tìm thấy</response>
+	/// <response code="400">Khi không có id</response>
+	[ProducesResponseType(typeof(Guid[]), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
 	[HttpDelete]
@@ -121,16 +119,16 @@ public class HocPhan : ControllerBase
 		return BadRequest();
 	}
 
-    /// <summary>
-    ///     Cập nhật lớp học theo id
-    /// </summary>
-    /// <param name="id">Guid</param>
-    /// <param name="path">theo cấu trúc fast joson patch</param>
-    /// <returns></returns>
-    /// <response code="200">Cập nhật thành công và trả về kết quả</response>
-    /// <response code="400">Khi validate thất bại</response>
-    /// <response code="500">Khi validate thất bại</response>
-    [ProducesResponseType(typeof(DTOs.LopHoc.Get), StatusCodes.Status200OK)]
+	/// <summary>
+	///     Cập nhật lớp học theo id
+	/// </summary>
+	/// <param name="id">Guid</param>
+	/// <param name="path">theo cấu trúc fast joson patch</param>
+	/// <returns></returns>
+	/// <response code="200">Cập nhật thành công và trả về kết quả</response>
+	/// <response code="400">Khi validate thất bại</response>
+	/// <response code="500">Khi validate thất bại</response>
+	[ProducesResponseType(typeof(DTOs.LopHoc.Get), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ModelStateDictionary), StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(typeof(void), StatusCodes.Status500InternalServerError)]
 	[HttpPatch]

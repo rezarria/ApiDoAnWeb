@@ -101,7 +101,7 @@ public class AppDbContext : DbContext {
 			entity
 			   .HasOne(x => x.MonHoc)
 			   .WithMany(x => x.HocPhan)
-			   .HasForeignKey(x => x.IdMon);
+			   .HasForeignKey(x => x.IdMonHoc);
 		});
 
 		builder.Entity<TruongThongTinNguoiDung>(entity => {
