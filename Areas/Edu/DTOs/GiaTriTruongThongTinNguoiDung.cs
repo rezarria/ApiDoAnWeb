@@ -52,11 +52,22 @@ public static class GiaTriTruongThongTinNguoiDung
 		public string GiaTri { get; set; } = string.Empty;
 	}
 
-	public class Patch : IMetadataKey
+	public class Patch
 	{
-		[Required]
-		public Guid Id { get; set; }
+		public Guid? Id { get; set; }
+		public Guid? IdTruongThongTinNguoiDung { get; set; }
 		[Required]
 		public string GiaTri { get; set; } = string.Empty;
+
+		public static Models.GiaTriTruongThongTinNguoiDung Convert(Patch obj)
+		{
+			Models.GiaTriTruongThongTinNguoiDung model = new()
+			{
+				GiaTri = obj.GiaTri
+			};
+			if (obj.Id is not null) model.Id = obj.Id.Value;
+			if (obj.IdTruongThongTinNguoiDung is not null) model.IdTruongThongTinNguoiDung = obj.IdTruongThongTinNguoiDung.Value;
+			return model;
+		}
 	}
 }

@@ -18,9 +18,9 @@ public static partial class ThietLap
 	{
 		builder.Services.AddDbContext<AppDbContext>(options =>
 		{
-			// string connectionString = builder.Configuration.GetConnectionString("AppDb_Mysql") ?? throw new Exception();
-			// options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
-			options.UseSqlite(builder.Configuration.GetConnectionString("AppDb_Sqlite"));
+			string connectionString = builder.Configuration.GetConnectionString("AppDb_Mysql") ?? throw new Exception();
+			options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+			// options.UseSqlite(builder.Configuration.GetConnectionString("AppDb_Sqlite"));
 		});
 	}
 }

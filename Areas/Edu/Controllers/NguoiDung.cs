@@ -109,7 +109,7 @@ public class NguoiDungController : ControllerBase
 		if (id.Any())
 		{
 			var danhSachNguoiDung = await (
-				from x in _context.Lop
+				from x in _context.NguoiDung
 				where id.Contains(x.Id)
 				select new NguoiDung
 				{
