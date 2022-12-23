@@ -113,18 +113,19 @@ public class GiaTriTruongThongTinNguoiDung : ControllerBase
 		{
 			IEnumerable<Guid> danhSachKey = coId.Select(x => x.Id);
 
-			List<KeyValuePair<Guid, byte[]?>> danhSachRowVersion = _context.GiaTriTruongThongTinNguoiDung
-																		   .Where(x => danhSachKey.Contains(x.Id) && x.IdNguoiDung == idNguoiDung)
-																		   .Select(x => new KeyValuePair<Guid, byte[]?>(x.Id, x.RowVersion))
-																		   .ToList();
+			List<KeyValuePair<Guid, byte[]?>> danhSachRowVersion = (
+				from x in _context.GiaTriTruongThongTinNguoiDung
+				where danhSachKey.Contains(x.Id) && x.IdNguoiDung == idNguoiDung
+				select new KeyValuePair<Guid, byte[]?>(x.Id, x.RowVersion)
+			).ToList();
 
-			if (danhSachRowVersion.Count() != danhSachKey.Count())
+			if (danhSachRowVersion.Count != danhSachKey.Count())
 				throw new Exception("Không thuộc về người dùng này");
 
-			danhSachRowVersion.ForEach(x =>
+			danhSachRowVersion.ForEach(rowVersion =>
 			{
-				Models.GiaTriTruongThongTinNguoiDung giaTri = coId.First(y => y.Id == x.Key);
-				giaTri.RowVersion = x.Value;
+				Models.GiaTriTruongThongTinNguoiDung giaTri = coId.First(y => y.Id == rowVersion.Key);
+				giaTri.RowVersion = rowVersion.Value;
 
 				EntityEntry<Models.GiaTriTruongThongTinNguoiDung> entity = _context.Entry(giaTri);
 

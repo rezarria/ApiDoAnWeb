@@ -9,7 +9,8 @@ namespace Api.Areas.Edu.Contexts;
 
 /// <summary>
 /// </summary>
-public class AppDbContext : DbContext {
+public class AppDbContext : DbContext
+{
 	/// <summary>
 	/// </summary>
 	/// <param name="options"></param>
@@ -77,12 +78,17 @@ public class AppDbContext : DbContext {
 
 		builder.Entity<TaiKhoan>(entity => { entity.HasIndex(x => x.Username).IsUnique(); });
 
-		builder.Entity<ChiTietLich>(entity => {
-			entity.HasOne(x => x.NguoiDung).WithMany(x => x.ChiTietLich).IsRequired()
-				  .OnDelete(DeleteBehavior.Cascade);
+		builder.Entity<ChiTietLich>(entity =>
+		{
+			entity
+				.HasOne(x => x.NguoiDung)
+				.WithMany(x => x.ChiTietLich)
+				.IsRequired()
+				.OnDelete(DeleteBehavior.Cascade);
 		});
 
-		builder.Entity<NguoiDung>(entity => {
+		builder.Entity<NguoiDung>(entity =>
+		{
 			entity
 			   .HasOne(x => x.TaiKhoan)
 			   .WithOne(x => x.NguoiDung);
@@ -93,7 +99,8 @@ public class AppDbContext : DbContext {
 			   .HasForeignKey(x => x.IdNguoiDung);
 		});
 
-		builder.Entity<HocPhan>(entity => {
+		builder.Entity<HocPhan>(entity =>
+		{
 			entity
 			   .HasMany(x => x.ChungNhan)
 			   .WithMany(x => x.HocPhan);
@@ -104,18 +111,21 @@ public class AppDbContext : DbContext {
 			   .HasForeignKey(x => x.IdMonHoc);
 		});
 
-		builder.Entity<TruongThongTinNguoiDung>(entity => {
+		builder.Entity<TruongThongTinNguoiDung>(entity =>
+		{
 			entity
 			   .HasMany(x => x.GiaTri)
 			   .WithOne(x => x.TruongThongTinNguoiDung)
 			   .HasForeignKey(x => x.IdTruongThongTinNguoiDung);
 		});
 
-		builder.Entity<GiaTriTruongThongTinNguoiDung>(entity => {
-			entity.HasIndex(x => new {x.IdNguoiDung, x.IdTruongThongTinNguoiDung});
+		builder.Entity<GiaTriTruongThongTinNguoiDung>(entity =>
+		{
+			entity.HasIndex(x => new { x.IdNguoiDung, x.IdTruongThongTinNguoiDung });
 		});
 
-		builder.Entity<DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung>(entity => {
+		builder.Entity<DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung>(entity =>
+		{
 			entity
 			   .HasOne(x => x.KieuNguoiDung)
 			   .WithMany(x => x.DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung)
@@ -126,17 +136,19 @@ public class AppDbContext : DbContext {
 			   .WithMany(x => x.DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung)
 			   .HasForeignKey(x => x.IdTruongThongTinNguoiDung);
 
-			entity.HasIndex(x => new {x.IdKieuNguoiDung, x.IdTruongThongTinNguoiDung}).IsUnique();
+			entity.HasIndex(x => new { x.IdKieuNguoiDung, x.IdTruongThongTinNguoiDung }).IsUnique();
 		});
 
-		builder.Entity<KieuNguoiDung>(entity => {
+		builder.Entity<KieuNguoiDung>(entity =>
+		{
 			entity
 			   .HasMany(x => x.DanhSachNguoiDung)
 			   .WithOne(x => x.KieuNguoiDung)
 			   .HasForeignKey(x => x.IdKieuNguoiDung);
 		});
 
-		builder.Entity<SoYeuLyLich>(entity => {
+		builder.Entity<SoYeuLyLich>(entity =>
+		{
 			entity
 			   .HasOne(x => x.NguoiDung)
 			   .WithOne(x => x.SoYeuLyLich)
