@@ -1,7 +1,5 @@
 #region
 
-using System.Data;
-using System.Linq.Expressions;
 using Api.Areas.Edu.Contexts;
 using Api.Areas.Edu.DTOs;
 using Microsoft.AspNetCore.JsonPatch;
@@ -9,6 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using System.Data;
+using System.Linq.Expressions;
+using MonHoc=Api.Areas.Edu.Models.MonHoc;
 
 #endregion
 
@@ -20,7 +21,8 @@ namespace Api.Areas.Edu.Controllers;
 [Area("Api")]
 [ApiController]
 [Route("/[area]/[controller]")]
-public class MonHocController : ControllerBase {
+public class MonHocController : ControllerBase
+{
 	/// <summary>
 	/// </summary>
 	private readonly AppDbContext _context;
@@ -42,16 +44,18 @@ public class MonHocController : ControllerBase {
 	/// <returns></returns>
 	[HttpGet]
 	public async Task<IActionResult> Get([FromQuery] Guid[]? id, [FromQuery] int take = -1, [FromQuery] int skip = 0)
-		=> Ok(await Get(MonHoc.Get.Expression, id, take, skip));
+	{
+		return Ok(await Get(DTOs.MonHoc.Get.Expression, id, take, skip));
+	}
 
 	private async Task<TOutputType[]> Get<TOutputType>(
-		Expression<Func<Models.MonHoc, TOutputType>> expression,
+		Expression<Func<MonHoc, TOutputType>> expression,
 		[FromQuery] Guid[]? id,
 		[FromQuery] int take = -1,
 		[FromQuery] int skip = 0)
 		where TOutputType : class
 	{
-		var query = _context.Mon.AsQueryable();
+		IQueryable<MonHoc> query = _context.Mon.AsQueryable();
 
 		if (id is not null && id.Any())
 			query = query.Where(x => id.Contains(x.Id));
@@ -80,7 +84,9 @@ public class MonHocController : ControllerBase {
 		[FromQuery] Guid[] id,
 		[FromQuery] int take = -1,
 		[FromQuery] int skip = 0)
-		=> Ok(await Get(MonHoc.Get.ExpressionToiThieu, id, take, skip));
+	{
+		return Ok(await Get(DTOs.MonHoc.Get.ExpressionToiThieu, id, take, skip));
+	}
 
 
 	/// <summary>
@@ -92,25 +98,27 @@ public class MonHocController : ControllerBase {
 	/// <response code="400">Validate thất bại</response>
 	/// <response code="500"></response>
 	[HttpPost]
-	[ProducesResponseType(typeof(MonHoc.Get[]), StatusCodes.Status201Created)]
+	[ProducesResponseType(typeof(DTOs.MonHoc.Get[]), StatusCodes.Status201Created)]
 	[ProducesResponseType(typeof(ModelStateDictionary), StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(typeof(void), StatusCodes.Status500InternalServerError)]
-	public async Task<IActionResult> Post([FromBody] MonHoc.Post mon)
+	public async Task<IActionResult> Post([FromBody] DTOs.MonHoc.Post mon)
 	{
-		Models.MonHoc monMoi = mon.Convert<MonHoc.Post, Models.MonHoc>();
-		ModelState.ClearValidationState(nameof(MonHoc.Post));
-		if (!TryValidateModel(monMoi, nameof(Models.MonHoc))) return BadRequest(ModelState);
+		MonHoc monMoi = mon.Convert<DTOs.MonHoc.Post, MonHoc>();
+		ModelState.ClearValidationState(nameof(DTOs.MonHoc.Post));
+		if (!TryValidateModel(monMoi, nameof(MonHoc))) return BadRequest(ModelState);
 
 		await using IDbContextTransaction transaction = await _context.Database.BeginTransactionAsync(IsolationLevel.ReadCommitted, HttpContext.RequestAborted);
 		await transaction.CreateSavepointAsync("dau", HttpContext.RequestAborted);
-		try{
+		try
+		{
 			_context.Attach(monMoi);
 			await _context.SaveChangesAsync(HttpContext.RequestAborted);
 			await transaction.CommitAsync(HttpContext.RequestAborted);
 
-			return CreatedAtAction(nameof(Get), new {id = new[] {monMoi.Id}});
+			return CreatedAtAction(nameof(Get), new { id = new[] { monMoi.Id } });
 		}
-		catch (Exception){
+		catch (Exception)
+		{
 			await transaction.RollbackAsync();
 			return new StatusCodeResult(StatusCodes.Status500InternalServerError);
 		}
@@ -124,14 +132,15 @@ public class MonHocController : ControllerBase {
 	/// <returns></returns>
 	/// <response code="200">Cập nhật môn mới thành công và trả về môn</response>
 	[HttpPatch]
-	[ProducesResponseType(typeof(MonHoc.Get), 200)]
-	public async Task<IActionResult> Patch([FromQuery] Guid id, [FromBody] JsonPatchDocument<Models.MonHoc> path)
+	[ProducesResponseType(typeof(DTOs.MonHoc.Get), 200)]
+	public async Task<IActionResult> Patch([FromQuery] Guid id, [FromBody] JsonPatchDocument<MonHoc> path)
 	{
 		await using IDbContextTransaction transaction =
 			await _context.Database.BeginTransactionAsync(IsolationLevel.Serializable, HttpContext.RequestAborted);
 		await transaction.CreateSavepointAsync("dau", HttpContext.RequestAborted);
-		try{
-			Models.MonHoc? mon = await _context.Mon.FirstOrDefaultAsync(x => x.Id == id, HttpContext.RequestAborted);
+		try
+		{
+			MonHoc? mon = await _context.Mon.FirstOrDefaultAsync(predicate: x => x.Id == id, HttpContext.RequestAborted);
 			if (mon is null)
 				return NotFound();
 
@@ -145,7 +154,8 @@ public class MonHocController : ControllerBase {
 
 			return Ok(mon);
 		}
-		catch (Exception){
+		catch (Exception)
+		{
 			await transaction.RollbackAsync();
 			return new StatusCodeResult(StatusCodes.Status500InternalServerError);
 		}
@@ -167,15 +177,16 @@ public class MonHocController : ControllerBase {
 	{
 		IDbContextTransaction transaction = await _context.Database.BeginTransactionAsync(IsolationLevel.Serializable, HttpContext.RequestAborted);
 		await transaction.CreateSavepointAsync("dau", HttpContext.RequestAborted);
-		try{
-			List<Models.MonHoc> cacMonBiXoa = await _context.Mon
-															.Where(x => id.Contains(x.Id))
-															.Select(x => new Models.MonHoc
-															 {
-																 Id = x.Id,
-																 RowVersion = x.RowVersion
-															 })
-															.ToListAsync(HttpContext.RequestAborted);
+		try
+		{
+			List<MonHoc> cacMonBiXoa = await _context.Mon
+												     .Where(x => id.Contains(x.Id))
+												     .Select(x => new MonHoc
+														          {
+															          Id = x.Id,
+															          RowVersion = x.RowVersion
+														          })
+												     .ToListAsync(HttpContext.RequestAborted);
 
 			if (!cacMonBiXoa.Any()) return NotFound();
 
@@ -188,7 +199,8 @@ public class MonHocController : ControllerBase {
 			await transaction.CommitAsync(HttpContext.RequestAborted);
 			return Ok(danhSachXoaThanhCong);
 		}
-		catch (Exception){
+		catch (Exception)
+		{
 			return new StatusCodeResult(500);
 		}
 	}

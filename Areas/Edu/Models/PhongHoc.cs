@@ -1,7 +1,7 @@
 ﻿#region
 
-using System.ComponentModel.DataAnnotations;
 using Api.Areas.Edu.Interfaces;
+using System.ComponentModel.DataAnnotations;
 
 #endregion
 
@@ -13,10 +13,25 @@ namespace Api.Areas.Edu.Models;
 public class PhongHoc : IMetadata, IPhongHoc
 {
 	/// <summary>
+	///     Danh sách lớp học sử dụng phòng học
+	/// </summary>
+	public virtual ICollection<LopHoc> Lop { get; set; } = new HashSet<LopHoc>();
+
+	/// <summary>
+	///     Danh sách lịch sử dụng lớp học
+	/// </summary>
+	public virtual ICollection<Lich> Lich { get; set; } = new HashSet<Lich>();
+	/// <summary>
 	///     Id
 	/// </summary>
 	[Key]
 	public Guid Id { get; set; }
+
+	/// <summary>
+	///     Timestamp
+	/// </summary>
+	[Timestamp]
+	public byte[]? RowVersion { get; set; } = null!;
 
 	/// <summary>
 	///     Tên phòng học
@@ -29,20 +44,4 @@ public class PhongHoc : IMetadata, IPhongHoc
 	///     Vị trí phòng học
 	/// </summary>
 	public string ViTri { get; set; } = string.Empty;
-
-	/// <summary>
-	///     Danh sách lớp học sử dụng phòng học
-	/// </summary>
-	public virtual ICollection<LopHoc> Lop { get; set; } = new HashSet<LopHoc>();
-
-	/// <summary>
-	///     Danh sách lịch sử dụng lớp học
-	/// </summary>
-	public virtual ICollection<Lich> Lich { get; set; } = new HashSet<Lich>();
-
-	/// <summary>
-	///     Timestamp
-	/// </summary>
-	[Timestamp]
-	public byte[]? RowVersion { get; set; } = null!;
 }

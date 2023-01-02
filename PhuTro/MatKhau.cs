@@ -1,7 +1,7 @@
 #region
 
-using System.Security.Cryptography;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using System.Security.Cryptography;
 
 #endregion
 
@@ -11,23 +11,23 @@ public static class MatKhau
 {
 	public static byte[] MaHoaMatKhau(string matKhau)
 	{
-		using var rng = RandomNumberGenerator.Create();
+		using RandomNumberGenerator rng = RandomNumberGenerator.Create();
 		return MaHoaMatKhau(matKhau, rng);
 	}
 
 	public static byte[] MaHoaMatKhau(string matKhau,
-		RandomNumberGenerator rng,
-		KeyDerivationPrf prf = KeyDerivationPrf.HMACSHA256,
-		int saltSize = 128 / 8,
-		int iterationCount = 1000,
-		int keySize = 256 / 8)
+									  RandomNumberGenerator rng,
+									  KeyDerivationPrf prf = KeyDerivationPrf.HMACSHA256,
+									  int saltSize = 128 / 8,
+									  int iterationCount = 1000,
+									  int keySize = 256 / 8)
 	{
-		var salt = new byte[saltSize];
+		byte[] salt = new byte[saltSize];
 
 		rng.GetBytes(salt);
-		var key = KeyDerivation.Pbkdf2(matKhau, salt, prf, iterationCount, keySize);
+		byte[] key = KeyDerivation.Pbkdf2(matKhau, salt, prf, iterationCount, keySize);
 
-		var output = new byte[13 + salt.Length + key.Length];
+		byte[] output = new byte[13 + salt.Length + key.Length];
 		output[0] = 0x01;
 
 		GhiByte(output, 1, (uint)prf);
@@ -43,18 +43,18 @@ public static class MatKhau
 	{
 		try
 		{
-			var prf = (KeyDerivationPrf)DocByte(matKhauMaHoa, 1);
-			var iterationCount = (int)DocByte(matKhauMaHoa, 5);
-			var saltSize = (int)DocByte(matKhauMaHoa, 9);
-			var keySize = matKhauMaHoa.Length - 13 - saltSize;
+			KeyDerivationPrf prf = (KeyDerivationPrf)DocByte(matKhauMaHoa, 1);
+			int iterationCount = (int)DocByte(matKhauMaHoa, 5);
+			int saltSize = (int)DocByte(matKhauMaHoa, 9);
+			int keySize = matKhauMaHoa.Length - 13 - saltSize;
 
-			var salt = new byte[saltSize];
-			var key = new byte[keySize];
+			byte[] salt = new byte[saltSize];
+			byte[] key = new byte[keySize];
 
 			Buffer.BlockCopy(matKhauMaHoa, 13, salt, 0, salt.Length);
 			Buffer.BlockCopy(matKhauMaHoa, 13 + salt.Length, key, 0, key.Length);
 
-			var key2 = KeyDerivation.Pbkdf2(matKhau, salt, prf, iterationCount, keySize);
+			byte[] key2 = KeyDerivation.Pbkdf2(matKhau, salt, prf, iterationCount, keySize);
 
 			return key.SequenceEqual(key2);
 		}
@@ -76,8 +76,8 @@ public static class MatKhau
 	private static uint DocByte(byte[] mang, int viTri)
 	{
 		return (uint)(mang[viTri] << 24)
-		       | (uint)(mang[viTri + 1] << 16)
-		       | (uint)(mang[viTri + 2] << 8)
-		       | mang[viTri + 3];
+			   | (uint)(mang[viTri + 1] << 16)
+			   | (uint)(mang[viTri + 2] << 8)
+			   | mang[viTri + 3];
 	}
 }

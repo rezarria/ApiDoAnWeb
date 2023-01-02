@@ -19,16 +19,16 @@ public static class HoTro
 
 		List<PropertyInfo> properties = LayToanBoPropertyTheoInterface(typeof(TInputType));
 		properties.ForEach(property =>
-		{
-			try
-			{
-				property.SetValue(soYeuLyLich, property.GetValue(@base));
-			}
-			catch (Exception)
-			{
-				// ignored
-			}
-		});
+						   {
+							   try
+							   {
+								   property.SetValue(soYeuLyLich, property.GetValue(@base));
+							   }
+							   catch (Exception)
+							   {
+								   // ignored
+							   }
+						   });
 		return soYeuLyLich;
 	}
 
@@ -37,7 +37,7 @@ public static class HoTro
 		List<PropertyInfo> properties = new();
 		if (type.IsInterface) properties.AddRange(type.GetProperties());
 		Type[] interfaces = type.GetInterfaces();
-		foreach (var @interface in interfaces)
+		foreach (Type @interface in interfaces)
 			properties.AddRange(LayToanBoPropertyTheoInterface(@interface));
 		return properties;
 	}

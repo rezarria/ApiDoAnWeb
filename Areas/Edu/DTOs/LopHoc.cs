@@ -1,7 +1,7 @@
 #region
 
-using System.Linq.Expressions;
 using Api.Areas.Edu.Interfaces;
+using System.Linq.Expressions;
 
 #endregion
 
@@ -11,6 +11,17 @@ public class LopHoc
 {
 	public class Get : ILopHoc
 	{
+		public static Expression<Func<Models.LopHoc, Get>> Expression = lop => new Get
+																			   {
+																				   Id = lop.Id,
+																				   Ten = lop.Ten,
+																				   SoBuoi = lop.SoBuoi,
+																				   ThoiGianBatDau = lop.ThoiGianBatDau,
+																				   ThoiGianKetThuc = lop.ThoiGianKetThuc,
+																				   TrangThai = lop.TrangThai,
+																				   IdHocPhan = lop.IdHocPhan
+																			   };
+
 		public Guid Id { get; set; }
 		public string Ten { get; set; } = string.Empty;
 		public int SoBuoi { get; set; }
@@ -18,17 +29,6 @@ public class LopHoc
 		public DateTime ThoiGianKetThuc { get; set; }
 		public ILopHoc.TrangThaiLopHoc TrangThai { get; set; }
 		public Guid IdHocPhan { get; set; }
-
-		public static Expression<Func<Models.LopHoc, Get>> Expression = lop => new Get
-		{
-			Id = lop.Id,
-			Ten = lop.Ten,
-			SoBuoi = lop.SoBuoi,
-			ThoiGianBatDau = lop.ThoiGianBatDau,
-			ThoiGianKetThuc = lop.ThoiGianKetThuc,
-			TrangThai = lop.TrangThai,
-			IdHocPhan = lop.IdHocPhan
-		};
 	}
 
 	public class Post : ILopHoc

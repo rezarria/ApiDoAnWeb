@@ -1,7 +1,7 @@
 #region
 
-using System.Linq.Expressions;
 using Api.Areas.Edu.Interfaces;
+using System.Linq.Expressions;
 
 #endregion
 
@@ -11,6 +11,14 @@ public static class MonHoc
 {
 	public class Get : IMonHoc
 	{
+		public static Expression<Func<Models.MonHoc, Get>> Expression = monHoc => new Get(monHoc.Id, monHoc.Ten, monHoc.MieuTa);
+
+		public static Expression<Func<Models.MonHoc, dynamic>> ExpressionToiThieu = monHoc => new
+																							  {
+																								  monHoc.Id,
+																								  monHoc.Ten
+																							  };
+
 		public Get()
 		{
 		}
@@ -27,14 +35,6 @@ public static class MonHoc
 		public Guid Id { get; set; }
 		public string Ten { get; set; } = string.Empty;
 		public string? MieuTa { get; set; }
-
-		public static Expression<Func<Models.MonHoc, Get>> Expression = monHoc => new(monHoc.Id, monHoc.Ten, monHoc.MieuTa);
-
-		public static Expression<Func<Models.MonHoc, dynamic>> ExpressionToiThieu = monHoc => new
-		{
-			monHoc.Id,
-			monHoc.Ten
-		};
 	}
 
 	public class Post : IMonHoc

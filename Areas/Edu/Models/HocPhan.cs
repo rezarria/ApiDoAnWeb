@@ -1,7 +1,7 @@
 ﻿#region
 
-using System.ComponentModel.DataAnnotations;
 using Api.Areas.Edu.Interfaces;
+using System.ComponentModel.DataAnnotations;
 
 #endregion
 
@@ -13,10 +13,27 @@ namespace Api.Areas.Edu.Models;
 public class HocPhan : IMetadata, IHocPhan
 {
 	/// <summary>
-	///     Id
+	///     Môn học
 	/// </summary>
-	[Key]
-	public Guid Id { get; set; }
+	[Required]
+	public virtual MonHoc MonHoc { get; set; } = null!;
+
+	/// <summary>
+	///     Thời gian tạo học phần
+	/// </summary>
+	[DataType(DataType.Date)]
+	public DateTime ThoiGianTao { get; set; }
+
+
+	/// <summary>
+	///     Danh sách chứng nhận của học phần
+	/// </summary>
+	public virtual ICollection<ChungNhan> ChungNhan { get; set; } = new List<ChungNhan>();
+
+	/// <summary>
+	///     Những học phần ưu cầu cho học phần này
+	/// </summary>
+	public virtual ICollection<HocPhan> HocPhanYeuCau { get; set; } = new List<HocPhan>();
 
 	/// <summary>
 	///     Tên học phần
@@ -36,32 +53,14 @@ public class HocPhan : IMetadata, IHocPhan
 	public Guid IdMonHoc { get; set; }
 
 	/// <summary>
-	///     Môn học
-	/// </summary>
-	[Required]
-	public virtual MonHoc MonHoc { get; set; } = null!;
-
-	/// <summary>
 	///     Số buổi của học phần
 	/// </summary>
 	public int SoBuoi { get; set; }
-
 	/// <summary>
-	///     Thời gian tạo học phần
+	///     Id
 	/// </summary>
-	[DataType(DataType.Date)]
-	public DateTime ThoiGianTao { get; set; }
-
-
-	/// <summary>
-	///     Danh sách chứng nhận của học phần
-	/// </summary>
-	public virtual ICollection<ChungNhan> ChungNhan { get; set; } = new List<ChungNhan>();
-
-	/// <summary>
-	///     Những học phần ưu cầu cho học phần này
-	/// </summary>
-	public virtual ICollection<HocPhan> HocPhanYeuCau { get; set; } = new List<HocPhan>();
+	[Key]
+	public Guid Id { get; set; }
 
 	/// <summary>
 	///     Timestamp

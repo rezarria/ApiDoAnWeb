@@ -1,7 +1,5 @@
 ﻿#region
 
-using System.Data;
-using System.Linq.Expressions;
 using Api.Areas.Edu.Contexts;
 using Api.Areas.Edu.DTOs;
 using Microsoft.AspNetCore.JsonPatch;
@@ -9,7 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-using MonHoc = Api.Areas.Edu.Models.MonHoc;
+using System.Data;
+using System.Linq.Expressions;
+using MonHoc=Api.Areas.Edu.Models.MonHoc;
 
 #endregion
 
@@ -36,7 +36,7 @@ public class SoYeuLyLich : ControllerBase
 		[FromQuery] int skip = 0)
 		where TOutputType : class
 	{
-		var query = _context.SoYeuLyLich.AsQueryable();
+		IQueryable<Models.SoYeuLyLich> query = _context.SoYeuLyLich.AsQueryable();
 
 		if (id is not null && id.Any())
 			query = query.Where(x => id.Contains(x.Id));
@@ -59,7 +59,9 @@ public class SoYeuLyLich : ControllerBase
 	/// <returns></returns>
 	[HttpGet]
 	public async Task<IActionResult> Get([FromQuery] Guid[]? id, [FromQuery] int take = -1, [FromQuery] int skip = 0)
-		=> Ok(await Get(DTOs.SoYeuLyLich.Get.Expression, id, take, skip));
+	{
+		return Ok(await Get(DTOs.SoYeuLyLich.Get.Expression, id, take, skip));
+	}
 
 	/// <summary>
 	///     Lấy thông tin ở mức tối thiểu
@@ -76,7 +78,9 @@ public class SoYeuLyLich : ControllerBase
 		[FromQuery] Guid[] id,
 		[FromQuery] int take = -1,
 		[FromQuery] int skip = 0)
-		=> Ok(await Get(DTOs.SoYeuLyLich.Get.ExpressionToiThieu, id, take, skip));
+	{
+		return Ok(await Get(DTOs.SoYeuLyLich.Get.ExpressionToiThieu, id, take, skip));
+	}
 
 
 	/// <summary>
@@ -131,8 +135,8 @@ public class SoYeuLyLich : ControllerBase
 		await transaction.CreateSavepointAsync("dau", HttpContext.RequestAborted);
 		try
 		{
-			var soYeuLyLich =
-				await _context.SoYeuLyLich.FirstOrDefaultAsync(x => x.Id == id, HttpContext.RequestAborted);
+			Models.SoYeuLyLich? soYeuLyLich =
+				await _context.SoYeuLyLich.FirstOrDefaultAsync(predicate: x => x.Id == id, HttpContext.RequestAborted);
 			if (soYeuLyLich is null)
 				return NotFound();
 
@@ -173,17 +177,17 @@ public class SoYeuLyLich : ControllerBase
 		try
 		{
 			List<MonHoc> cacSoYeuLyLichBiXoa = await _context.SoYeuLyLich
-				.Where(x => id.Contains(x.Id))
-				.Select(x => new MonHoc
-				{
-					Id = x.Id,
-					RowVersion = x.RowVersion
-				})
-				.ToListAsync(HttpContext.RequestAborted);
+														     .Where(x => id.Contains(x.Id))
+														     .Select(x => new MonHoc
+																          {
+																	          Id = x.Id,
+																	          RowVersion = x.RowVersion
+																          })
+														     .ToListAsync(HttpContext.RequestAborted);
 
 			if (!cacSoYeuLyLichBiXoa.Any()) return NotFound();
 
-			var danhSachXoaThanhCong = cacSoYeuLyLichBiXoa.Select(x => x.Id).ToArray();
+			Guid[] danhSachXoaThanhCong = cacSoYeuLyLichBiXoa.Select(x => x.Id).ToArray();
 
 
 			cacSoYeuLyLichBiXoa.ForEach(x => _context.Entry(x).State = EntityState.Deleted);

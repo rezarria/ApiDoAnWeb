@@ -1,8 +1,8 @@
 #region
 
+using Api.Areas.Edu.Interfaces;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Api.Areas.Edu.Interfaces;
 
 #endregion
 
@@ -14,10 +14,27 @@ namespace Api.Areas.Edu.Models;
 public class TaiKhoan : IMetadata, ITaiKhoan
 {
 	/// <summary>
+	///     Người dùng
+	/// </summary>
+	[ForeignKey(nameof(IdNguoiDung))]
+	public virtual NguoiDung NguoiDung { get; set; } = null!;
+
+	/// <summary>
+	///     Danh sách claim
+	/// </summary>
+	[InverseProperty(nameof(ClaimTaikhoan.TaiKhoan))]
+	public virtual List<ClaimTaikhoan> Claims { get; set; } = new();
+	/// <summary>
 	///     Id
 	/// </summary>
 	[Key]
 	public Guid Id { get; set; }
+
+	/// <summary>
+	///     Timestamp
+	/// </summary>
+	[Timestamp]
+	public byte[]? RowVersion { get; set; } = null!;
 
 	/// <summary>
 	///     Username
@@ -45,16 +62,4 @@ public class TaiKhoan : IMetadata, ITaiKhoan
 	///     Id người dùng
 	/// </summary>
 	public Guid IdNguoiDung { get; set; }
-
-	/// <summary>
-	///     Người dùng
-	/// </summary>
-	[ForeignKey(nameof(IdNguoiDung))]
-	public virtual NguoiDung NguoiDung { get; set; } = null!;
-
-	/// <summary>
-	///     Timestamp
-	/// </summary>
-	[Timestamp]
-	public byte[]? RowVersion { get; set; } = null!;
 }

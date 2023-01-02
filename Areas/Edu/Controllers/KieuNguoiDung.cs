@@ -1,7 +1,5 @@
 #region
 
-using System.Data;
-using System.Linq.Expressions;
 using Api.Areas.Edu.Contexts;
 using Api.Areas.Edu.Models;
 using Microsoft.AspNetCore.JsonPatch;
@@ -9,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using System.Data;
+using System.Linq.Expressions;
 using TruongThongTinNguoiDung=Api.Areas.Edu.DTOs.TruongThongTinNguoiDung;
 
 #endregion
@@ -17,8 +17,14 @@ namespace Api.Areas.Edu.Controllers;
 
 [Area("Api")]
 [Route("/[area]/[controller]")]
-public class KieuNguoiDungController : ControllerBase {
+public class KieuNguoiDungController : ControllerBase
+{
 	private readonly AppDbContext _context;
+
+	public KieuNguoiDungController(AppDbContext context)
+	{
+		_context = context;
+	}
 
 	private async Task<TOutputType[]> Get<TOutputType>(
 		Expression<Func<KieuNguoiDung, TOutputType>> expression,
@@ -27,10 +33,10 @@ public class KieuNguoiDungController : ControllerBase {
 		[FromQuery] int skip = 0)
 		where TOutputType : class
 	{
-		var query = _context.KieuNguoiDung
-							.Include(x => x.DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung)
-							.ThenInclude(x => x.TruongThongTinNguoiDung)
-							.AsQueryable();
+		IQueryable<KieuNguoiDung> query = _context.KieuNguoiDung
+												  .Include(x => x.DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung)
+												  .ThenInclude(x => x.TruongThongTinNguoiDung)
+												  .AsQueryable();
 
 		if (ids is not null && ids.Any())
 			query = query.Where(x => ids.Contains(x.Id));
@@ -44,11 +50,6 @@ public class KieuNguoiDungController : ControllerBase {
 		return await query.Select(expression).AsNoTracking().ToArrayAsync(HttpContext.RequestAborted);
 	}
 
-	public KieuNguoiDungController(AppDbContext context)
-	{
-		_context = context;
-	}
-
 	/// <summary>
 	///     Lấy danh sách kiểu người dùng
 	/// </summary>
@@ -60,19 +61,23 @@ public class KieuNguoiDungController : ControllerBase {
 	[ProducesResponseType(typeof(DTOs.KieuNguoiDung.Get[]), StatusCodes.Status200OK)]
 	[HttpGet]
 	public async Task<IActionResult> Get([FromQuery] Guid[]? id, [FromQuery] int take = -1, [FromQuery] int skip = 0)
-		=> Ok(await Get(DTOs.KieuNguoiDung.Get.Expression, id, take, skip));
+	{
+		return Ok(await Get(DTOs.KieuNguoiDung.Get.Expression, id, take, skip));
+	}
 
 	/// <response code="200"></response>
 	[HttpGet("toithieu")]
 	public async Task<IActionResult> GetToiThieu(Guid[]? id, int take = -1, int skip = 0)
-		=> Ok(await Get(data => new
-					    {
-						    data.Id,
-						    data.Ten
-					    },
-					    id,
-					    take,
-					    skip));
+	{
+		return Ok(await Get(expression: data => new
+											    {
+												    data.Id,
+												    data.Ten
+											    },
+						    id,
+						    take,
+						    skip));
+	}
 
 	/// <summary>
 	///     Tạo kiểu người dùng mới
@@ -95,14 +100,16 @@ public class KieuNguoiDungController : ControllerBase {
 			return BadRequest(ModelState);
 		await using IDbContextTransaction transaction =
 			await _context.Database.BeginTransactionAsync(HttpContext.RequestAborted);
-		try{
+		try
+		{
 			await transaction.CreateSavepointAsync("begin");
 			_context.KieuNguoiDung.Attach(kieuNguoiDung);
 			await _context.SaveChangesAsync(HttpContext.RequestAborted);
 			await transaction.CommitAsync();
-			return CreatedAtAction(nameof(Get), new {ids = kieuNguoiDung.Id.ToString()}, kieuNguoiDung);
+			return CreatedAtAction(nameof(Get), new { ids = kieuNguoiDung.Id.ToString() }, kieuNguoiDung);
 		}
-		catch (Exception){
+		catch (Exception)
+		{
 			await transaction.RollbackAsync();
 			return new StatusCodeResult(StatusCodes.Status500InternalServerError);
 		}
@@ -122,16 +129,17 @@ public class KieuNguoiDungController : ControllerBase {
 	[HttpDelete]
 	public async Task<IActionResult> Delete([FromBody] Guid[] id)
 	{
-		if (id.Any()){
+		if (id.Any())
+		{
 			List<KieuNguoiDung> danhSachKieuNguoiDungPhaiXoa = await (
-				from x in _context.KieuNguoiDung
-				where id.Contains(x.Id)
-				select new KieuNguoiDung
-				{
-					Id = x.Id,
-					RowVersion = x.RowVersion
-				}
-			).ToListAsync(HttpContext.RequestAborted);
+																	     from x in _context.KieuNguoiDung
+																	     where id.Contains(x.Id)
+																	     select new KieuNguoiDung
+																		        {
+																			        Id = x.Id,
+																			        RowVersion = x.RowVersion
+																		        }
+																     ).ToListAsync(HttpContext.RequestAborted);
 			danhSachKieuNguoiDungPhaiXoa.ForEach(truongThongTin => _context.Entry(truongThongTin).State = EntityState.Deleted);
 			await _context.SaveChangesAsync(HttpContext.RequestAborted);
 			return Ok(danhSachKieuNguoiDungPhaiXoa.Select(x => x.Id));
@@ -156,9 +164,10 @@ public class KieuNguoiDungController : ControllerBase {
 		await using IDbContextTransaction transaction =
 			await _context.Database.BeginTransactionAsync(IsolationLevel.Serializable, HttpContext.RequestAborted);
 		await transaction.CreateSavepointAsync("dau", HttpContext.RequestAborted);
-		try{
+		try
+		{
 			KieuNguoiDung? kieuNguoiDung =
-				await _context.KieuNguoiDung.FirstOrDefaultAsync(x => x.Id == id, HttpContext.RequestAborted);
+				await _context.KieuNguoiDung.FirstOrDefaultAsync(predicate: x => x.Id == id, HttpContext.RequestAborted);
 
 			if (kieuNguoiDung is null)
 				return NotFound();
@@ -173,7 +182,8 @@ public class KieuNguoiDungController : ControllerBase {
 
 			return Ok(kieuNguoiDung);
 		}
-		catch (Exception){
+		catch (Exception)
+		{
 			await transaction.RollbackAsync();
 			return new StatusCodeResult(StatusCodes.Status500InternalServerError);
 		}
@@ -196,42 +206,44 @@ public class KieuNguoiDungController : ControllerBase {
 	public async Task<IActionResult> CapNhatTruongThongTinNguoiDung(Guid id,
 																	[FromBody] Guid[] idTruongThongTinNguoiDung)
 	{
-		if (!await _context.KieuNguoiDung.AnyAsync(x => x.Id == id, HttpContext.RequestAborted))
+		if (!await _context.KieuNguoiDung.AnyAsync(predicate: x => x.Id == id, HttpContext.RequestAborted))
 			return NotFound();
 
 		IQueryable<Models.DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung> query = _context.DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung.Where(x => x.IdKieuNguoiDung == id);
 
 		IQueryable<Models.DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung> doiTuongXoa = (
-			from x in query
-			where !idTruongThongTinNguoiDung.Contains(x.IdTruongThongTinNguoiDung)
-			select new Models.DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung
-			{
-				Id = x.Id,
-				RowVersion = x.RowVersion
-			}
-		).AsNoTracking();
+																							   from x in query
+																							   where !idTruongThongTinNguoiDung.Contains(x.IdTruongThongTinNguoiDung)
+																							   select new Models.DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung
+																								      {
+																									      Id = x.Id,
+																									      RowVersion = x.RowVersion
+																								      }
+																						   ).AsNoTracking();
 
 		List<Models.DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung> doiTuongThem = (
-			from x in idTruongThongTinNguoiDung
-			where !query.Any(y => y.IdTruongThongTinNguoiDung == x)
-			select new Models.DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung
-			{
-				IdKieuNguoiDung = id,
-				IdTruongThongTinNguoiDung = x
-			}
-		).ToList();
+																						  from x in idTruongThongTinNguoiDung
+																						  where !query.Any(y => y.IdTruongThongTinNguoiDung == x)
+																						  select new Models.DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung
+																							     {
+																								     IdKieuNguoiDung = id,
+																								     IdTruongThongTinNguoiDung = x
+																							     }
+																					  ).ToList();
 
 		await using IDbContextTransaction transaction = await _context.Database.BeginTransactionAsync(HttpContext.RequestAborted);
-		try{
+		try
+		{
 			await transaction.CreateSavepointAsync("begin", HttpContext.RequestAborted);
-			await doiTuongXoa.ForEachAsync(x => _context.Entry(x).State = EntityState.Deleted, HttpContext.RequestAborted);
+			await doiTuongXoa.ForEachAsync(action: x => _context.Entry(x).State = EntityState.Deleted, HttpContext.RequestAborted);
 			_context.AttachRange(doiTuongThem);
 			await _context.SaveChangesAsync(HttpContext.RequestAborted);
 			await transaction.CommitAsync(HttpContext.RequestAborted);
 
 			return Ok();
 		}
-		catch (Exception){
+		catch (Exception)
+		{
 			await transaction.RollbackAsync();
 			return Problem();
 		}

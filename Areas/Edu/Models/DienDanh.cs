@@ -1,8 +1,8 @@
 ﻿#region
 
+using Api.Areas.Edu.Interfaces;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Api.Areas.Edu.Interfaces;
 
 #endregion
 
@@ -14,10 +14,10 @@ namespace Api.Areas.Edu.Models;
 public class DiemDanh : IMetadata, IDiemDanh
 {
 	/// <summary>
-	///     Id
+	///     Chi tiết lịch
 	/// </summary>
-	[Key]
-	public Guid Id { get; set; }
+	[ForeignKey(nameof(IdChiTietLich))]
+	public virtual ChiTietLich? ChiTietLich { get; set; }
 
 	/// <summary>
 	///     Trạng thái
@@ -36,19 +36,18 @@ public class DiemDanh : IMetadata, IDiemDanh
 	public DateTime ThoiDiemDiemDanh { get; set; } = DateTime.Now;
 
 	/// <summary>
+	///     Id chi tiết lịch
+	/// </summary>
+	public Guid? IdChiTietLich { get; set; }
+	/// <summary>
+	///     Id
+	/// </summary>
+	[Key]
+	public Guid Id { get; set; }
+
+	/// <summary>
 	///     Timestamp
 	/// </summary>
 	[Timestamp]
 	public byte[]? RowVersion { get; set; } = null!;
-
-	/// <summary>
-	///     Id chi tiết lịch
-	/// </summary>
-	public Guid? IdChiTietLich { get; set; }
-
-	/// <summary>
-	///     Chi tiết lịch
-	/// </summary>
-	[ForeignKey(nameof(IdChiTietLich))]
-	public virtual ChiTietLich? ChiTietLich { get; set; }
 }

@@ -1,7 +1,7 @@
 ﻿#region
 
-using System.ComponentModel.DataAnnotations;
 using Api.Areas.Edu.Interfaces;
+using System.ComponentModel.DataAnnotations;
 
 #endregion
 
@@ -13,10 +13,24 @@ namespace Api.Areas.Edu.Models;
 public class LopHoc : IMetadata, ILopHoc
 {
 	/// <summary>
-	///     Id
+	///     Học phần của lớp học
 	/// </summary>
-	[Key]
-	public Guid Id { get; set; }
+	public virtual HocPhan? HocPhan { get; set; }
+
+	/// <summary>
+	///     Danh sách người tham gia lớp học (học sinh + giảng viên)
+	/// </summary>
+	public virtual ICollection<NguoiDung> NguoiThamGia { get; set; } = null!;
+
+	/// <summary>
+	///     Danh sách lịch của lớp học
+	/// </summary>
+	public virtual ICollection<Lich> Lich { get; set; } = null!;
+
+	/// <summary>
+	///     Danh sách phòng học được sử dụng bởi lớp học
+	/// </summary>
+	public virtual ICollection<PhongHoc> PhongHoc { get; set; } = null!;
 
 	/// <summary>
 	///     Tên lớp
@@ -50,26 +64,11 @@ public class LopHoc : IMetadata, ILopHoc
 	///     Id học phần của lớp học
 	/// </summary>
 	public Guid IdHocPhan { get; set; }
-
 	/// <summary>
-	///     Học phần của lớp học
+	///     Id
 	/// </summary>
-	public virtual HocPhan? HocPhan { get; set; }
-
-	/// <summary>
-	///     Danh sách người tham gia lớp học (học sinh + giảng viên)
-	/// </summary>
-	public virtual ICollection<NguoiDung> NguoiThamGia { get; set; } = null!;
-
-	/// <summary>
-	///     Danh sách lịch của lớp học
-	/// </summary>
-	public virtual ICollection<Lich> Lich { get; set; } = null!;
-
-	/// <summary>
-	///     Danh sách phòng học được sử dụng bởi lớp học
-	/// </summary>
-	public virtual ICollection<PhongHoc> PhongHoc { get; set; } = null!;
+	[Key]
+	public Guid Id { get; set; }
 
 	/// <summary>
 	///     Timestamp

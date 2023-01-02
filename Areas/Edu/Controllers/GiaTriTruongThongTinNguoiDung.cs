@@ -1,11 +1,11 @@
 #region
 
-using System.Linq.Expressions;
 using Api.Areas.Edu.Contexts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage;
+using System.Linq.Expressions;
 
 #endregion
 
@@ -17,6 +17,11 @@ public class GiaTriTruongThongTinNguoiDung : ControllerBase
 {
 	private readonly AppDbContext _context;
 
+	public GiaTriTruongThongTinNguoiDung(AppDbContext context)
+	{
+		_context = context;
+	}
+
 	private async Task<TOutputType[]> Get<TOutputType>(
 		Expression<Func<Models.GiaTriTruongThongTinNguoiDung, TOutputType>> expression,
 		[FromQuery] Guid[]? ids,
@@ -24,7 +29,7 @@ public class GiaTriTruongThongTinNguoiDung : ControllerBase
 		[FromQuery] int skip = 0)
 		where TOutputType : class
 	{
-		var query = _context.GiaTriTruongThongTinNguoiDung.AsQueryable();
+		IQueryable<Models.GiaTriTruongThongTinNguoiDung> query = _context.GiaTriTruongThongTinNguoiDung.AsQueryable();
 
 		if (ids is not null && ids.Any())
 			query = query.Where(x => ids.Contains(x.Id));
@@ -38,23 +43,22 @@ public class GiaTriTruongThongTinNguoiDung : ControllerBase
 		return await query.Select(expression).AsNoTracking().ToArrayAsync(HttpContext.RequestAborted);
 	}
 
-	public GiaTriTruongThongTinNguoiDung(AppDbContext context)
-	{
-		_context = context;
-	}
-
 	[HttpGet]
 	public async Task<DTOs.GiaTriTruongThongTinNguoiDung.Get[]> Get(Guid[] id, int take = -1, int skip = 0)
-	=> await Get(DTOs.GiaTriTruongThongTinNguoiDung.Get.Expression, id, take, skip);
+	{
+		return await Get(DTOs.GiaTriTruongThongTinNguoiDung.Get.Expression, id, take, skip);
+	}
 
 	[HttpGet]
 	[Route("phutro")]
 	public async Task<DTOs.GiaTriTruongThongTinNguoiDung.GetPhuTro[]> LayTheoKieuTaiKhoan(Guid id)
-		=> await _context
-			.GiaTriTruongThongTinNguoiDung
-			.Where(x => x.IdNguoiDung == id)
-			.Select(DTOs.GiaTriTruongThongTinNguoiDung.GetPhuTro.Expression)
-			.ToArrayAsync(HttpContext.RequestAborted);
+	{
+		return await _context
+				     .GiaTriTruongThongTinNguoiDung
+				     .Where(x => x.IdNguoiDung == id)
+				     .Select(DTOs.GiaTriTruongThongTinNguoiDung.GetPhuTro.Expression)
+				     .ToArrayAsync(HttpContext.RequestAborted);
+	}
 
 	[HttpPatch]
 	[Route("CapNhatNho")]
@@ -84,9 +88,9 @@ public class GiaTriTruongThongTinNguoiDung : ControllerBase
 	private async Task XuLyKoCoId(Guid idNguoiDung, DTOs.GiaTriTruongThongTinNguoiDung.Patch[] danhSach)
 	{
 		List<Models.GiaTriTruongThongTinNguoiDung> koCoId = danhSach
-														   .Where(x => !x.Id.HasValue)
-														   .Select(DTOs.GiaTriTruongThongTinNguoiDung.Patch.Convert)
-														   .ToList();
+															.Where(x => !x.Id.HasValue)
+															.Select(DTOs.GiaTriTruongThongTinNguoiDung.Patch.Convert)
+															.ToList();
 
 		if (koCoId.Any())
 		{
@@ -94,9 +98,9 @@ public class GiaTriTruongThongTinNguoiDung : ControllerBase
 				throw new Exception("Một số id đã tồn tại");
 
 			koCoId.ForEach(x =>
-			{
-				x.IdNguoiDung = idNguoiDung;
-			});
+						   {
+							   x.IdNguoiDung = idNguoiDung;
+						   });
 
 			await _context.AddRangeAsync(koCoId, HttpContext.RequestAborted);
 		}
@@ -105,34 +109,34 @@ public class GiaTriTruongThongTinNguoiDung : ControllerBase
 	private void XuLyCoId(Guid idNguoiDung, DTOs.GiaTriTruongThongTinNguoiDung.Patch[] danhSach)
 	{
 		List<Models.GiaTriTruongThongTinNguoiDung> coId = danhSach
-														 .Where(x => x.Id.HasValue)
-														 .Select(DTOs.GiaTriTruongThongTinNguoiDung.Patch.Convert)
-														 .ToList();
+														  .Where(x => x.Id.HasValue)
+														  .Select(DTOs.GiaTriTruongThongTinNguoiDung.Patch.Convert)
+														  .ToList();
 
 		if (coId.Any())
 		{
 			IEnumerable<Guid> danhSachKey = coId.Select(x => x.Id);
 
 			List<KeyValuePair<Guid, byte[]?>> danhSachRowVersion = (
-				from x in _context.GiaTriTruongThongTinNguoiDung
-				where danhSachKey.Contains(x.Id) && x.IdNguoiDung == idNguoiDung
-				select new KeyValuePair<Guid, byte[]?>(x.Id, x.RowVersion)
-			).ToList();
+																	   from x in _context.GiaTriTruongThongTinNguoiDung
+																	   where danhSachKey.Contains(x.Id) && x.IdNguoiDung == idNguoiDung
+																	   select new KeyValuePair<Guid, byte[]?>(x.Id, x.RowVersion)
+																   ).ToList();
 
 			if (danhSachRowVersion.Count != danhSachKey.Count())
 				throw new Exception("Không thuộc về người dùng này");
 
 			danhSachRowVersion.ForEach(rowVersion =>
-			{
-				Models.GiaTriTruongThongTinNguoiDung giaTri = coId.First(y => y.Id == rowVersion.Key);
-				giaTri.RowVersion = rowVersion.Value;
+									   {
+										   Models.GiaTriTruongThongTinNguoiDung giaTri = coId.First(y => y.Id == rowVersion.Key);
+										   giaTri.RowVersion = rowVersion.Value;
 
-				EntityEntry<Models.GiaTriTruongThongTinNguoiDung> entity = _context.Entry(giaTri);
+										   EntityEntry<Models.GiaTriTruongThongTinNguoiDung> entity = _context.Entry(giaTri);
 
-				entity.Properties.AsQueryable().ForEachAsync(y => y.IsModified = false);
+										   entity.Properties.AsQueryable().ForEachAsync(y => y.IsModified = false);
 
-				entity.Property(y => y.GiaTri).IsModified = true;
-			});
+										   entity.Property(y => y.GiaTri).IsModified = true;
+									   });
 		}
 	}
 }

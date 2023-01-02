@@ -1,7 +1,7 @@
 ﻿#region
 
-using System.Linq.Expressions;
 using Api.Areas.Edu.Interfaces;
+using System.Linq.Expressions;
 
 #endregion
 
@@ -11,6 +11,16 @@ public static class SoYeuLyLich
 {
 	public class Get : ISoYeuLyLich
 	{
+		public static readonly Expression<Func<Models.SoYeuLyLich, ISoYeuLyLich>> Expression = soYeuLyLich =>
+																								   soYeuLyLich;
+
+		public static readonly Expression<Func<Models.SoYeuLyLich, dynamic>> ExpressionToiThieu = soYeuLyLich =>
+																									  new
+																									  {
+																										  soYeuLyLich.Id,
+																										  soYeuLyLich.HoVaTen
+																									  };
+
 		public Guid Id { get; set; }
 		public string? HoVaTen { get; set; }
 		public GioiTinh? GioiTinh { get; set; }
@@ -24,16 +34,6 @@ public static class SoYeuLyLich
 		public string? TonGiao { get; set; }
 		public string? TrinhDoVanHoa { get; set; }
 		public string? SoTruong { get; set; }
-
-		public static readonly Expression<Func<Models.SoYeuLyLich, ISoYeuLyLich>> Expression = soYeuLyLich =>
-			soYeuLyLich;
-
-		public static readonly Expression<Func<Models.SoYeuLyLich, dynamic>> ExpressionToiThieu = soYeuLyLich =>
-			new
-			{
-				soYeuLyLich.Id,
-				soYeuLyLich.HoVaTen
-			};
 	}
 
 	public class Post : ISoYeuLyLichInfo

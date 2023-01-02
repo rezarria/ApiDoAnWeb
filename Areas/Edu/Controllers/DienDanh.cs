@@ -32,7 +32,7 @@ public class DiemDanhController : ControllerBase
 	[HttpGet("{id}")]
 	public async Task<ActionResult<DiemDanh>> GetDienDanh(Guid id)
 	{
-		var dienDanh = await _context.DienDanh.FindAsync(id);
+		DiemDanh? dienDanh = await _context.DienDanh.FindAsync(id);
 
 		return dienDanh == null ? NotFound() : dienDanh;
 	}
@@ -75,7 +75,7 @@ public class DiemDanhController : ControllerBase
 	[HttpDelete("{id}")]
 	public async Task<IActionResult> DeleteDienDanh(Guid id)
 	{
-		var dienDanh = await _context.DienDanh.FindAsync(id);
+		DiemDanh? dienDanh = await _context.DienDanh.FindAsync(id);
 		if (dienDanh == null) return NotFound();
 
 		_context.DienDanh.Remove(dienDanh);

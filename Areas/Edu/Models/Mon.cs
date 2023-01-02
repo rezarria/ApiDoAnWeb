@@ -1,7 +1,7 @@
 #region
 
-using System.ComponentModel.DataAnnotations;
 using Api.Areas.Edu.Interfaces;
+using System.ComponentModel.DataAnnotations;
 
 #endregion
 
@@ -12,32 +12,32 @@ namespace Api.Areas.Edu.Models;
 /// </summary>
 public class MonHoc : IMetadata, IMonHoc
 {
-    /// <summary>
-    ///     Id
-    /// </summary>
-    [Key]
+	/// <summary>
+	///     Người tạo
+	/// </summary>
+	public virtual NguoiDung? NguoiTao { get; set; }
+
+	/// <summary>
+	///     Học phần
+	/// </summary>
+	public virtual ICollection<HocPhan> HocPhan { get; } = new List<HocPhan>();
+	/// <summary>
+	///     Id
+	/// </summary>
+	[Key]
 	public Guid Id { get; set; }
 
-    /// <summary>
-    ///     Tên
-    /// </summary>
-    [Required]
+	[Timestamp]
+	public virtual byte[]? RowVersion { get; set; } = null!;
+
+	/// <summary>
+	///     Tên
+	/// </summary>
+	[Required]
 	public string Ten { get; set; } = null!;
 
-    /// <summary>
-    ///     Miêu tả
-    /// </summary>
-    public string? MieuTa { get; set; }
-
-    /// <summary>
-    ///     Người tạo
-    /// </summary>
-    public virtual NguoiDung? NguoiTao { get; set; }
-
-    /// <summary>
-    ///     Học phần
-    /// </summary>
-    public virtual ICollection<HocPhan> HocPhan { get; } = new List<HocPhan>();
-
-	[Timestamp] public virtual byte[]? RowVersion { get; set; } = null!;
+	/// <summary>
+	///     Miêu tả
+	/// </summary>
+	public string? MieuTa { get; set; }
 }

@@ -1,26 +1,19 @@
 #region
 
 using Api.ThietLap;
-using Newtonsoft.Json;
 
 #endregion
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
-builder.Services.Cors();
-builder.Services.AddControllers().AddNewtonsoftJson(options =>
-{
-	options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-});
-
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.ThietLapSwagger();
+builder.ThietLapXacThuc();
 builder.ThemAppDbContext();
-var app = builder.Build();
+builder.Services.ThietLapMvcjson();
+builder.Services.ThietLapCors();
+builder.Services.ThietLapSwagger();
 
-// Configure the HTTP request pipeline.
+WebApplication app = builder.Build();
+
 if (app.Environment.IsDevelopment())
 {
 	// app.UseSwagger();
@@ -30,9 +23,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseCors(x => x.AllowAnyOrigin().AllowAnyHeader().WithMethods("DELETE", "PATCH", "GET", "POST"));
+app.UseCors();
+app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();

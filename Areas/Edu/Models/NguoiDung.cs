@@ -1,8 +1,8 @@
 #region
 
+using Api.Areas.Edu.Interfaces;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Api.Areas.Edu.Interfaces;
 
 #endregion
 
@@ -13,27 +13,6 @@ namespace Api.Areas.Edu.Models;
 /// </summary>
 public class NguoiDung : IMetadata, INguoiDung
 {
-	/// <summary>
-	///     Id
-	/// </summary>
-	[Key]
-	public Guid Id { get; set; }
-
-	/// <summary>
-	///     Id sơ yếu lý lịch
-	/// </summary>
-	public Guid? IdSoYeuLyLich { get; set; }
-
-	/// <summary>
-	///     Id kiểu người dùng
-	/// </summary>
-	public Guid? IdKieuNguoiDung { get; set; }
-
-	/// <summary>
-	///     Id tài khoản
-	/// </summary>
-	public Guid? IdTaiKhoan { get; set; }
-
 	/// <summary>
 	///     Sơ yếu lý lịch của người dùng
 	/// </summary>
@@ -53,11 +32,16 @@ public class NguoiDung : IMetadata, INguoiDung
 	///     Trường thông tin người dùng
 	/// </summary>
 	public virtual ICollection<GiaTriTruongThongTinNguoiDung> GiaTriTruongThongTinNguoiDung { get; set; } = new HashSet<GiaTriTruongThongTinNguoiDung>();
-	
+
 	/// <summary>
-	///		Kiểu người dùng
+	///     Kiểu người dùng
 	/// </summary>
 	public virtual KieuNguoiDung? KieuNguoiDung { get; set; }
+	/// <summary>
+	///     Id
+	/// </summary>
+	[Key]
+	public Guid Id { get; set; }
 
 	/// <summary>
 	///     Timestamp
@@ -65,5 +49,21 @@ public class NguoiDung : IMetadata, INguoiDung
 	[Timestamp]
 	public byte[]? RowVersion { get; set; } = null!;
 
-	[NotMapped] public string PhanLoai => GetType().Name;
+	/// <summary>
+	///     Id sơ yếu lý lịch
+	/// </summary>
+	public Guid? IdSoYeuLyLich { get; set; }
+
+	/// <summary>
+	///     Id kiểu người dùng
+	/// </summary>
+	public Guid? IdKieuNguoiDung { get; set; }
+
+	/// <summary>
+	///     Id tài khoản
+	/// </summary>
+	public Guid? IdTaiKhoan { get; set; }
+
+	[NotMapped]
+	public string PhanLoai => GetType().Name;
 }

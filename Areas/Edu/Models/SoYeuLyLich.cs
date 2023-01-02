@@ -1,7 +1,7 @@
 #region
 
-using System.ComponentModel.DataAnnotations;
 using Api.Areas.Edu.Interfaces;
+using System.ComponentModel.DataAnnotations;
 
 #endregion
 
@@ -12,6 +12,17 @@ namespace Api.Areas.Edu.Models;
 /// </summary>
 public class SoYeuLyLich : ISoYeuLyLichModel
 {
+	/// <summary>
+	///     Nơi ở hiện nay
+	/// </summary>
+	public string? NoiOHienNay { get; set; }
+
+	/// <summary>
+	///     Căng cước công dân
+	/// </summary>
+	public virtual CanCuocCongDan? CanCuocCongDan { get; set; }
+
+	public virtual NguoiDung? NguoiDung { get; set; }
 	/// <summary>
 	///     Id
 	/// </summary>
@@ -53,11 +64,6 @@ public class SoYeuLyLich : ISoYeuLyLichModel
 	public string? ThuongTru { get; set; }
 
 	/// <summary>
-	///     Nơi ở hiện nay
-	/// </summary>
-	public string? NoiOHienNay { get; set; }
-
-	/// <summary>
 	///     Số điện thoại
 	/// </summary>
 	[Phone(ErrorMessage = "Vui lòng nhập đúng định dạng số điện thoại")]
@@ -84,11 +90,6 @@ public class SoYeuLyLich : ISoYeuLyLichModel
 	public string? TonGiao { get; set; }
 
 	/// <summary>
-	///     Căng cước công dân
-	/// </summary>
-	public virtual CanCuocCongDan? CanCuocCongDan { get; set; }
-
-	/// <summary>
 	///     Trình độ văn hóa
 	/// </summary>
 	public string? TrinhDoVanHoa { get; set; }
@@ -103,6 +104,4 @@ public class SoYeuLyLich : ISoYeuLyLichModel
 	/// </summary>
 	[Timestamp]
 	public byte[]? RowVersion { get; set; }
-	
-	public virtual NguoiDung? NguoiDung { get; set; }
 }

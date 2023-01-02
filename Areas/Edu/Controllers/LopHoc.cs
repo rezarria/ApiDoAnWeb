@@ -1,7 +1,5 @@
 #region
 
-using System.Data;
-using System.Linq.Expressions;
 using Api.Areas.Edu.Contexts;
 using Api.Areas.Edu.DTOs;
 using Microsoft.AspNetCore.JsonPatch;
@@ -9,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using System.Data;
+using System.Linq.Expressions;
 
 #endregion
 
@@ -20,6 +20,11 @@ public class LopHoc : ControllerBase
 {
 	private readonly AppDbContext _context;
 
+	public LopHoc(AppDbContext context)
+	{
+		_context = context;
+	}
+
 	private async Task<TOutputType[]> Get<TOutputType>(
 		Expression<Func<Models.LopHoc, TOutputType>> expression,
 		[FromQuery] Guid[]? ids,
@@ -27,7 +32,7 @@ public class LopHoc : ControllerBase
 		[FromQuery] int skip = 0)
 		where TOutputType : class
 	{
-		var query = _context.Lop.AsQueryable();
+		IQueryable<Models.LopHoc> query = _context.Lop.AsQueryable();
 
 		if (ids is not null && ids.Any())
 			query = query.Where(x => ids.Contains(x.Id));
@@ -41,11 +46,6 @@ public class LopHoc : ControllerBase
 		return await query.Select(expression).AsNoTracking().ToArrayAsync(HttpContext.RequestAborted);
 	}
 
-	public LopHoc(AppDbContext context)
-	{
-		_context = context;
-	}
-
 	/// <summary>
 	///     Lấy danh sách lớp học
 	/// </summary>
@@ -55,7 +55,9 @@ public class LopHoc : ControllerBase
 	/// <returns></returns>
 	[HttpGet]
 	public async Task<IActionResult> Get([FromQuery] Guid[]? id, [FromQuery] int take = -1, [FromQuery] int skip = 0)
-		=> Ok(await Get(DTOs.LopHoc.Get.Expression, id, take, skip));
+	{
+		return Ok(await Get(DTOs.LopHoc.Get.Expression, id, take, skip));
+	}
 
 	/// <summary>
 	///     Tạo lớp học
@@ -108,15 +110,15 @@ public class LopHoc : ControllerBase
 	{
 		if (id.Any())
 		{
-			var danhSachLop = await (
-				from x in _context.Lop
-				where id.Contains(x.Id)
-				select new Models.LopHoc
-				{
-					Id = x.Id,
-					RowVersion = x.RowVersion
-				}
-			).ToListAsync(HttpContext.RequestAborted);
+			List<Models.LopHoc> danhSachLop = await (
+													    from x in _context.Lop
+													    where id.Contains(x.Id)
+													    select new Models.LopHoc
+														       {
+															       Id = x.Id,
+															       RowVersion = x.RowVersion
+														       }
+												    ).ToListAsync(HttpContext.RequestAborted);
 			danhSachLop.ForEach(lop => _context.Entry(lop).State = EntityState.Deleted);
 			await _context.SaveChangesAsync(HttpContext.RequestAborted);
 			return Ok(danhSachLop.Select(x => x.Id));
@@ -143,7 +145,7 @@ public class LopHoc : ControllerBase
 		await transaction.CreateSavepointAsync("dau", HttpContext.RequestAborted);
 		try
 		{
-			var lopHoc = await _context.Lop.FirstOrDefaultAsync(x => x.Id == id, HttpContext.RequestAborted);
+			Models.LopHoc? lopHoc = await _context.Lop.FirstOrDefaultAsync(predicate: x => x.Id == id, HttpContext.RequestAborted);
 			if (lopHoc is null)
 				return NotFound();
 

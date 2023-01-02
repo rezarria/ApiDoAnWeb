@@ -31,7 +31,7 @@ public class ChiTietLich : ControllerBase
 	[HttpGet("{id}")]
 	public async Task<ActionResult<Models.ChiTietLich>> Get(Guid id)
 	{
-		var chiTietLich = await _context.ChiTietLich.FindAsync(id);
+		Models.ChiTietLich? chiTietLich = await _context.ChiTietLich.FindAsync(id);
 
 		return chiTietLich == null ? NotFound() : chiTietLich;
 	}
@@ -73,7 +73,7 @@ public class ChiTietLich : ControllerBase
 	[HttpDelete("{id}")]
 	public async Task<IActionResult> DeleteChiTietLich(Guid id)
 	{
-		var chiTietLich = await _context.ChiTietLich.FindAsync(id);
+		Models.ChiTietLich? chiTietLich = await _context.ChiTietLich.FindAsync(id);
 		if (chiTietLich == null) return NotFound();
 
 		_context.ChiTietLich.Remove(chiTietLich);

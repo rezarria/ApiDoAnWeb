@@ -11,16 +11,16 @@ namespace Api.ThietLap;
 /// </summary>
 public static partial class ThietLap
 {
-    /// <summary>
-    /// </summary>
-    /// <param name="builder"></param>
-    public static void ThemAppDbContext(this WebApplicationBuilder builder)
+	/// <summary>
+	/// </summary>
+	/// <param name="builder"></param>
+	public static void ThemAppDbContext(this WebApplicationBuilder builder)
 	{
 		builder.Services.AddDbContext<AppDbContext>(options =>
-		{
-			string connectionString = builder.Configuration.GetConnectionString("AppDb_Mysql") ?? throw new Exception();
-			options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
-			// options.UseSqlite(builder.Configuration.GetConnectionString("AppDb_Sqlite"));
-		});
+												    {
+													    string connectionString = builder.Configuration.GetConnectionString("AppDb_Mysql") ?? throw new Exception();
+													    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+													    // options.UseSqlite(builder.Configuration.GetConnectionString("AppDb_Sqlite"));
+												    });
 	}
 }

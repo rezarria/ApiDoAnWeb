@@ -1,7 +1,7 @@
 #region
 
-using System.ComponentModel.DataAnnotations;
 using Api.Areas.Edu.Interfaces;
+using System.ComponentModel.DataAnnotations;
 
 #endregion
 
@@ -12,6 +12,16 @@ namespace Api.Areas.Edu.Models;
 /// </summary>
 public class GiaTriTruongThongTinNguoiDung : IGiaTriTruongThongTinNguoiDungModel
 {
+	/// <summary>
+	///     Người dùng
+	/// </summary>
+	/// <value></value>
+	public NguoiDung? NguoiDung { get; set; }
+
+	/// <summary>
+	///     Trường thông tin người dùng
+	/// </summary>
+	public TruongThongTinNguoiDung? TruongThongTinNguoiDung { get; set; }
 	/// <summary>
 	///     Id
 	/// </summary>
@@ -36,17 +46,6 @@ public class GiaTriTruongThongTinNguoiDung : IGiaTriTruongThongTinNguoiDungModel
 	/// </summary>
 	[Required]
 	public string GiaTri { get; set; } = string.Empty;
-
-	/// <summary>
-	///     Người dùng
-	/// </summary>
-	/// <value></value>
-	public NguoiDung? NguoiDung { get; set; }
-
-	/// <summary>
-	///     Trường thông tin người dùng
-	/// </summary>
-	public TruongThongTinNguoiDung? TruongThongTinNguoiDung { get; set; }
 
 	/// <summary>
 	///     Timestamp

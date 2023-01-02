@@ -1,7 +1,5 @@
 #region
 
-using System.Data;
-using System.Linq.Expressions;
 using Api.Areas.Edu.Contexts;
 using Api.Areas.Edu.Models;
 using Microsoft.AspNetCore.JsonPatch;
@@ -9,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using System.Data;
+using System.Linq.Expressions;
 
 #endregion
 
@@ -16,8 +16,14 @@ namespace Api.Areas.Edu.Controllers;
 
 [Area("Api")]
 [Route("/[area]/[controller]")]
-public class NguoiDungController : ControllerBase {
+public class NguoiDungController : ControllerBase
+{
 	private readonly AppDbContext _context;
+
+	public NguoiDungController(AppDbContext context)
+	{
+		_context = context;
+	}
 
 	private async Task<TOutputType[]> Get<TOutputType>(
 		Expression<Func<NguoiDung, TOutputType>> expression,
@@ -40,11 +46,6 @@ public class NguoiDungController : ControllerBase {
 		return await query.Select(expression).AsNoTracking().ToArrayAsync(HttpContext.RequestAborted);
 	}
 
-	public NguoiDungController(AppDbContext context)
-	{
-		_context = context;
-	}
-
 	/// <summary>
 	///     Lấy danh sách người dùng
 	/// </summary>
@@ -54,7 +55,9 @@ public class NguoiDungController : ControllerBase {
 	/// <returns></returns>
 	[HttpGet]
 	public async Task<IActionResult> Get([FromQuery] Guid[]? id, [FromQuery] int take = -1, [FromQuery] int skip = 0)
-		=> Ok(await Get(DTOs.NguoiDung.Get.Expression, id, take, skip));
+	{
+		return Ok(await Get(DTOs.NguoiDung.Get.Expression, id, take, skip));
+	}
 
 	/// <summary>
 	///     Tạo người dùng
@@ -76,14 +79,16 @@ public class NguoiDungController : ControllerBase {
 			return BadRequest(ModelState);
 		await using IDbContextTransaction transaction =
 			await _context.Database.BeginTransactionAsync(HttpContext.RequestAborted);
-		try{
+		try
+		{
 			await transaction.CreateSavepointAsync("begin");
 			_context.NguoiDung.Attach(nguoiDung);
 			await _context.SaveChangesAsync(HttpContext.RequestAborted);
 			await transaction.CommitAsync();
-			return CreatedAtAction(nameof(Get), new {ids = nguoiDung.Id.ToString()}, nguoiDung);
+			return CreatedAtAction(nameof(Get), new { ids = nguoiDung.Id.ToString() }, nguoiDung);
 		}
-		catch (Exception){
+		catch (Exception)
+		{
 			await transaction.RollbackAsync();
 			return new StatusCodeResult(StatusCodes.Status500InternalServerError);
 		}
@@ -105,18 +110,17 @@ public class NguoiDungController : ControllerBase {
 	{
 		if (!id.Any()) return BadRequest();
 		List<NguoiDung> danhSachNguoiDung = await (
-			from x in _context.NguoiDung
-			where id.Contains(x.Id)
-			select new NguoiDung
-			{
-				Id = x.Id,
-				RowVersion = x.RowVersion
-			}
-		).ToListAsync(HttpContext.RequestAborted);
+													  from x in _context.NguoiDung
+													  where id.Contains(x.Id)
+													  select new NguoiDung
+														     {
+															     Id = x.Id,
+															     RowVersion = x.RowVersion
+														     }
+												  ).ToListAsync(HttpContext.RequestAborted);
 		danhSachNguoiDung.ForEach(lop => _context.Entry(lop).State = EntityState.Deleted);
 		await _context.SaveChangesAsync(HttpContext.RequestAborted);
 		return Ok(danhSachNguoiDung.Select(x => x.Id));
-
 	}
 
 	/// <summary>
@@ -134,8 +138,9 @@ public class NguoiDungController : ControllerBase {
 	{
 		await using IDbContextTransaction transaction = await _context.Database.BeginTransactionAsync(IsolationLevel.Serializable, HttpContext.RequestAborted);
 		await transaction.CreateSavepointAsync("dau", HttpContext.RequestAborted);
-		try{
-			NguoiDung? nguoiDung = await _context.NguoiDung.FirstOrDefaultAsync(x => x.Id == id, HttpContext.RequestAborted);
+		try
+		{
+			NguoiDung? nguoiDung = await _context.NguoiDung.FirstOrDefaultAsync(predicate: x => x.Id == id, HttpContext.RequestAborted);
 			if (nguoiDung is null)
 				return NotFound();
 
@@ -149,7 +154,8 @@ public class NguoiDungController : ControllerBase {
 
 			return Ok(nguoiDung);
 		}
-		catch (Exception){
+		catch (Exception)
+		{
 			await transaction.RollbackAsync();
 			return new StatusCodeResult(StatusCodes.Status500InternalServerError);
 		}

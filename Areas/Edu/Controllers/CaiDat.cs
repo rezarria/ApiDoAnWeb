@@ -25,9 +25,7 @@ public class CaiDat : ControllerBase
 	{
 		Models.CaiDat[] data;
 		if (skip is null && take is null)
-		{
 			data = await _context.CaiDat.ToArrayAsync(HttpContext.RequestAborted);
-		}
 		else
 		{
 			skip ??= 0;
@@ -42,7 +40,7 @@ public class CaiDat : ControllerBase
 	public async Task<IActionResult> Get(Guid id)
 	{
 		object[] objs = { id };
-		var caiDat = await _context.CaiDat.FindAsync(objs, HttpContext.RequestAborted);
+		Models.CaiDat? caiDat = await _context.CaiDat.FindAsync(objs, HttpContext.RequestAborted);
 		if (caiDat is null)
 			return NotFound();
 		return Ok(caiDat);
@@ -51,7 +49,7 @@ public class CaiDat : ControllerBase
 	[HttpPost]
 	public async Task<IActionResult> Post([FromBody] CaiDatDto caiDat)
 	{
-		if (await _context.CaiDat.AnyAsync(x => x.Key == caiDat.Key, HttpContext.RequestAborted))
+		if (await _context.CaiDat.AnyAsync(predicate: x => x.Key == caiDat.Key, HttpContext.RequestAborted))
 			return Conflict();
 		_context.Add(caiDat as Models.CaiDat);
 		await _context.SaveChangesAsync(HttpContext.RequestAborted);
@@ -75,9 +73,9 @@ public class CaiDat : ControllerBase
 	{
 		if (await IsExists(id)) return NotFound();
 		Models.CaiDat caiDat = new()
-		{
-			Id = id
-		};
+							   {
+								   Id = id
+							   };
 		_context.Entry(caiDat).State = EntityState.Deleted;
 		await _context.SaveChangesAsync(HttpContext.RequestAborted);
 		return Ok();
@@ -86,13 +84,13 @@ public class CaiDat : ControllerBase
 	[NonAction]
 	public async Task<bool> IsExists(string key)
 	{
-		return await _context.CaiDat.AnyAsync(x => x.Key == key, HttpContext.RequestAborted);
+		return await _context.CaiDat.AnyAsync(predicate: x => x.Key == key, HttpContext.RequestAborted);
 	}
 
 	[NonAction]
 	private async Task<bool> IsExists(Guid id)
 	{
-		return await _context.CaiDat.AnyAsync(x => x.Id == id, HttpContext.RequestAborted);
+		return await _context.CaiDat.AnyAsync(predicate: x => x.Id == id, HttpContext.RequestAborted);
 	}
 
 	public class CaiDatDto : Models.CaiDat

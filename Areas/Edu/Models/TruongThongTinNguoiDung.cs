@@ -1,7 +1,7 @@
 #region
 
-using System.ComponentModel.DataAnnotations;
 using Api.Areas.Edu.Interfaces;
+using System.ComponentModel.DataAnnotations;
 
 #endregion
 
@@ -12,6 +12,18 @@ namespace Api.Areas.Edu.Models;
 /// </summary>
 public class TruongThongTinNguoiDung : ITruongThongTinNguoiDungInfoModel
 {
+	/// <summary>
+	///     Quan hệ mới người dùng
+	/// </summary>
+	public virtual ICollection<DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung>
+		DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung { get; set; } =
+		new HashSet<DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung>();
+
+	/// <summary>
+	///     Giá trị trường với người dùng
+	/// </summary>
+	public virtual ICollection<GiaTriTruongThongTinNguoiDung> GiaTri { get; set; } =
+		new HashSet<GiaTriTruongThongTinNguoiDung>();
 	/// <summary>
 	///     Id
 	/// </summary>
@@ -34,19 +46,6 @@ public class TruongThongTinNguoiDung : ITruongThongTinNguoiDungInfoModel
 	/// <value></value>
 	[Required(AllowEmptyStrings = false)]
 	public string KieuDuLieu { get; set; } = null!;
-
-	/// <summary>
-	///     Quan hệ mới người dùng
-	/// </summary>
-	public virtual ICollection<DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung>
-		DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung { get; set; } =
-		new HashSet<DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung>();
-
-	/// <summary>
-	///     Giá trị trường với người dùng
-	/// </summary>
-	public virtual ICollection<GiaTriTruongThongTinNguoiDung> GiaTri { get; set; } =
-		new HashSet<GiaTriTruongThongTinNguoiDung>();
 
 	/// <summary>
 	///     Timestamp

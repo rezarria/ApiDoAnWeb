@@ -23,9 +23,11 @@ public class DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung : ControllerBase
 	[Route("TheoKieuNguoiDung")]
 	public async Task<DTOs.DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung.TruongThongTinNguoiDung[]>
 		LayTheoKieuTaiKhoan(Guid id)
-		=> await _context
-			.DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung
-			.Where(x => x.IdKieuNguoiDung == id)
-			.Select(DTOs.DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung.TruongThongTinNguoiDung.Expression)
-			.ToArrayAsync(HttpContext.RequestAborted);
+	{
+		return await _context
+				     .DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung
+				     .Where(x => x.IdKieuNguoiDung == id)
+				     .Select(DTOs.DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung.TruongThongTinNguoiDung.Expression)
+				     .ToArrayAsync(HttpContext.RequestAborted);
+	}
 }

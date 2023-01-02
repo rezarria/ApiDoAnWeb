@@ -23,8 +23,8 @@ public static class TiengViet
 
 	public static string LoaiBoDau(this string xau)
 	{
-		for (var i = 1; i < BangChu.Length; i++)
-		for (var j = 0; j < BangChu[i].Length; j++)
+		for (int i = 1; i < BangChu.Length; i++)
+		for (int j = 0; j < BangChu[i].Length; j++)
 			xau = xau.Replace(BangChu[i][j], BangChu[0][i - 1]);
 		return xau;
 	}

@@ -18,19 +18,19 @@ public static class TaiKhoan
 			throw new Exception("Chưa đặt tên");
 
 		matKhau ??= string.Format("{0:ddMMyyyy}", nguoi.SoYeuLyLich.NgaySinh) + string.Join("",
-			nguoi.SoYeuLyLich.HoVaTen.Trim().LoaiBoDau().Split(" ")
-				.Select(x => string.Concat(x[0].ToString().ToUpper(), x.AsSpan(1)))).ToLower();
+																						    nguoi.SoYeuLyLich.HoVaTen.Trim().LoaiBoDau().Split(" ")
+																							     .Select(x => string.Concat(x[0].ToString().ToUpper(), x.AsSpan(1)))).ToLower();
 
-		nguoi.TaiKhoan = new()
-		{
-			Username = nguoi.SoYeuLyLich.HoVaTen.ToLower().LoaiBoDau().Replace(" ", "") +
-			           string.Format("{0:ddMMyyyy}", nguoi.SoYeuLyLich.NgaySinh),
-			MatKhau = MatKhau.MaHoaMatKhau(matKhau)
-		};
+		nguoi.TaiKhoan = new Areas.Edu.Models.TaiKhoan
+						 {
+							 Username = nguoi.SoYeuLyLich.HoVaTen.ToLower().LoaiBoDau().Replace(" ", "") +
+									    string.Format("{0:ddMMyyyy}", nguoi.SoYeuLyLich.NgaySinh),
+							 MatKhau = MatKhau.MaHoaMatKhau(matKhau)
+						 };
 	}
 
 	public static async Task<bool> ChuanBiThemAsync(this NguoiDung nguoi, AppDbContext context,
-		CancellationToken cancellationToken = default)
+													CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		if (nguoi.SoYeuLyLich is not null && nguoi.SoYeuLyLich.NoiOHienNay is not null)

@@ -19,17 +19,17 @@ public static partial class ThietLap
 
 	public static NewtonsoftJsonPatchInputFormatter GetJsonPatchInputFormatter()
 	{
-		var builder = new ServiceCollection()
-			.AddLogging()
-			.AddMvc()
-			.AddNewtonsoftJson()
-			.Services.BuildServiceProvider();
+		ServiceProvider builder = new ServiceCollection()
+								  .AddLogging()
+								  .AddMvc()
+								  .AddNewtonsoftJson()
+								  .Services.BuildServiceProvider();
 
 		return builder
-			.GetRequiredService<IOptions<MvcOptions>>()
-			.Value
-			.InputFormatters
-			.OfType<NewtonsoftJsonPatchInputFormatter>()
-			.First();
+			   .GetRequiredService<IOptions<MvcOptions>>()
+			   .Value
+			   .InputFormatters
+			   .OfType<NewtonsoftJsonPatchInputFormatter>()
+			   .First();
 	}
 }

@@ -1,7 +1,7 @@
 #region
 
-using System.ComponentModel.DataAnnotations;
 using Api.Areas.Edu.Interfaces;
+using System.ComponentModel.DataAnnotations;
 
 #endregion
 
@@ -11,13 +11,17 @@ namespace Api.Areas.Edu.Models;
 ///     Model quan hệ giữa Model kiểu người dùng và Model Trường thông tin người dùng
 /// </summary>
 public class DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung : IMetadata,
-	IDanhSachTruongThongTinNguoiDungThuocKieuTaiKhoan
+																 IDanhSachTruongThongTinNguoiDungThuocKieuTaiKhoan
 {
 	/// <summary>
-	///     Id
+	///     Kiểu người dùng
 	/// </summary>
-	[Key]
-	public Guid Id { get; set; }
+	public virtual KieuNguoiDung? KieuNguoiDung { get; set; }
+
+	/// <summary>
+	///     Trường thông tin người dùng
+	/// </summary>
+	public virtual TruongThongTinNguoiDung? TruongThongTinNguoiDung { get; set; }
 
 	/// <summary>
 	///     Id người dùng
@@ -28,20 +32,15 @@ public class DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung : IMetadata,
 	///     Id trường thông tin người dùng
 	/// </summary>
 	public Guid IdTruongThongTinNguoiDung { get; set; }
+	/// <summary>
+	///     Id
+	/// </summary>
+	[Key]
+	public Guid Id { get; set; }
 
 	/// <summary>
 	///     Timestamp
 	/// </summary>
 	[Timestamp]
 	public byte[]? RowVersion { get; set; }
-
-	/// <summary>
-	///     Kiểu người dùng
-	/// </summary>
-	public virtual KieuNguoiDung? KieuNguoiDung { get; set; }
-
-	/// <summary>
-	///     Trường thông tin người dùng
-	/// </summary>
-	public virtual TruongThongTinNguoiDung? TruongThongTinNguoiDung { get; set; }
 }

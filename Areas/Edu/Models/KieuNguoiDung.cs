@@ -1,7 +1,7 @@
 #region
 
-using System.ComponentModel.DataAnnotations;
 using Api.Areas.Edu.Interfaces;
+using System.ComponentModel.DataAnnotations;
 
 #endregion
 
@@ -10,7 +10,17 @@ namespace Api.Areas.Edu.Models;
 /// <summary>
 ///     Model kiểu người dùng
 /// </summary>
-public class KieuNguoiDung : IKieuNguoiDungModel {
+public class KieuNguoiDung : IKieuNguoiDungModel
+{
+	/// <summary>
+	///     Danh sách trường thông tin người dùng
+	/// </summary>
+	public virtual ICollection<DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung> DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung { get; set; } = new HashSet<DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung>();
+
+	/// <summary>
+	///     Danh sách người dùng
+	/// </summary>
+	public virtual ICollection<NguoiDung> DanhSachNguoiDung { get; set; } = new HashSet<NguoiDung>();
 	/// <summary>
 	///     Id
 	/// </summary>
@@ -22,16 +32,6 @@ public class KieuNguoiDung : IKieuNguoiDungModel {
 	/// </summary>
 	[Required]
 	public string Ten { get; set; } = string.Empty;
-
-	/// <summary>
-	///     Danh sách trường thông tin người dùng
-	/// </summary>
-	public virtual ICollection<DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung> DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung { get; set; } = new HashSet<DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung>();
-	
-	/// <summary>
-	///		Danh sách người dùng
-	/// </summary>
-	public virtual ICollection<NguoiDung> DanhSachNguoiDung { get; set; } = new HashSet<NguoiDung>();
 
 	/// <summary>
 	///     Timestamp
