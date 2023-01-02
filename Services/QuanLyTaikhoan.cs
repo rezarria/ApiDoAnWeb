@@ -39,7 +39,8 @@ public class QuanLyTaiKhoan : IQuanLyTaiKhoan
 			{
 				string key = _configuration["Jwt:Key"] ?? throw new Exception();
 				string issuer = _configuration["Jwt:Issuer"] ?? throw new Exception();
-				return await _tokenService.TaoTokenAsync(key, issuer, idTaiKhoan, cancellationToken);
+				List<Claim> claims = await LayClaimAsync(idTaiKhoan, cancellationToken);
+				return _tokenService.TaoTokenAsync(key, issuer, claims);
 			}
 		return string.Empty;
 	}
@@ -51,7 +52,8 @@ public class QuanLyTaiKhoan : IQuanLyTaiKhoan
 			{
 				string key = _configuration["Jwt:Key"] ?? throw new Exception();
 				string issuer = _configuration["Jwt:Issuer"] ?? throw new Exception();
-				return await _tokenService.TaoTokenAsync(key, issuer, userName, cancellationToken);
+				List<Claim> claims = await LayClaimAsync(userName, cancellationToken);
+				return _tokenService.TaoTokenAsync(key, issuer, claims);
 			}
 		return string.Empty;
 	}

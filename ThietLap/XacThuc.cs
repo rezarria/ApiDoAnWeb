@@ -1,7 +1,11 @@
 #region
 
+using Api.Contexts;
+using Api.Services;
+using Client.BackgroundServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -20,6 +24,8 @@ public static partial class ThietLap
 	{
 		IServiceCollection services = builder.Services;
 		ConfigurationManager configuration = builder.Configuration;
+
+		services.AddDbContext<XacThucContext>(options => options.UseSqlite(configuration.GetConnectionString("XacThuc")));
 
 		services
 			.AddAuthentication(options =>
@@ -72,5 +78,10 @@ public static partial class ThietLap
 														  {
 															  options.ValidationInterval = TimeSpan.FromSeconds(5);
 														  });
+
+		services.AddSingleton<ITokenDangXuatService, TokenDangXuatService>()
+				.AddTransient<ITokenService, TokenService>()
+				.AddTransient<IQuanLyTaiKhoan, QuanLyTaiKhoan>()
+				.AddHostedService<XoaTokenBackgroundService>();
 	}
 }

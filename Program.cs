@@ -1,5 +1,6 @@
 #region
 
+using Api.Middlewares;
 using Api.ThietLap;
 
 #endregion
@@ -22,6 +23,7 @@ if (app.Environment.IsDevelopment())
 	app.UseSwaggerUi3();
 }
 
+app.UseXacThuc();
 app.UseHttpsRedirection();
 app.UseCors();
 app.UseAuthentication();
