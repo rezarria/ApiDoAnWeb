@@ -1,60 +1,43 @@
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
+using Api.Utilities;
+using Microsoft.Extensions.Options;
 using System.Security.Claims;
-using System.Text;
 
 namespace Api.Services;
 
 public interface ITokenService
 {
-	string TaoTokenAsync(string key, string issuer, ICollection<Claim>? themVao = null);
-	bool KiemTraToken(string key, string issuer, string token);
+	string TaoTokenAsync(ICollection<Claim>? themVao = null);
+	bool KiemTraToken(string token);
+	ClaimsPrincipal GiaiMaToken(string token);
+}
+
+public class TokenServiceOptions
+{
+	public double ExpiryDurationMinutes { get; set; }
+	public string Key { get; set; } = string.Empty;
+	public string Issuer { get; set; } = string.Empty;
 }
 
 public class TokenService : ITokenService
 {
-	private const double ExpiryDurationMinutes = 30;
+	private readonly double expiryDurationMinutes;
+	private readonly string key;
+	private readonly string issuer;
 
 
-	public TokenService()
+	public TokenService(IOptions<TokenServiceOptions> options)
 	{
+		expiryDurationMinutes = options.Value.ExpiryDurationMinutes;
+		key = options.Value.Key;
+		issuer = options.Value.Issuer;
 	}
 
-	public string TaoTokenAsync(string key, string issuer, ICollection<Claim>? themVao = null)
-	{
-		List<Claim> claims = new();
-		claims.Add(new Claim("role1", "true"));
-		if (themVao != null)
-			claims.AddRange(themVao);
-		SymmetricSecurityKey securityKey = new(Encoding.UTF8.GetBytes(key));
-		SigningCredentials credentials = new(securityKey, SecurityAlgorithms.HmacSha256Signature);
-		JwtSecurityToken tokenDescriptor = new(issuer, issuer, claims, expires: DateTime.Now.AddMinutes(ExpiryDurationMinutes), signingCredentials: credentials);
-		return new JwtSecurityTokenHandler().WriteToken(tokenDescriptor);
-	}
+	public string TaoTokenAsync(ICollection<Claim>? themVao = null)
+		=> TokenUtility.TaoTokenAsync(key, issuer, expiryDurationMinutes, themVao);
 
-	public bool KiemTraToken(string key, string issuer, string token)
-	{
-		byte[] mySecret = Encoding.UTF8.GetBytes(key);
-		SymmetricSecurityKey mySecurityKey = new SymmetricSecurityKey(mySecret);
-		JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
-		try
-		{
-			tokenHandler.ValidateToken(token,
-									   new TokenValidationParameters
-									   {
-										   ValidateIssuerSigningKey = true,
-										   ValidateIssuer = true,
-										   ValidateAudience = true,
-										   ValidIssuer = issuer,
-										   ValidAudience = issuer,
-										   IssuerSigningKey = mySecurityKey
-									   },
-									   out SecurityToken _);
-		}
-		catch
-		{
-			return false;
-		}
-		return true;
-	}
+	public bool KiemTraToken(string token)
+		=> TokenUtility.KiemTraToken(key, issuer, token);
+
+	public ClaimsPrincipal GiaiMaToken(string token)
+		=> TokenUtility.GiaiMaToken(key, issuer, token);
 }

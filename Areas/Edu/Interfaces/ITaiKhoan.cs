@@ -6,5 +6,5 @@ public interface ITaiKhoan
 	byte[]? MatKhau { get; set; }
 	DateTime ThoiGianTao { get; set; }
 	DateTime ThoiGianDangNhapGanNhat { get; set; }
-	Guid IdNguoiDung { get; set; }
+	Guid? IdNguoiDung { get; set; }
 }

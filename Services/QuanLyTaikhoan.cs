@@ -1,6 +1,9 @@
 using Api.Areas.Edu.Contexts;
+using Api.Models;
 using Api.PhuTro;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using TaiKhoan=Api.Areas.Edu.Models.TaiKhoan;
 
@@ -10,6 +13,9 @@ public interface IQuanLyTaiKhoan
 {
 	Task<string> DangNhapAsync(Guid idTaiKhoan, string matKhau, CancellationToken cancellationToken = default);
 	Task<string> DangNhapAsync(string userName, string matKhau, CancellationToken cancellationToken = default);
+	Task DangKyAsync(TaiKhoan taiKhoan, CancellationToken cancellationToken = default);
+	Task DangKyAsync(TaiKhoan taiKhoan, string matKhau, CancellationToken cancellationToken = default);
+	void DangXuat(string token);
 	Task<bool> KiemTraUsername(string username, CancellationToken cancellationToken = default);
 	Task<bool> KiemTraId(Guid id, CancellationToken cancellationToken = default);
 	Task<List<Claim>> LayClaimAsync(TaiKhoan taiKhoan, CancellationToken cancellationToken = default);
@@ -24,12 +30,14 @@ public class QuanLyTaiKhoan : IQuanLyTaiKhoan
 	private readonly IConfiguration _configuration;
 	private readonly AppDbContext _context;
 	private readonly ITokenService _tokenService;
+	private readonly ITokenDangXuatService _tokenDangXuat;
 
-	public QuanLyTaiKhoan(AppDbContext context, ITokenService tokenService, IConfiguration configuration)
+	public QuanLyTaiKhoan(AppDbContext context, ITokenService tokenService, IConfiguration configuration, ITokenDangXuatService tokenDangXuat)
 	{
 		_context = context;
 		_tokenService = tokenService;
 		_configuration = configuration;
+		_tokenDangXuat = tokenDangXuat;
 	}
 
 	public async Task<string> DangNhapAsync(Guid idTaiKhoan, string matKhau, CancellationToken cancellationToken = default)
@@ -37,10 +45,8 @@ public class QuanLyTaiKhoan : IQuanLyTaiKhoan
 		if (await KiemTraId(idTaiKhoan, cancellationToken))
 			if (await XacThucAsync(idTaiKhoan, matKhau, cancellationToken))
 			{
-				string key = _configuration["Jwt:Key"] ?? throw new Exception();
-				string issuer = _configuration["Jwt:Issuer"] ?? throw new Exception();
 				List<Claim> claims = await LayClaimAsync(idTaiKhoan, cancellationToken);
-				return _tokenService.TaoTokenAsync(key, issuer, claims);
+				return _tokenService.TaoTokenAsync(claims);
 			}
 		return string.Empty;
 	}
@@ -50,13 +56,57 @@ public class QuanLyTaiKhoan : IQuanLyTaiKhoan
 		if (await KiemTraUsername(userName, cancellationToken))
 			if (await XacThucAsync(userName, matKhau, cancellationToken))
 			{
-				string key = _configuration["Jwt:Key"] ?? throw new Exception();
-				string issuer = _configuration["Jwt:Issuer"] ?? throw new Exception();
 				List<Claim> claims = await LayClaimAsync(userName, cancellationToken);
-				return _tokenService.TaoTokenAsync(key, issuer, claims);
+				return _tokenService.TaoTokenAsync(claims);
 			}
 		return string.Empty;
 	}
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="taiKhoan"></param>
+	/// <param name="cancellationToken"></param>
+	/// <exception cref="Exception"></exception>
+	public async Task DangKyAsync(TaiKhoan taiKhoan, CancellationToken cancellationToken = default)
+	{
+		if (_context.TaiKhoan.Any(x => x.Username.Equals(taiKhoan.Username)))
+			throw new Exception("Tài khoản đã tồn tại");
+		_context.Add(taiKhoan);
+		try
+		{
+			await _context.SaveChangesAsync(cancellationToken);
+		}
+		catch (Exception)
+		{
+			throw new Exception("Cập nhật database thất bại");
+		}
+	}
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="taiKhoan"></param>
+	/// <param name="matKhau"></param>
+	/// <param name="cancellationToken"></param>
+	/// <exception cref="Exception"></exception>
+	public async Task DangKyAsync(TaiKhoan taiKhoan, string matKhau, CancellationToken cancellationToken = default)
+	{
+		taiKhoan.MatKhau = MatKhau.MaHoaMatKhau(matKhau);
+		await DangKyAsync(taiKhoan, cancellationToken);
+	}
+
+	public void DangXuat(string token)
+	{
+		ClaimsPrincipal claimsPrincipal = _tokenService.GiaiMaToken(token);
+		TokenDangXuat tokenDangXuat = new()
+									  {
+										  Token = token,
+										  Exp = TimeSpan.FromSeconds(Double.Parse(claimsPrincipal.Claims.First(x => x.Type.Equals(JwtRegisteredClaimNames.Exp))!.Value))
+									  };
+		_tokenDangXuat.ThemToken(tokenDangXuat);
+	}
+
 
 	public async Task<bool> KiemTraUsername(string username, CancellationToken cancellationToken = default)
 	{

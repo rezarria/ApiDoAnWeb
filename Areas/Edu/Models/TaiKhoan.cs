@@ -17,7 +17,7 @@ public class TaiKhoan : IMetadata, ITaiKhoan
 	///     Người dùng
 	/// </summary>
 	[ForeignKey(nameof(IdNguoiDung))]
-	public virtual NguoiDung NguoiDung { get; set; } = null!;
+	public virtual NguoiDung? NguoiDung { get; set; } = null!;
 
 	/// <summary>
 	///     Danh sách claim
@@ -61,5 +61,5 @@ public class TaiKhoan : IMetadata, ITaiKhoan
 	/// <summary>
 	///     Id người dùng
 	/// </summary>
-	public Guid IdNguoiDung { get; set; }
+	public Guid? IdNguoiDung { get; set; }
 }

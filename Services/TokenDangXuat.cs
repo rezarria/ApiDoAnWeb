@@ -76,7 +76,7 @@ public class TokenDangXuatService : ITokenDangXuatService
 		{
 			while (_danhSachBoNhoTrong.TryPeek(out token))
 			{
-				if (token.Exp > DateTime.Now.Subtract(DateTime.UnixEpoch))
+				if (token.Exp > DateTime.UtcNow.Subtract(DateTime.UnixEpoch))
 					break;
 				_danhSachBoNhoTrong.TryPop(out _);
 				_logger.LogInformation("Xóa token đăng xuất trong bộ nhớ");
@@ -86,9 +86,10 @@ public class TokenDangXuatService : ITokenDangXuatService
 		List<TokenDangXuat> danhSachXoa = new();
 		while (_danhSachTokenTrongDatabase.TryPeek(out token))
 		{
-			if (token.Exp > DateTime.Now.Subtract(DateTime.UnixEpoch))
+			if (token.Exp > DateTime.UtcNow.Subtract(DateTime.UnixEpoch))
 				break;
 			danhSachXoa.Add(token);
+			while (!_danhSachTokenTrongDatabase.TryPop(out _)) ;
 		}
 
 		if (danhSachXoa.Any())

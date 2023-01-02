@@ -83,5 +83,11 @@ public static partial class ThietLap
 				.AddTransient<ITokenService, TokenService>()
 				.AddTransient<IQuanLyTaiKhoan, QuanLyTaiKhoan>()
 				.AddHostedService<XoaTokenBackgroundService>();
+		services.Configure<TokenServiceOptions>(options =>
+											    {
+												    options.ExpiryDurationMinutes = 30;
+												    options.Key = configuration["Jwt:Key"] ?? throw new Exception();
+												    options.Issuer = configuration["Jwt:Issuer"] ?? throw new Exception();
+											    });
 	}
 }
