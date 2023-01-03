@@ -1,7 +1,7 @@
+using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.IdentityModel.Tokens;
 
 namespace Api.Utilities;
 
@@ -35,8 +35,8 @@ public static class TokenUtility
 	public static ClaimsPrincipal GiaiMaToken(string key, string issuer, string token)
 	{
 		byte[] mySecret = Encoding.UTF8.GetBytes(key);
-		SymmetricSecurityKey mySecurityKey = new SymmetricSecurityKey(mySecret);
-		JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
+		SymmetricSecurityKey mySecurityKey = new(mySecret);
+		JwtSecurityTokenHandler tokenHandler = new();
 		return tokenHandler.ValidateToken(token,
 										  new TokenValidationParameters
 										  {

@@ -34,7 +34,7 @@ public static class KieuNguoiDung
 
 		public Models.KieuNguoiDung Convert()
 		{
-			return new()
+			return new Models.KieuNguoiDung
 				   {
 					   Ten = Ten,
 					   DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung = IdTruongThongTinNguoiDung.Select(x =>

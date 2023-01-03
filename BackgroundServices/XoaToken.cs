@@ -1,19 +1,17 @@
 using Api.Services;
 
-namespace Client.BackgroundServices;
+namespace Api.BackgroundServices;
 
 public sealed class XoaTokenBackgroundService : BackgroundService
 {
 	private readonly ILogger<XoaTokenBackgroundService> _logger;
-	private readonly IServiceProvider _serviceProvider;
 	private readonly ITokenDangXuatService _tokenDangXuat;
 
 	public XoaTokenBackgroundService(
-		IServiceProvider serviceProvider,
 		ILogger<XoaTokenBackgroundService> logger,
 		ITokenDangXuatService tokenDangXuat)
 	{
-		(_serviceProvider, _logger, _tokenDangXuat) = (serviceProvider, logger, tokenDangXuat);
+		(_logger, _tokenDangXuat) = (logger, tokenDangXuat);
 	}
 
 	protected override async Task ExecuteAsync(CancellationToken cancellationToken)

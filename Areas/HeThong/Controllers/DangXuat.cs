@@ -14,7 +14,7 @@ public class DangXuatController : ControllerBase
 		_quanLyTaiKhoan = quanLyTaiKhoan;
 	}
 	[HttpPost]
-	public async Task<IActionResult> DangXuat(string token)
+	public IActionResult DangXuat(string token)
 	{
 		_quanLyTaiKhoan.DangXuat(token);
 		return Ok();

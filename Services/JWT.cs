@@ -20,24 +20,30 @@ public class TokenServiceOptions
 
 public class TokenService : ITokenService
 {
-	private readonly double expiryDurationMinutes;
-	private readonly string key;
-	private readonly string issuer;
+	private readonly double _expiryDurationMinutes;
+	private readonly string _issuer;
+	private readonly string _key;
 
 
 	public TokenService(IOptions<TokenServiceOptions> options)
 	{
-		expiryDurationMinutes = options.Value.ExpiryDurationMinutes;
-		key = options.Value.Key;
-		issuer = options.Value.Issuer;
+		_expiryDurationMinutes = options.Value.ExpiryDurationMinutes;
+		_key = options.Value.Key;
+		_issuer = options.Value.Issuer;
 	}
 
 	public string TaoTokenAsync(ICollection<Claim>? themVao = null)
-		=> TokenUtility.TaoTokenAsync(key, issuer, expiryDurationMinutes, themVao);
+	{
+		return TokenUtility.TaoTokenAsync(_key, _issuer, _expiryDurationMinutes, themVao);
+	}
 
 	public bool KiemTraToken(string token)
-		=> TokenUtility.KiemTraToken(key, issuer, token);
+	{
+		return TokenUtility.KiemTraToken(_key, _issuer, token);
+	}
 
 	public ClaimsPrincipal GiaiMaToken(string token)
-		=> TokenUtility.GiaiMaToken(key, issuer, token);
+	{
+		return TokenUtility.GiaiMaToken(_key, _issuer, token);
+	}
 }

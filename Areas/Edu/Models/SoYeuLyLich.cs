@@ -2,6 +2,7 @@
 
 using Api.Areas.Edu.Interfaces;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 #endregion
 
@@ -21,7 +22,8 @@ public class SoYeuLyLich : ISoYeuLyLichModel
 	///     Căng cước công dân
 	/// </summary>
 	public virtual CanCuocCongDan? CanCuocCongDan { get; set; }
-
+	public Guid? IdNguiDung { get; set; }
+	[ForeignKey(nameof(IdNguiDung))]
 	public virtual NguoiDung? NguoiDung { get; set; }
 	/// <summary>
 	///     Id

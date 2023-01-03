@@ -30,7 +30,7 @@ public class CheckBackgroundService
 		using IServiceScope scope = _serviceProvider.CreateScope();
 		XacThucContext xacThucContext = scope.ServiceProvider.GetRequiredService<XacThucContext>();
 		AppDbContext appDbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-		bool needShutDown = false;
+		bool needShutDown;
 
 		needShutDown = await KiemTraDatabase(xacThucContext, cancellationToken) ||
 					   await KiemTraDatabase(appDbContext, cancellationToken);
@@ -43,7 +43,7 @@ public class CheckBackgroundService
 	}
 	private async Task<bool> KiemTraDatabase(DbContext context, CancellationToken cancellationToken = default)
 	{
-		_logger.LogInformation("Kiểm tra database {0}", context.Database.GetDbConnection().Database);
+		_logger.LogInformation("Kiểm tra database {Database}", context.Database.GetDbConnection().Database);
 		bool needShutDown = false;
 
 		if (await context.Database.CanConnectAsync(cancellationToken))

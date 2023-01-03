@@ -61,11 +61,10 @@ public class TokenDangXuatService : ITokenDangXuatService
 	{
 		lock (_danhSachBoNhoTrongLock)
 		{
-			if (!_danhSachBoNhoTrong.Any(x => x.Token.SequenceEqual(token.Token)))
-			{
-				_logger.LogInformation("Thêm token vào hàng chờ |" + token.Token);
-				_danhSachBoNhoTrong.Push(token);
-			}
+			if (_danhSachBoNhoTrong.Any(x => x.Token.SequenceEqual(token.Token)))
+				return;
+			_logger.LogInformation("Thêm token vào hàng chờ | {Token}", token.Token);
+			_danhSachBoNhoTrong.Push(token);
 		}
 	}
 
@@ -89,7 +88,7 @@ public class TokenDangXuatService : ITokenDangXuatService
 			if (token.Exp > DateTime.UtcNow.Subtract(DateTime.UnixEpoch))
 				break;
 			danhSachXoa.Add(token);
-			while (!_danhSachTokenTrongDatabase.TryPop(out _)) ;
+			while (!_danhSachTokenTrongDatabase.TryPop(out _)) {}
 		}
 
 		if (danhSachXoa.Any())
