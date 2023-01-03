@@ -1,4 +1,4 @@
-using Api.PhuTro;
+using Api.Utilities;
 using System.ComponentModel.DataAnnotations;
 using TaiKhoan=Api.Areas.Edu.Models.TaiKhoan;
 

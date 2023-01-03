@@ -1,6 +1,6 @@
 using Api.Areas.Edu.Contexts;
 using Api.Models;
-using Api.PhuTro;
+using Api.Utilities;
 using Microsoft.EntityFrameworkCore;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -187,5 +187,14 @@ public class QuanLyTaiKhoan : IQuanLyTaiKhoan
 	{
 		byte[]? hashed = await _context.TaiKhoan.Where(x => x.Username == username).Select(x => x.MatKhau).FirstOrDefaultAsync(cancellationToken);
 		return hashed is not null && MatKhau.XacThucMatKhau(hashed, matKhau);
+	}
+}
+
+public static class QuanLyTaiKhoanServiceExtension
+{
+	public static IServiceCollection AddQuanLyTaiKhoan(this IServiceCollection services)
+	{
+		services.AddTransient<IQuanLyTaiKhoan, QuanLyTaiKhoan>();
+		return services;
 	}
 }

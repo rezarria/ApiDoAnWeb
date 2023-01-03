@@ -5,34 +5,34 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Api.Tasks;
 
-public class CheckBackgroundService
+public class CheckTask
 {
 	private readonly IHostApplicationLifetime _hostApplicationLifetimelifeTime;
 	private readonly ILogger _logger;
 	private readonly IServiceProvider _serviceProvider;
 
-	public CheckBackgroundService(IServiceProvider serviceProvider)
+	private CheckTask(IServiceProvider serviceProvider)
 	{
 		_serviceProvider = serviceProvider;
-		_logger = serviceProvider.GetRequiredService<ILogger<IServer>>();
+		_logger = serviceProvider.GetRequiredService<ILogger<CheckTask>>();
 		_hostApplicationLifetimelifeTime = serviceProvider.GetRequiredService<IHostApplicationLifetime>();
 	}
 
 	public static void Check(IServiceProvider serviceProvider)
 	{
-		CheckBackgroundService checkBackgroundService = new(serviceProvider);
-		checkBackgroundService.ExecuteAsync().Wait();
+		CheckTask checkTask = new(serviceProvider);
+		checkTask.ExecuteAsync().Wait();
 	}
 
 	public async Task ExecuteAsync(CancellationToken cancellationToken = default)
 	{
 		_logger.LogInformation("Bắt đầu kiểm tra...");
 		using IServiceScope scope = _serviceProvider.CreateScope();
-		XacThucContext xacThucContext = scope.ServiceProvider.GetRequiredService<XacThucContext>();
+		XacThucDbContext xacThucDbContext = scope.ServiceProvider.GetRequiredService<XacThucDbContext>();
 		AppDbContext appDbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 		bool needShutDown;
 
-		needShutDown = await KiemTraDatabase(xacThucContext, cancellationToken) ||
+		needShutDown = await KiemTraDatabase(xacThucDbContext, cancellationToken) ||
 					   await KiemTraDatabase(appDbContext, cancellationToken);
 
 		if (needShutDown)
@@ -50,7 +50,7 @@ public class CheckBackgroundService
 			_logger.LogInformation("Kết nối ổn ✔");
 		else
 		{
-			_logger.LogError("Không thể kết nối ❌\nBắt đầu khởi tạo database...");
+			_logger.LogError("Không thể kết nối \u274c{NewLine}Bắt đầu khởi tạo database...", Environment.NewLine);
 			try
 			{
 				await context.Database.EnsureCreatedAsync(cancellationToken);

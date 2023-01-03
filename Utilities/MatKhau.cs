@@ -5,7 +5,7 @@ using System.Security.Cryptography;
 
 #endregion
 
-namespace Api.PhuTro;
+namespace Api.Utilities;
 
 public static class MatKhau
 {

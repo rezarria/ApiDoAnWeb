@@ -4,16 +4,16 @@ using Newtonsoft.Json;
 
 #endregion
 
-namespace Api.ThietLap;
+namespace Api.Settings;
 
 /// <summary>
 /// </summary>
-public static partial class ThietLap
+public static partial class Services
 {
 	/// <summary>
 	/// </summary>
 	/// <param name="services"></param>
-	public static void ThietLapMvcjson(this IServiceCollection services)
+	public static void AddControllerETC(this IServiceCollection services)
 	{
 		services.AddControllers().AddNewtonsoftJson(x =>
 												    {

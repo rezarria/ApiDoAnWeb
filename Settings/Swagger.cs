@@ -4,14 +4,14 @@ using System.Reflection;
 
 #endregion
 
-namespace Api.ThietLap;
+namespace Api.Settings;
 
-public static partial class ThietLap
+public static partial class Services
 {
 	/// <summary>
 	/// </summary>
 	/// <param name="services"></param>
-	public static void ThietLapSwagger(this IServiceCollection services)
+	public static void AddSwagger(this IServiceCollection services)
 	{
 		services.AddSwaggerDocument();
 		services.AddEndpointsApiExplorer();

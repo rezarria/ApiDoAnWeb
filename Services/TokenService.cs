@@ -47,3 +47,12 @@ public class TokenService : ITokenService
 		return TokenUtility.GiaiMaToken(_key, _issuer, token);
 	}
 }
+
+public static class TokenServiceExtension
+{
+	public static IServiceCollection AddTokenService(this IServiceCollection services)
+	{
+		services.AddTransient<ITokenService, TokenService>();
+		return services;
+	}
+}

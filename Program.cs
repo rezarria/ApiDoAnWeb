@@ -1,22 +1,23 @@
 #region
 
 using Api.Middlewares;
+using Api.Settings;
 using Api.Tasks;
-using Api.ThietLap;
+using System.Text;
 
 #endregion
-
+Console.OutputEncoding = Encoding.UTF8;
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-builder.ThietLapXacThuc();
-builder.ThemAppDbContext();
-builder.Services.ThietLapMvcjson();
-builder.Services.ThietLapCors();
-builder.Services.ThietLapSwagger();
+builder.AddXacThuc();
+builder.DbContext();
+builder.Services.AddControllerETC();
+builder.AddCors();
+builder.Services.AddSwagger();
 
 WebApplication app = builder.Build();
 
-CheckBackgroundService.Check(app.Services);
+CheckTask.Check(app.Services);
 
 if (app.Environment.IsDevelopment())
 {

@@ -5,3 +5,4 @@ Migrations/
 .vscode/
 *-shm
 *-wal
+*.log

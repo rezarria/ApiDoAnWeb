@@ -5,7 +5,7 @@ using Api.Areas.Edu.Models;
 
 #endregion
 
-namespace Api.PhuTro;
+namespace Api.Utilities;
 
 public static class TaiKhoan
 {

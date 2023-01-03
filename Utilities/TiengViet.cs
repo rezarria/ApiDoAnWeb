@@ -1,4 +1,4 @@
-namespace Api.PhuTro;
+namespace Api.Utilities;
 
 public static class TiengViet
 {

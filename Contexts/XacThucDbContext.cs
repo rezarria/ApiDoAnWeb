@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Api.Contexts;
 
-public class XacThucContext : DbContext
+public class XacThucDbContext : DbContext
 {
-	public XacThucContext(DbContextOptions<XacThucContext> options) : base(options)
+	public XacThucDbContext(DbContextOptions<XacThucDbContext> options) : base(options)
 	{
 	}
 

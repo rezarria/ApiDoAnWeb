@@ -27,20 +27,20 @@ public class TokenDangXuatService : ITokenDangXuatService
 	{
 		_serviceProvider = serviceProvider;
 		using IServiceScope scope = _serviceProvider.CreateScope();
-		XacThucContext context = scope.ServiceProvider.GetRequiredService<XacThucContext>();
+		XacThucDbContext dbContext = scope.ServiceProvider.GetRequiredService<XacThucDbContext>();
 		_danhSachBoNhoTrong = new ConcurrentStack<TokenDangXuat>();
-		_danhSachTokenTrongDatabase = new ConcurrentStack<TokenDangXuat>(context.TokenDangXuat.AsNoTracking());
+		_danhSachTokenTrongDatabase = new ConcurrentStack<TokenDangXuat>(dbContext.TokenDangXuat.AsNoTracking());
 		_logger = logger;
 	}
 	public void LuuDatabase()
 	{
 		_logger.LogInformation("Lưu token từ ram vào database");
 		using IServiceScope scope = _serviceProvider.CreateScope();
-		XacThucContext context = scope.ServiceProvider.GetRequiredService<XacThucContext>();
+		XacThucDbContext dbContext = scope.ServiceProvider.GetRequiredService<XacThucDbContext>();
 		lock (_danhSachBoNhoTrongLock)
 		{
-			context.AddRange(_danhSachBoNhoTrong);
-			context.SaveChanges();
+			dbContext.AddRange(_danhSachBoNhoTrong);
+			dbContext.SaveChanges();
 		}
 	}
 	public int SoLuongToiDa { get; set; } = 1000;
@@ -95,9 +95,18 @@ public class TokenDangXuatService : ITokenDangXuatService
 		{
 			_logger.LogInformation("Xóa token đăng xuất trong database");
 			using IServiceScope scope = _serviceProvider.CreateScope();
-			XacThucContext context = scope.ServiceProvider.GetRequiredService<XacThucContext>();
-			context.RemoveRange(danhSachXoa);
-			await context.SaveChangesAsync(cancellationToken);
+			XacThucDbContext dbContext = scope.ServiceProvider.GetRequiredService<XacThucDbContext>();
+			dbContext.RemoveRange(danhSachXoa);
+			await dbContext.SaveChangesAsync(cancellationToken);
 		}
+	}
+}
+
+public static class ToKenDangXuatServiceExtension
+{
+	public static IServiceCollection AddTokenDangXuat(this IServiceCollection service)
+	{
+		service.AddSingleton<ITokenDangXuatService, TokenDangXuatService>();
+		return service;
 	}
 }

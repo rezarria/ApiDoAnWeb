@@ -6,18 +6,18 @@ using Microsoft.Extensions.Options;
 
 #endregion
 
-namespace Api.ThietLap;
+namespace Api.Settings;
 
 /// <summary>
 /// </summary>
-public static partial class ThietLap
+public static partial class Services
 {
-	public static void ThemJsonPatch(this WebApplicationBuilder builder)
+	public static void AddJsonPatch(this WebApplicationBuilder builder)
 	{
 		builder.Services.AddControllers(options => options.InputFormatters.Insert(0, GetJsonPatchInputFormatter()));
 	}
 
-	public static NewtonsoftJsonPatchInputFormatter GetJsonPatchInputFormatter()
+	private static NewtonsoftJsonPatchInputFormatter GetJsonPatchInputFormatter()
 	{
 		ServiceProvider builder = new ServiceCollection()
 								  .AddLogging()
