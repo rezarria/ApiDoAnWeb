@@ -1,5 +1,6 @@
 #region
 
+using Api.BackgroundServices;
 using Api.Middlewares;
 using Api.ThietLap;
 
@@ -7,6 +8,7 @@ using Api.ThietLap;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddHostedService<CheckBackgroundService>();
 builder.ThietLapXacThuc();
 builder.ThemAppDbContext();
 builder.Services.ThietLapMvcjson();
