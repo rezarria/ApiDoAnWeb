@@ -1,14 +1,13 @@
 #region
 
-using Api.BackgroundServices;
 using Api.Middlewares;
+using Api.Tasks;
 using Api.ThietLap;
 
 #endregion
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddHostedService<CheckBackgroundService>();
 builder.ThietLapXacThuc();
 builder.ThemAppDbContext();
 builder.Services.ThietLapMvcjson();
@@ -16,6 +15,8 @@ builder.Services.ThietLapCors();
 builder.Services.ThietLapSwagger();
 
 WebApplication app = builder.Build();
+
+CheckBackgroundService.Check(app.Services);
 
 if (app.Environment.IsDevelopment())
 {

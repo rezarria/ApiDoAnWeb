@@ -7,21 +7,21 @@ namespace Api.Tasks;
 
 public class CheckBackgroundService
 {
-	private readonly IServiceProvider _serviceProvider;
-	private readonly ILogger _logger;
 	private readonly IHostApplicationLifetime _hostApplicationLifetimelifeTime;
-
-	public static void Check(IServiceProvider serviceProvider)
-	{
-		CheckBackgroundService checkBackgroundService = new(serviceProvider);
-		checkBackgroundService.ExecuteAsync().Wait();
-	}
+	private readonly ILogger _logger;
+	private readonly IServiceProvider _serviceProvider;
 
 	public CheckBackgroundService(IServiceProvider serviceProvider)
 	{
 		_serviceProvider = serviceProvider;
 		_logger = serviceProvider.GetRequiredService<ILogger<IServer>>();
 		_hostApplicationLifetimelifeTime = serviceProvider.GetRequiredService<IHostApplicationLifetime>();
+	}
+
+	public static void Check(IServiceProvider serviceProvider)
+	{
+		CheckBackgroundService checkBackgroundService = new(serviceProvider);
+		checkBackgroundService.ExecuteAsync().Wait();
 	}
 
 	public async Task ExecuteAsync(CancellationToken cancellationToken = default)
