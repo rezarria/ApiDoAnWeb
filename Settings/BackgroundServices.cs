@@ -1,9 +1,6 @@
 #region
 
-using Api.Areas.Edu.Contexts;
 using Api.BackgroundServices;
-using Api.Contexts;
-using Microsoft.EntityFrameworkCore;
 
 #endregion
 

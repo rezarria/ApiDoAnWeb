@@ -1,6 +1,5 @@
 ﻿using Api.Areas.Edu.Contexts;
 using Api.Contexts;
-using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.EntityFrameworkCore;
 
 namespace Api.Tasks;

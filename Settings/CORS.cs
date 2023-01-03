@@ -4,7 +4,7 @@ public static partial class Services
 {
 	/// <summary>
 	/// </summary>
-	/// <param name="services"></param>
+	/// <param name="builder"></param>
 	public static void AddCors(this WebApplicationBuilder builder)
 	{
 		IServiceCollection services = builder.Services;

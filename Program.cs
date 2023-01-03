@@ -11,7 +11,7 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.AddXacThuc();
 builder.DbContext();
-builder.Services.AddControllerETC();
+builder.Services.AddControllerEtc();
 builder.AddCors();
 builder.Services.AddSwagger();
 

@@ -1,6 +1,5 @@
 #region
 
-using Api.BackgroundServices;
 using Api.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
