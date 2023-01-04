@@ -9,8 +9,10 @@ public static class TokenUtility
 {
 	public static string TaoTokenAsync(string key, string issuer, double expiryDurationMinutes, ICollection<Claim>? themVao = null)
 	{
-		List<Claim> claims = new();
-		claims.Add(new Claim(JwtRegisteredClaimNames.Sub, Guid.NewGuid().ToString()));
+		List<Claim> claims = new()
+							 {
+								 new Claim(JwtRegisteredClaimNames.Sub, Guid.NewGuid().ToString())
+							 };
 		if (themVao != null)
 			claims.AddRange(themVao);
 		SymmetricSecurityKey securityKey = new(Encoding.UTF8.GetBytes(key));

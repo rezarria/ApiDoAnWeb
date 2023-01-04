@@ -11,13 +11,13 @@ public static class MonHoc
 {
 	public class Get : IMonHoc
 	{
-		public static Expression<Func<Models.MonHoc, Get>> Expression = monHoc => new Get(monHoc.Id, monHoc.Ten, monHoc.MieuTa);
+		public static readonly Expression<Func<Models.MonHoc, Get>> Expression = monHoc => new Get(monHoc.Id, monHoc.Ten, monHoc.MieuTa);
 
-		public static Expression<Func<Models.MonHoc, dynamic>> ExpressionToiThieu = monHoc => new
-																							  {
-																								  monHoc.Id,
-																								  monHoc.Ten
-																							  };
+		public static readonly Expression<Func<Models.MonHoc, dynamic>> ExpressionToiThieu = monHoc => new
+																									   {
+																										   monHoc.Id,
+																										   monHoc.Ten
+																									   };
 
 		public Get()
 		{

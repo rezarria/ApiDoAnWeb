@@ -1,7 +1,7 @@
-﻿using System.Collections;
-using System.Reflection;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Collections;
+using System.Reflection;
 
 namespace Api.Tasks;
 
@@ -47,7 +47,6 @@ public class CheckTask
 	}
 
 	/// <summary>
-	/// 
 	/// </summary>
 	/// <param name="cancellationToken"></param>
 	/// <returns></returns>
@@ -55,7 +54,8 @@ public class CheckTask
 	private Task<bool>[] KiemTraToanBoDbContext(CancellationToken cancellationToken)
 	{
 		using IServiceScope scope = _serviceProvider.CreateScope();
-		object? rootProvider = LayGiaTriProperty(scope, "RootProvider"); ;
+		object? rootProvider = LayGiaTriProperty(scope, "RootProvider");
+		;
 		object? callSiteValidator = LayGiaTriField(rootProvider, "_callSiteValidator");
 		IDictionary? data = LayGiaTriField(callSiteValidator, "_scopedServices") as IDictionary;
 		ICollection<Type>? types = data?.Keys as ICollection<Type>;
@@ -67,10 +67,14 @@ public class CheckTask
 	}
 
 	private static object? LayGiaTriField(object? obj, string name)
-	 => obj?.GetType().GetField(name, BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(obj);
+	{
+		return obj?.GetType().GetField(name, BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(obj);
+	}
 
 	private static object? LayGiaTriProperty(object obj, string name)
-	 => obj.GetType().GetProperty(name, BindingFlags.NonPublic | BindingFlags.Instance)?.GetGetMethod(nonPublic: true)?.Invoke(obj, null);
+	{
+		return obj.GetType().GetProperty(name, BindingFlags.NonPublic | BindingFlags.Instance)?.GetGetMethod(nonPublic: true)?.Invoke(obj, null);
+	}
 
 	private async Task<bool> KiemTraDatabase(DbContext context, CancellationToken cancellationToken = default)
 	{

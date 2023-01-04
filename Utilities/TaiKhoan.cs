@@ -1,6 +1,5 @@
 #region
 
-using Api.Areas.Edu.Contexts;
 using Api.Areas.Edu.Models;
 
 #endregion
@@ -29,7 +28,7 @@ public static class TaiKhoan
 						 };
 	}
 
-	public static async Task<bool> ChuanBiThemAsync(this NguoiDung nguoi, AppDbContext context,
+	public static async Task<bool> ChuanBiThemAsync(this NguoiDung nguoi,
 													CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();

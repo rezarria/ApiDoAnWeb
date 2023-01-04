@@ -6,6 +6,7 @@ using Api.Tasks;
 using System.Text;
 
 #endregion
+
 Console.OutputEncoding = Encoding.UTF8;
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 

@@ -4,15 +4,15 @@ namespace Api.Services;
 
 public class CauNoiClientService
 {
-	private readonly IServiceScope _serviceScope;
-	private readonly CauHinhDbContext _hinhDbContext;
+	private readonly CauHinhDbContext _CauHinhDbContext;
 	private readonly ILogger _logger;
+	private readonly IServiceScope _serviceScope;
 
 
 	public CauNoiClientService(IServiceProvider serviceProvider)
 	{
 		_serviceScope = serviceProvider.CreateScope();
-		_hinhDbContext = _serviceScope.ServiceProvider.GetRequiredService<CauHinhDbContext>();
+		_CauHinhDbContext = _serviceScope.ServiceProvider.GetRequiredService<CauHinhDbContext>();
 		_logger = _serviceScope.ServiceProvider.GetRequiredService<ILogger<CauNoiClientService>>();
 	}
 

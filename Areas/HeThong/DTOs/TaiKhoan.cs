@@ -15,9 +15,11 @@ public static class Taikhoan
 
 		public TaiKhoan ChuyenDoi()
 		{
-			TaiKhoan taiKhoan = new();
-			taiKhoan.Username = UserName;
-			taiKhoan.MatKhau = MatKhau.MaHoaMatKhau(Password);
+			TaiKhoan taiKhoan = new()
+								{
+									Username = UserName,
+									MatKhau = MatKhau.MaHoaMatKhau(Password)
+								};
 			return taiKhoan;
 		}
 	}
