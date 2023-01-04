@@ -1,6 +1,7 @@
-﻿using Api.Areas.Edu.Contexts;
-using Api.Contexts;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Collections;
+using System.Reflection;
 
 namespace Api.Tasks;
 
@@ -23,22 +24,49 @@ public class CheckTask
 		checkTask.ExecuteAsync().Wait();
 	}
 
-	public async Task ExecuteAsync(CancellationToken cancellationToken = default)
+	public Task ExecuteAsync(CancellationToken cancellationToken = default)
 	{
 		_logger.LogInformation("Bắt đầu kiểm tra...");
-		using IServiceScope scope = _serviceProvider.CreateScope();
-		XacThucDbContext xacThucDbContext = scope.ServiceProvider.GetRequiredService<XacThucDbContext>();
-		AppDbContext appDbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-		bool needShutDown;
 
-		needShutDown = await KiemTraDatabase(xacThucDbContext, cancellationToken) ||
-					   await KiemTraDatabase(appDbContext, cancellationToken);
+		Task<bool>[] tasks = KiemTraToanBoDbContext(cancellationToken);
 
-		if (needShutDown)
+		bool needShutDown = false;
+
+		if (tasks.Any())
 		{
-			_logger.LogError("Đóng chương trình....");
-			_hostApplicationLifetimelifeTime.StopApplication();
+			Task.WhenAll(tasks).Wait(cancellationToken);
+			needShutDown = tasks.All(x => x.Result);
 		}
+
+
+		if (!needShutDown)
+			return Task.CompletedTask;
+		_logger.LogError("Đóng chương trình....");
+		_hostApplicationLifetimelifeTime.StopApplication();
+		return Task.CompletedTask;
+	}
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="cancellationToken"></param>
+	/// <returns></returns>
+	/// <exception cref="InvalidOperationException"></exception>
+	private Task<bool>[] KiemTraToanBoDbContext(CancellationToken cancellationToken)
+	{
+		using IServiceScope scope = _serviceProvider.CreateScope();
+		PropertyInfo? property = scope.GetType().GetProperty("RootProvider", BindingFlags.NonPublic | BindingFlags.Instance);
+		object? rootProvider = property?.GetGetMethod(nonPublic: true)?.Invoke(scope, null);
+		FieldInfo? field = rootProvider?.GetType().GetField("_callSiteValidator", BindingFlags.NonPublic | BindingFlags.Instance);
+		object? callSiteValidator = field?.GetValue(rootProvider);
+		FieldInfo? field2 = callSiteValidator?.GetType().GetField("_scopedServices", BindingFlags.NonPublic | BindingFlags.Instance);
+		IDictionary? data = field2?.GetValue(callSiteValidator) as IDictionary;
+		ICollection<Type>? types = data?.Keys as ICollection<Type>;
+		List<Type> tasks = (types ?? throw new InvalidOperationException())
+						   .Where(x => x.BaseType is not null && (typeof(DbContext) == x.BaseType || typeof(IdentityDbContext) == x.BaseType))
+						   .ToList();
+		Task<bool>[] job = tasks.Select(x => KiemTraDatabase((DbContext)scope.ServiceProvider.GetRequiredService(x), cancellationToken)).ToArray();
+		return job;
 	}
 	private async Task<bool> KiemTraDatabase(DbContext context, CancellationToken cancellationToken = default)
 	{
