@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
-using System.Collections;
+﻿using System.Collections;
 using System.Reflection;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 namespace Api.Tasks;
 
@@ -55,12 +55,9 @@ public class CheckTask
 	private Task<bool>[] KiemTraToanBoDbContext(CancellationToken cancellationToken)
 	{
 		using IServiceScope scope = _serviceProvider.CreateScope();
-		PropertyInfo? property = scope.GetType().GetProperty("RootProvider", BindingFlags.NonPublic | BindingFlags.Instance);
-		object? rootProvider = property?.GetGetMethod(nonPublic: true)?.Invoke(scope, null);
-		FieldInfo? field = rootProvider?.GetType().GetField("_callSiteValidator", BindingFlags.NonPublic | BindingFlags.Instance);
-		object? callSiteValidator = field?.GetValue(rootProvider);
-		FieldInfo? field2 = callSiteValidator?.GetType().GetField("_scopedServices", BindingFlags.NonPublic | BindingFlags.Instance);
-		IDictionary? data = field2?.GetValue(callSiteValidator) as IDictionary;
+		object? rootProvider = LayGiaTriProperty(scope, "RootProvider"); ;
+		object? callSiteValidator = LayGiaTriField(rootProvider, "_callSiteValidator");
+		IDictionary? data = LayGiaTriField(callSiteValidator, "_scopedServices") as IDictionary;
 		ICollection<Type>? types = data?.Keys as ICollection<Type>;
 		List<Type> tasks = (types ?? throw new InvalidOperationException())
 						   .Where(x => x.BaseType is not null && (typeof(DbContext) == x.BaseType || typeof(IdentityDbContext) == x.BaseType))
@@ -68,6 +65,13 @@ public class CheckTask
 		Task<bool>[] job = tasks.Select(x => KiemTraDatabase((DbContext)scope.ServiceProvider.GetRequiredService(x), cancellationToken)).ToArray();
 		return job;
 	}
+
+	private static object? LayGiaTriField(object? obj, string name)
+	 => obj?.GetType().GetField(name, BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(obj);
+
+	private static object? LayGiaTriProperty(object obj, string name)
+	 => obj.GetType().GetProperty(name, BindingFlags.NonPublic | BindingFlags.Instance)?.GetGetMethod(nonPublic: true)?.Invoke(obj, null);
+
 	private async Task<bool> KiemTraDatabase(DbContext context, CancellationToken cancellationToken = default)
 	{
 		_logger.LogInformation("Kiểm tra database {Database}", context.Database.GetDbConnection().Database);
