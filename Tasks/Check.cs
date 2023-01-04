@@ -77,7 +77,7 @@ public class CheckTask
 			_logger.LogInformation("Kết nối ổn ✔");
 		else
 		{
-			_logger.LogError("Không thể kết nối \u274c{NewLine}Bắt đầu khởi tạo database...", Environment.NewLine);
+			_logger.LogError("Không thể kết nối ❌{NewLine}Bắt đầu khởi tạo database...", Environment.NewLine);
 			try
 			{
 				await context.Database.EnsureCreatedAsync(cancellationToken);
