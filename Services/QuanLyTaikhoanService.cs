@@ -1,5 +1,4 @@
 using Api.Areas.Edu.Contexts;
-using Api.Models;
 using Api.Utilities;
 using Microsoft.EntityFrameworkCore;
 using RezUtility.Models;
