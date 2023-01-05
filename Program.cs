@@ -10,13 +10,14 @@ using System.Text;
 Console.OutputEncoding = Encoding.UTF8;
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-builder.AddXacThuc();
-builder.DbContext();
-builder.Services.AddControllerEtc();
-builder.AddCors();
-builder.Services.AddSwagger();
-
-WebApplication app = builder.Build();
+WebApplication app = builder.AddXacThuc()
+							.AddDbContext()
+							.AddControllerEtc()
+							.AddCors()
+							.AddSwagger()
+							.AddElFinder()
+							.AddBackgroundService()
+							.Build();
 
 CheckTask.Check(app.Services);
 
@@ -28,10 +29,13 @@ if (app.Environment.IsDevelopment())
 	app.UseSwaggerUi3();
 }
 
-app.UseXacThuc();
-app.UseHttpsRedirection();
-app.UseCors();
-app.UseAuthentication();
-app.UseAuthorization();
-app.MapControllers();
+app.UseHttpsRedirection()
+   .UseResponseCompression()
+   .UseXacThuc()
+   .UseCors()
+   .UseRouting()
+   .UseAuthentication()
+   .UseAuthorization()
+   .UseMyEndpoints();
+
 app.Run();

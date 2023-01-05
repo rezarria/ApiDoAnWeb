@@ -18,7 +18,7 @@ public static partial class Services
 	/// <summary>
 	/// </summary>
 	/// <param name="builder"></param>
-	public static void AddXacThuc(this WebApplicationBuilder builder)
+	public static WebApplicationBuilder AddXacThuc(this WebApplicationBuilder builder)
 	{
 		IServiceCollection services = builder.Services;
 		ConfigurationManager configuration = builder.Configuration;
@@ -82,5 +82,6 @@ public static partial class Services
 												    options.Key = configuration["Jwt:Key"] ?? throw new Exception();
 												    options.Issuer = configuration["Jwt:Issuer"] ?? throw new Exception();
 											    });
+		return builder;
 	}
 }

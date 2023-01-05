@@ -12,9 +12,10 @@ public static partial class Services
 {
 	/// <summary>
 	/// </summary>
-	/// <param name="services"></param>
-	public static void AddControllerEtc(this IServiceCollection services)
+	/// <param name="builder"></param>
+	public static WebApplicationBuilder AddControllerEtc(this WebApplicationBuilder builder)
 	{
+		IServiceCollection services = builder.Services;
 		services.AddControllers().AddNewtonsoftJson(x =>
 												    {
 													    x.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
@@ -23,5 +24,6 @@ public static partial class Services
 													    x.SerializerSettings.Formatting = Formatting.Indented;
 													    x.SerializerSettings.ObjectCreationHandling = ObjectCreationHandling.Reuse;
 												    });
+		return builder;
 	}
 }

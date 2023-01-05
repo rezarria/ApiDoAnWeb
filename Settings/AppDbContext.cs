@@ -15,7 +15,7 @@ public static partial class Services
 	/// <summary>
 	/// </summary>
 	/// <param name="builder"></param>
-	public static void DbContext(this WebApplicationBuilder builder)
+	public static WebApplicationBuilder AddDbContext(this WebApplicationBuilder builder)
 	{
 		IServiceCollection services = builder.Services;
 		ConfigurationManager configuration = builder.Configuration;
@@ -35,5 +35,7 @@ public static partial class Services
 										    });
 		services.AddDbContext<XacThucDbContext>(options => options.UseSqlite(configuration.GetConnectionString("XacThuc")));
 		services.AddDbContext<CauHinhDbContext>(options => options.UseSqlite(configuration.GetConnectionString("CauHinh")));
+		services.AddDbContext<ElFinderDbContext>(options => options.UseSqlite(configuration.GetConnectionString("ElFinder")));
+		return builder;
 	}
 }

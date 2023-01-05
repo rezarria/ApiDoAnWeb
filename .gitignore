@@ -1,8 +1,8 @@
 obj/
 bin/
-wwwroot/lib/
 Migrations/
 .vscode/
 *-shm
 *-wal
 *.log
+wwwroot/

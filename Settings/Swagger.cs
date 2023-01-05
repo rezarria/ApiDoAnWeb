@@ -10,9 +10,10 @@ public static partial class Services
 {
 	/// <summary>
 	/// </summary>
-	/// <param name="services"></param>
-	public static void AddSwagger(this IServiceCollection services)
+	/// <param name="builder"></param>
+	public static WebApplicationBuilder AddSwagger(this WebApplicationBuilder builder)
 	{
+		IServiceCollection services = builder.Services;
 		services.AddSwaggerDocument();
 		services.AddEndpointsApiExplorer();
 		services.AddSwaggerGen(options =>
@@ -20,5 +21,6 @@ public static partial class Services
 								   string xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
 								   options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 							   });
+		return builder;
 	}
 }

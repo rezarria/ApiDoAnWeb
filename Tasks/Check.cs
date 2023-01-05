@@ -55,7 +55,6 @@ public class CheckTask
 	{
 		using IServiceScope scope = _serviceProvider.CreateScope();
 		object? rootProvider = LayGiaTriProperty(scope, "RootProvider");
-		;
 		object? callSiteValidator = LayGiaTriField(rootProvider, "_callSiteValidator");
 		IDictionary? data = LayGiaTriField(callSiteValidator, "_scopedServices") as IDictionary;
 		ICollection<Type>? types = data?.Keys as ICollection<Type>;
