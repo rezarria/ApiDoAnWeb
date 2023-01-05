@@ -1,5 +1,6 @@
 using Api.Services;
 using Microsoft.Extensions.Primitives;
+using RezUtility.Services;
 
 namespace Api.Middlewares;
 
