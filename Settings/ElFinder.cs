@@ -1,4 +1,3 @@
-using Api.ElFinder.Settings;
 using Api.Services;
 using elFinder.Net.AspNetCore.Extensions;
 using elFinder.Net.Core.Extensions;
@@ -8,6 +7,8 @@ using elFinder.Net.Drivers.FileSystem.Extensions;
 using elFinder.Net.Drivers.FileSystem.Services;
 using elFinder.Net.Plugins.FileSystemQuotaManagement.Extensions;
 using Microsoft.AspNetCore.ResponseCompression;
+using RezUtility.ElFinder.Services;
+using RezUtility.ElFinder.Settings;
 using System.IO.Compression;
 
 namespace Api.Settings;
