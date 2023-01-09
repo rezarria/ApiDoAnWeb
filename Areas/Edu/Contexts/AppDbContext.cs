@@ -89,12 +89,18 @@ public class AppDbContext : DbContext
 								  {
 									  entity
 										  .HasOne(x => x.TaiKhoan)
-										  .WithOne(x => x.NguoiDung);
+										  .WithOne(x => x.NguoiDung)
+										  .HasForeignKey<TaiKhoan>(x => x.IdNguoiDung);
 
 									  entity
 										  .HasMany(x => x.GiaTriTruongThongTinNguoiDung)
 										  .WithOne(x => x.NguoiDung)
 										  .HasForeignKey(x => x.IdNguoiDung);
+
+									  entity
+										  .HasOne(x => x.SoYeuLyLich)
+										  .WithOne(x => x.NguoiDung)
+										  .HasForeignKey<NguoiDung>(x => x.IdSoYeuLyLich);
 								  });
 
 		builder.Entity<HocPhan>(entity =>

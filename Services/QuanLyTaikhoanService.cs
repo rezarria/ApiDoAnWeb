@@ -1,6 +1,4 @@
 using Api.Areas.Edu.Contexts;
-using Api.Areas.Edu.Controllers;
-using Api.Areas.Edu.Models;
 using Api.Utilities;
 using Microsoft.EntityFrameworkCore;
 using RezUtility.Models;
@@ -132,12 +130,13 @@ public class QuanLyTaiKhoan : IQuanLyTaiKhoan
 	}
 	public async Task<bool> KiemTraEmail(string email, CancellationToken cancellationToken = default)
 	{
-		IQueryable<Guid?> query1 = from x in _context.SoYeuLyLich
-								   where !string.IsNullOrEmpty(x.Email) && x.Email == email
-								   select x.IdNguiDung;
-		IQueryable<Guid?> query2 = from x in _context.NguoiDung
-								   where query1.Contains(x.Id)
-								   select x.IdTaiKhoan;
+		IQueryable<Guid> query1 = from x in _context.SoYeuLyLich
+								  where !string.IsNullOrEmpty(x.Email) && x.Email == email
+								  select x.Id;
+
+		var query2 = from x in _context.NguoiDung
+						where query1.Contains(x.IdSoYeuLyLich)
+									select x.IdTaiKhoan;
 		Guid? idTaikhoan = await query2.FirstOrDefaultAsync(cancellationToken);
 		if (idTaikhoan is null) return false;
 		return await KiemTraId(idTaikhoan.Value, cancellationToken);
@@ -199,7 +198,7 @@ public class QuanLyTaiKhoan : IQuanLyTaiKhoan
 	{
 		IQueryable<Guid?> query1 = from x in _context.SoYeuLyLich
 								   where !string.IsNullOrEmpty(x.Email) && x.Email == email
-								   select x.IdNguiDung;
+								   select x.IdNguoiDung;
 		IQueryable<Guid?> query2 = from x in _context.NguoiDung
 								   where query1.Contains(x.Id)
 								   select x.IdTaiKhoan;

@@ -22,8 +22,7 @@ public class SoYeuLyLich : ISoYeuLyLichModel
 	///     Căng cước công dân
 	/// </summary>
 	public virtual CanCuocCongDan? CanCuocCongDan { get; set; }
-	public Guid? IdNguiDung { get; set; }
-	[ForeignKey(nameof(IdNguiDung))]
+
 	public virtual NguoiDung? NguoiDung { get; set; }
 	/// <summary>
 	///     Id
@@ -68,9 +67,9 @@ public class SoYeuLyLich : ISoYeuLyLichModel
 	/// <summary>
 	///     Số điện thoại
 	/// </summary>
-	[Phone(ErrorMessage = "Vui lòng nhập đúng định dạng số điện thoại")]
-	[Required(ErrorMessage = "Vui lòng cung cấp số điện thoại")]
-	[DataType(DataType.PhoneNumber)]
+	//[Phone(ErrorMessage = "Vui lòng nhập đúng định dạng số điện thoại")]
+	//[Required(ErrorMessage = "Vui lòng cung cấp số điện thoại")]
+	//[DataType(DataType.PhoneNumber)]
 	public string? SoDienThoai { get; set; }
 
 	/// <summary>
