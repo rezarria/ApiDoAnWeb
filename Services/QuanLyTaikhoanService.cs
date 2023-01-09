@@ -1,4 +1,6 @@
 using Api.Areas.Edu.Contexts;
+using Api.Areas.Edu.Controllers;
+using Api.Areas.Edu.Models;
 using Api.Utilities;
 using Microsoft.EntityFrameworkCore;
 using RezUtility.Models;
@@ -146,15 +148,39 @@ public class QuanLyTaiKhoan : IQuanLyTaiKhoan
 		return LayClaimAsync(taiKhoan.Id, cancellationToken);
 	}
 
-	public async Task<List<Claim>> LayClaimAsync(Guid idTaiKhoan, CancellationToken cancellationToken = default)
+	public Task<List<Claim>> LayClaimAsync(Guid idTaiKhoan, CancellationToken cancellationToken = default)
 	{
-		var list = await _context.ClaimTaikhoan
-							     .Where(x => x.IdTaiKhoan == idTaiKhoan)
-							     .Select(x => new Claim(x.Ten, x.GiaTri ?? "null"))
-							     .AsNoTracking()
-							     .ToListAsync(cancellationToken);
-		list.Add(new("Id", idTaiKhoan.ToString()));
-		return list;
+		List<Claim> claimList = new();
+
+		Task<List<Claim>> task1 = _context.ClaimTaikhoan
+										  .Where(x => x.IdTaiKhoan == idTaiKhoan)
+										  .Select(x => new Claim(x.Ten, x.GiaTri ?? "null"))
+										  .AsNoTracking()
+										  .ToListAsync(cancellationToken);
+
+		var task2 = _context
+					.NguoiDung
+					.Where(x => x.IdTaiKhoan == idTaiKhoan)
+					.Select(x => new
+							     {
+								     idNguoiDung = x.Id,
+								     idSoYeuLyLich = x.IdSoYeuLyLich
+							     })
+					.FirstOrDefaultAsync(cancellationToken);
+
+		Task.WhenAll(new Task[] { task1, task2 });
+
+		claimList.Add(new("idTaiKhoan", idTaiKhoan.ToString()));
+
+		if (task2.Result is not null)
+		{
+			claimList.Add(new("idNguoiDung", task2.Result.idNguoiDung.ToString()));
+			claimList.Add(new("idSoYeuLyLich", task2.Result.idSoYeuLyLich.ToString() ?? Guid.Empty.ToString()));
+		}
+
+		claimList.AddRange(task1.Result);
+
+		return Task.FromResult(claimList);
 	}
 
 	public async Task<List<Claim>> LayClaimAsync(string username, CancellationToken cancellationToken = default)

@@ -66,7 +66,4 @@ public class NguoiDung : IMetadata, INguoiDung
 	///     Kiểu người dùng
 	/// </summary>
 	public virtual KieuNguoiDung? KieuNguoiDung { get; set; }
-	/// <summary>
-	///     Id
-	/// </summary>
 }

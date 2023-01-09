@@ -45,6 +45,7 @@ public static class ElFinder
 										    options.Providers.Add<GzipCompressionProvider>();
 									    })
 				.AddSingleton<IElFinderUtilityService, ElFinderUtilityService>()
+				.AddTransient<QuanLyTepTin>()
 				.Configure<ElFinderUtilityServiceOptions>(options =>
 														  {
 															  options.WebRootPath = env.WebRootPath;

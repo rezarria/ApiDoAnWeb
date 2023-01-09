@@ -64,10 +64,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Areas\HeThong\Models" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\RezUtility\RezUtility.csproj" />
     </ItemGroup>
 
