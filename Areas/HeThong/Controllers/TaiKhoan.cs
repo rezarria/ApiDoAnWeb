@@ -17,7 +17,7 @@ public class TaiKhoanController : ControllerBase
 	}
 
 	[HttpPost]
-	public async Task<IActionResult> Post([FromBody] Taikhoan.YeuCauTaoMoi yeuCau)
+	public async Task<IActionResult> DangKy([FromBody] Taikhoan.YeuCauTaoMoi yeuCau)
 	{
 		TaiKhoan taikhoanMoi = yeuCau.ChuyenDoi();
 		if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -30,5 +30,11 @@ public class TaiKhoanController : ControllerBase
 		{
 			return Problem(e.Message);
 		}
+	}
+
+	[HttpGet]
+	public async Task<IActionResult> DanhSachTaiKhoan()
+	{
+		return Ok(await _quanLyTaiKhoan.DanhsachIdTaiKhoanAsync(cancellationToken: HttpContext.RequestAborted));
 	}
 }

@@ -13,11 +13,12 @@ public static class NguoiDung
 	public class Get : IMetadataKey
 	{
 		public static readonly Expression<Func<Models.NguoiDung, Get>> Expression = nguoiDung =>
-																						new Get(nguoiDung.Id, nguoiDung.IdKieuNguoiDung, nguoiDung.SoYeuLyLich, nguoiDung.GiaTriTruongThongTinNguoiDung);
+																						new Get(nguoiDung.Id, nguoiDung.Avatar, nguoiDung.IdKieuNguoiDung, nguoiDung.SoYeuLyLich, nguoiDung.GiaTriTruongThongTinNguoiDung);
 
-		public Get(Guid id, Guid? idKieuNguoiDung, ISoYeuLyLich? soYeuLyLich, ICollection<Models.GiaTriTruongThongTinNguoiDung>? giaTriTruongThongTinNguoiDung)
+		public Get(Guid id, string? avatar, Guid? idKieuNguoiDung, ISoYeuLyLich? soYeuLyLich, ICollection<Models.GiaTriTruongThongTinNguoiDung>? giaTriTruongThongTinNguoiDung)
 		{
 			Id = id;
+			Avatar = avatar;
 			IdKieuNguoiDung = idKieuNguoiDung;
 			if (soYeuLyLich is not null)
 				SoYeuLyLich = soYeuLyLich.Convert<ISoYeuLyLich, SoYeuLyLich.Get>();
@@ -31,13 +32,15 @@ public static class NguoiDung
 														     }).ToList();
 		}
 
+		public Guid Id { get; set; }
+
+		public string? Avatar { get; set; }
+
 		public Guid? IdKieuNguoiDung { get; set; }
 
 		public SoYeuLyLich.Get? SoYeuLyLich { get; }
 
 		public ICollection<GiaTriTruongThongTinNguoiDungDto>? GiaTriTruongThongTinNguoiDung { get; }
-
-		public Guid Id { get; set; }
 
 		public class GiaTriTruongThongTinNguoiDungDto
 		{
@@ -48,6 +51,8 @@ public static class NguoiDung
 
 	public class Post
 	{
+		public string? Avatar { get; set; }
+
 		[Required]
 		public Guid IdKieuNguoiDung { get; set; }
 

@@ -22,19 +22,19 @@ public static partial class Services
 		ConfigurationManager configuration = builder.Configuration;
 
 		services.AddDbContext<AppDbContext>(options =>
-										    {
-											    switch (configuration["Settings:AppDb"] ?? throw new Exception("Chưa chỉnh appsettings.json"))
-											    {
-												    case "MySql":
-													    string connectionString = configuration.GetConnectionString("AppDb_Mysql") ?? throw new Exception();
-													    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
-													    break;
-												    case "SqlServer":
-													    options.UseSqlServer(configuration.GetConnectionString("AppDb_SqlServer"));
-													    break;
-											    }
-										    });
-		services.AddDbContext<XacThucDbContext>(options => options.UseSqlite(configuration.GetConnectionString("XacThuc")));
+											{
+												switch (configuration["Settings:AppDb"] ?? throw new Exception("Chưa chỉnh appsettings.json"))
+												{
+													case "MySql":
+														string connectionString = configuration.GetConnectionString("AppDb_Mysql") ?? throw new Exception();
+														options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+														break;
+													case "SqlServer":
+														options.UseSqlServer(configuration.GetConnectionString("AppDb_SqlServer"));
+														break;
+												}
+											});
+		services.AddDbContext<IXacThucDbContext, XacThucDbContext>(options => options.UseSqlite(configuration.GetConnectionString("XacThuc")));
 		services.AddDbContext<CauHinhDbContext>(options => options.UseSqlite(configuration.GetConnectionString("CauHinh")));
 		services.AddDbContext<ElFinderDbContext>(options => options.UseSqlite(configuration.GetConnectionString("ElFinder")));
 		return builder;

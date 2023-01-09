@@ -26,6 +26,7 @@ public interface IQuanLyTaiKhoan
 	bool XacThuc(TaiKhoan taiKhoan, string matKhau);
 	Task<bool> XacThucIdAsync(Guid idTaiKhoan, string matKhau, CancellationToken cancellationToken = default);
 	Task<bool> XacThucEmailAsync(string email, string matKhau, CancellationToken cancellationToken = default);
+	Task<Guid[]> DanhsachIdTaiKhoanAsync(int skip = 0, int take = -1, CancellationToken cancellationToken = default);
 }
 
 public class QuanLyTaiKhoan : IQuanLyTaiKhoan
@@ -145,13 +146,15 @@ public class QuanLyTaiKhoan : IQuanLyTaiKhoan
 		return LayClaimAsync(taiKhoan.Id, cancellationToken);
 	}
 
-	public Task<List<Claim>> LayClaimAsync(Guid idTaiKhoan, CancellationToken cancellationToken = default)
+	public async Task<List<Claim>> LayClaimAsync(Guid idTaiKhoan, CancellationToken cancellationToken = default)
 	{
-		return _context.ClaimTaikhoan
-					   .Where(x => x.IdTaiKhoan == idTaiKhoan)
-					   .Select(x => new Claim(x.Ten, x.GiaTri ?? "null"))
-					   .AsNoTracking()
-					   .ToListAsync(cancellationToken);
+		var list = await _context.ClaimTaikhoan
+							     .Where(x => x.IdTaiKhoan == idTaiKhoan)
+							     .Select(x => new Claim(x.Ten, x.GiaTri ?? "null"))
+							     .AsNoTracking()
+							     .ToListAsync(cancellationToken);
+		list.Add(new("Id", idTaiKhoan.ToString()));
+		return list;
 	}
 
 	public async Task<List<Claim>> LayClaimAsync(string username, CancellationToken cancellationToken = default)
@@ -177,6 +180,15 @@ public class QuanLyTaiKhoan : IQuanLyTaiKhoan
 		Guid? idTaikhoan = await query2.FirstOrDefaultAsync(cancellationToken);
 		if (!idTaikhoan.HasValue) return false;
 		return await XacThucIdAsync(idTaikhoan.Value, matKhau, cancellationToken);
+	}
+	public Task<Guid[]> DanhsachIdTaiKhoanAsync(int skip = 0, int take = -1, CancellationToken cancellationToken = default)
+	{
+		IQueryable<TaiKhoan> query1 = _context.TaiKhoan.AsQueryable();
+		if (skip != 0)
+			query1 = query1.Skip(skip);
+		if (take != -1)
+			query1.Take(take);
+		return query1.Select(x => x.Id).ToArrayAsync(cancellationToken);
 	}
 
 	public bool XacThuc(TaiKhoan taiKhoan, string matKhau)

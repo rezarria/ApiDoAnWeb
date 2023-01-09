@@ -29,23 +29,21 @@ public static partial class Services
 				.AddTokenDangXuat()
 				.AddQuanLyTaiKhoan()
 				.AddAuthentication()
-				.AddJwtBearer();
-
-		services.Configure<JwtBearerOptions>(options =>
-											 {
-												 string issuer = configuration["Jwt:Issuer"] ?? throw new Exception("Jwt:Issuer không tồn tại");
-												 string key = configuration["Jwt:Key"] ?? throw new Exception("Jwt:Key không tồn tại");
-												 options.TokenValidationParameters = new TokenValidationParameters
-																					 {
-																						 ValidateIssuer = true,
-																						 ValidateAudience = true,
-																						 ValidateLifetime = true,
-																						 ValidateIssuerSigningKey = true,
-																						 ValidIssuer = issuer,
-																						 ValidAudience = issuer,
-																						 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
-																					 };
-											 });
+				.AddJwtBearer(options =>
+							  {
+								  string issuer = configuration["Jwt:Issuer"] ?? throw new Exception("Jwt:Issuer không tồn tại");
+								  string key = configuration["Jwt:Key"] ?? throw new Exception("Jwt:Key không tồn tại");
+								  options.TokenValidationParameters = new TokenValidationParameters
+																	  {
+																		  ValidateIssuer = true,
+																		  ValidateAudience = true,
+																		  ValidateLifetime = true,
+																		  ValidateIssuerSigningKey = true,
+																		  ValidIssuer = issuer,
+																		  ValidAudience = issuer,
+																		  IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
+																	  };
+							  });
 
 		services.Configure<AuthenticationOptions>(options =>
 												  {

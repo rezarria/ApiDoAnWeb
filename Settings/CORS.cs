@@ -11,10 +11,10 @@ public static partial class Services
 		services.AddCors(options =>
 						 {
 							 options.AddDefaultPolicy(x => x.AllowAnyOrigin()
-														    .WithOrigins("https://localhost:5001")
-														    .WithMethods("DELETE", "PATCH", "GET", "POST")
-														    .AllowCredentials()
-														    .WithHeaders("x-requested-with")
+															.WithOrigins("https://localhost:5001", "http://localhost:5287")
+															.WithMethods("DELETE", "PATCH", "GET", "POST")
+															.AllowCredentials()
+															.WithHeaders("x-requested-with")
 													 );
 						 });
 		return builder;

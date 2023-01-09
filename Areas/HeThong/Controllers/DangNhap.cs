@@ -1,5 +1,6 @@
 using Api.Areas.HeThong.DTOs;
 using Api.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Areas.HeThong.Controllers;
@@ -29,6 +30,13 @@ public class DangNhapController : ControllerBase
 		_logger.LogInformation("Tạo token");
 
 		return Ok(token);
+	}
+
+	[HttpGet("check")]
+	[Authorize]
+	public IActionResult Check()
+	{
+		return Ok();
 	}
 
 	#region Private Method

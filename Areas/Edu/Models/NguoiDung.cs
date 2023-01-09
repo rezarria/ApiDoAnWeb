@@ -1,8 +1,8 @@
 #region
 
-using Api.Areas.Edu.Interfaces;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Api.Areas.Edu.Interfaces;
 
 #endregion
 
@@ -13,6 +13,35 @@ namespace Api.Areas.Edu.Models;
 /// </summary>
 public class NguoiDung : IMetadata, INguoiDung
 {
+	[Key]
+	public Guid Id { get; set; }
+
+	/// <summary>
+	///     Id sơ yếu lý lịch
+	/// </summary>
+	public Guid? IdSoYeuLyLich { get; set; }
+
+	/// <summary>
+	///     Id kiểu người dùng
+	/// </summary>
+	public Guid? IdKieuNguoiDung { get; set; }
+
+	/// <summary>
+	///     Id tài khoản
+	/// </summary>
+	public Guid? IdTaiKhoan { get; set; }
+
+	public string? Avatar { get; set; }
+
+	/// <summary>
+	///     Timestamp
+	/// </summary>
+	[Timestamp]
+	public byte[]? RowVersion { get; set; } = null!;
+
+	[NotMapped]
+	public string PhanLoai => GetType().Name;
+
 	/// <summary>
 	///     Sơ yếu lý lịch của người dùng
 	/// </summary>
@@ -40,30 +69,4 @@ public class NguoiDung : IMetadata, INguoiDung
 	/// <summary>
 	///     Id
 	/// </summary>
-	[Key]
-	public Guid Id { get; set; }
-
-	/// <summary>
-	///     Timestamp
-	/// </summary>
-	[Timestamp]
-	public byte[]? RowVersion { get; set; } = null!;
-
-	/// <summary>
-	///     Id sơ yếu lý lịch
-	/// </summary>
-	public Guid? IdSoYeuLyLich { get; set; }
-
-	/// <summary>
-	///     Id kiểu người dùng
-	/// </summary>
-	public Guid? IdKieuNguoiDung { get; set; }
-
-	/// <summary>
-	///     Id tài khoản
-	/// </summary>
-	public Guid? IdTaiKhoan { get; set; }
-
-	[NotMapped]
-	public string PhanLoai => GetType().Name;
 }

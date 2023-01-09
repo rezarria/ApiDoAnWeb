@@ -3,6 +3,7 @@ using Api.Models.ElFinder;
 using Duende.IdentityServer.Extensions;
 using elFinder.Net.Core;
 using elFinder.Net.Drivers.FileSystem.Helpers;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System.Security.Claims;
 
@@ -22,6 +23,7 @@ public interface IElFinderUtilityService
 	Volume GetVolume(IDriver driver, ClaimsPrincipal claimsPrincipal);
 	Volume GetVolume(IDriver driver);
 	long GetQuota(ClaimsPrincipal user);
+	Task<string[]> GetVolumeListAsync(ClaimsPrincipal? claimsPrincipal = null, CancellationToken cancellationToken = default);
 }
 
 public class ElFinderUtilityService : IElFinderUtilityService
@@ -45,7 +47,7 @@ public class ElFinderUtilityService : IElFinderUtilityService
 	{
 		get
 		{
-			using IServiceScope scope = _serviceProvider.CreateScope();
+			IServiceScope scope = _serviceProvider.CreateScope();
 			ElFinderDbContext context = scope.ServiceProvider.GetRequiredService<ElFinderDbContext>();
 			return context;
 		}
@@ -116,5 +118,18 @@ public class ElFinderUtilityService : IElFinderUtilityService
 		using ElFinderDbContext context = ElFinderDbContext;
 		Guid userId = Guid.Parse(user.Claims.FirstOrDefault(x => x.Type == "Id")?.Value ?? throw new Exception());
 		return context.User.FirstOrDefault(x => x.Id == userId)?.QuotaInBytes ?? 0;
+	}
+	public async Task<string[]> GetVolumeListAsync(ClaimsPrincipal? claimsPrincipal = null, CancellationToken cancellationToken = default)
+	{
+		if (claimsPrincipal is not null && claimsPrincipal.IsAuthenticated())
+		{
+			Guid userId = Guid.Parse(claimsPrincipal.Claims.FirstOrDefault(x => x.Type == "Id")?.Value ?? throw new Exception());
+			await using ElFinderDbContext context = ElFinderDbContext;
+			User? user = await context.User.FirstOrDefaultAsync(x => x.Id == userId, cancellationToken);
+			if (user is not null)
+				return new[] { "test", user.VolumePath };
+		}
+
+		return new[] { "test" };
 	}
 }
