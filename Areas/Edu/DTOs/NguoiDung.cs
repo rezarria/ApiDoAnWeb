@@ -32,8 +32,6 @@ public static class NguoiDung
 														     }).ToList();
 		}
 
-		public Guid Id { get; set; }
-
 		public string? Avatar { get; set; }
 
 		public Guid? IdKieuNguoiDung { get; set; }
@@ -41,6 +39,8 @@ public static class NguoiDung
 		public SoYeuLyLich.Get? SoYeuLyLich { get; }
 
 		public ICollection<GiaTriTruongThongTinNguoiDungDto>? GiaTriTruongThongTinNguoiDung { get; }
+
+		public Guid Id { get; set; }
 
 		public class GiaTriTruongThongTinNguoiDungDto
 		{

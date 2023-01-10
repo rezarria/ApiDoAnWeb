@@ -125,7 +125,7 @@ public class ElFinderUtilityService : IElFinderUtilityService
 		{
 			Guid userId = Guid.Parse(claimsPrincipal.Claims.FirstOrDefault(x => x.Type == "Id")?.Value ?? throw new Exception());
 			await using ElFinderDbContext context = ElFinderDbContext;
-			User? user = await context.User.FirstOrDefaultAsync(x => x.Id == userId, cancellationToken);
+			User? user = await context.User.FirstOrDefaultAsync(predicate: x => x.Id == userId, cancellationToken);
 			if (user is not null)
 				return new[] { "test", user.VolumePath };
 		}

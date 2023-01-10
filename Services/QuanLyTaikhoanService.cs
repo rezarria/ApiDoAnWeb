@@ -130,14 +130,11 @@ public class QuanLyTaiKhoan : IQuanLyTaiKhoan
 	}
 	public async Task<bool> KiemTraEmail(string email, CancellationToken cancellationToken = default)
 	{
-		IQueryable<Guid> query1 = from x in _context.SoYeuLyLich
-								  where !string.IsNullOrEmpty(x.Email) && x.Email == email
-								  select x.Id;
-
-		var query2 = from x in _context.NguoiDung
-						where query1.Contains(x.IdSoYeuLyLich)
-									select x.IdTaiKhoan;
-		Guid? idTaikhoan = await query2.FirstOrDefaultAsync(cancellationToken);
+		Guid? idTaikhoan = await _context.NguoiDung
+									     .Include(x => x.SoYeuLyLich)
+									     .Where(x => x.SoYeuLyLich != null && x.SoYeuLyLich.Email == email)
+									     .Select(x => x.IdTaiKhoan)
+									     .FirstOrDefaultAsync(cancellationToken);
 		if (idTaikhoan is null) return false;
 		return await KiemTraId(idTaikhoan.Value, cancellationToken);
 	}
@@ -167,14 +164,14 @@ public class QuanLyTaiKhoan : IQuanLyTaiKhoan
 							     })
 					.FirstOrDefaultAsync(cancellationToken);
 
-		Task.WhenAll(new Task[] { task1, task2 });
+		Task.WhenAll(task1, task2);
 
-		claimList.Add(new("idTaiKhoan", idTaiKhoan.ToString()));
+		claimList.Add(new Claim("idTaiKhoan", idTaiKhoan.ToString()));
 
 		if (task2.Result is not null)
 		{
-			claimList.Add(new("idNguoiDung", task2.Result.idNguoiDung.ToString()));
-			claimList.Add(new("idSoYeuLyLich", task2.Result.idSoYeuLyLich.ToString() ?? Guid.Empty.ToString()));
+			claimList.Add(new Claim("idNguoiDung", task2.Result.idNguoiDung.ToString()));
+			claimList.Add(new Claim("idSoYeuLyLich", task2.Result.idSoYeuLyLich.ToString() ?? Guid.Empty.ToString()));
 		}
 
 		claimList.AddRange(task1.Result);
@@ -196,13 +193,11 @@ public class QuanLyTaiKhoan : IQuanLyTaiKhoan
 	}
 	public async Task<bool> XacThucEmailAsync(string email, string matKhau, CancellationToken cancellationToken = default)
 	{
-		IQueryable<Guid?> query1 = from x in _context.SoYeuLyLich
-								   where !string.IsNullOrEmpty(x.Email) && x.Email == email
-								   select x.IdNguoiDung;
-		IQueryable<Guid?> query2 = from x in _context.NguoiDung
-								   where query1.Contains(x.Id)
-								   select x.IdTaiKhoan;
-		Guid? idTaikhoan = await query2.FirstOrDefaultAsync(cancellationToken);
+		Guid? idTaikhoan = await _context.NguoiDung
+									     .Include(x => x.SoYeuLyLich)
+									     .Where(x => x.SoYeuLyLich != null && x.SoYeuLyLich.Email == email)
+									     .Select(x => x.IdTaiKhoan)
+									     .FirstOrDefaultAsync(cancellationToken);
 		if (!idTaikhoan.HasValue) return false;
 		return await XacThucIdAsync(idTaikhoan.Value, matKhau, cancellationToken);
 	}

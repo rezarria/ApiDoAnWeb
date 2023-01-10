@@ -20,7 +20,7 @@ public class NguoiDungController : ControllerBase
 	{
 		Guid idNguoiDung = Guid.Parse(User.Get("idNguoiDung"));
 		Guid idTaiKhoan = Guid.Parse(User.Get("idTaikhoan"));
-		
+
 		return Ok();
 	}
 }

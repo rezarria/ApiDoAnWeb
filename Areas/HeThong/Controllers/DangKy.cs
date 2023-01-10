@@ -1,9 +1,9 @@
-using System.ComponentModel.DataAnnotations;
 using Api.Areas.Edu.Contexts;
 using Api.Areas.Edu.Models;
 using Api.Services;
 using Microsoft.AspNetCore.Mvc;
 using RezUtility.Utilities;
+using System.ComponentModel.DataAnnotations;
 
 namespace Api.Areas.HeThong.Controllers;
 
@@ -26,13 +26,13 @@ public class DangKy : ControllerBase
 		{
 			NguoiDung nguoiDung = new()
 								  {
-									  SoYeuLyLich = new()
+									  SoYeuLyLich = new SoYeuLyLich
 												    {
 													    Email = mauDangKy.Email,
 													    HoVaTen = mauDangKy.HoVaTen,
-													    NgaySinh = mauDangKy.NgaySinh,
+													    NgaySinh = mauDangKy.NgaySinh
 												    },
-									  TaiKhoan = new()
+									  TaiKhoan = new TaiKhoan
 											     {
 												     MatKhau = MatKhau.MaHoaMatKhau(mauDangKy.MatKhau)
 											     }
@@ -57,12 +57,12 @@ public class DangKy : ControllerBase
 		[Required(AllowEmptyStrings = false)]
 		public string Email { get; set; } = string.Empty;
 		[Required(AllowEmptyStrings = false)]
-		public string HoVaTen { get; set; } = String.Empty;
+		public string HoVaTen { get; set; } = string.Empty;
 		[DataType(DataType.Date)]
 		public DateTime NgaySinh { get; set; }
 		public string? Username { get; set; }
 		[Required(AllowEmptyStrings = false)]
-		public string MatKhau { get; set; } = String.Empty;
+		public string MatKhau { get; set; } = string.Empty;
 		public string? Avatar { get; set; }
 	}
 }

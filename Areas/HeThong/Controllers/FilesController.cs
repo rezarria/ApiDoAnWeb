@@ -104,13 +104,13 @@ public class FilesController : Controller
 		UpdatePulseStatus();
 		return NoContent();
 	}
-	
+
 	[HttpGet("danhsacho")]
 	public async Task<IActionResult> danhSachO()
 	{
 		return Ok(await _elFinderUtilityService.GetVolumeListAsync(User, HttpContext.RequestAborted));
 	}
-	
+
 	private void CustomizeResponse(ConnectorResult connectorResult, IVolume volume, long quota)
 	{
 		(long storage, bool _) = _storageManager.GetOrCreateDirectoryStorage(volume.RootDirectory, createFunc: dir => volume.Driver.CreateDirectory(dir, volume).GetPhysicalStorageUsageAsync(HttpContext.RequestAborted));

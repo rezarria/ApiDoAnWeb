@@ -1,9 +1,5 @@
-﻿using Api.Areas.Edu.Contexts;
-using Api.Contexts;
-using Api.Models.ElFinder;
-using Api.Services;
+﻿using Api.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Api.Areas.Admin.Controllers;
 
@@ -11,7 +7,7 @@ namespace Api.Areas.Admin.Controllers;
 [Route("[area]/[controller]")]
 public class ElFinderController : ControllerBase
 {
-	private QuanLyTepTin _quanLyTepTin;
+	private readonly QuanLyTepTin _quanLyTepTin;
 
 	public ElFinderController(QuanLyTepTin quanLyTepTin)
 	{
