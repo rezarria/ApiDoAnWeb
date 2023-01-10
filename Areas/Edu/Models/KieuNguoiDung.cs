@@ -12,20 +12,15 @@ namespace Api.Areas.Edu.Models;
 /// </summary>
 public class KieuNguoiDung : IKieuNguoiDungModel
 {
-	/// <summary>
-	///     Danh sách trường thông tin người dùng
-	/// </summary>
-	public virtual ICollection<DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung> DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung { get; set; } = new HashSet<DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung>();
+	#region Key
 
-	/// <summary>
-	///     Danh sách người dùng
-	/// </summary>
-	public virtual ICollection<NguoiDung> DanhSachNguoiDung { get; set; } = new HashSet<NguoiDung>();
 	/// <summary>
 	///     Id
 	/// </summary>
 	[Key]
 	public Guid Id { get; set; }
+
+	#endregion
 
 	/// <summary>
 	///     Tên kiểu người dùng
@@ -38,4 +33,18 @@ public class KieuNguoiDung : IKieuNguoiDungModel
 	/// </summary>
 	[Timestamp]
 	public byte[]? RowVersion { get; set; }
+
+	#region Ref
+
+	/// <summary>
+	///     Danh sách trường thông tin người dùng
+	/// </summary>
+	public virtual ICollection<DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung> DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung { get; set; } = new HashSet<DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung>();
+
+	/// <summary>
+	///     Danh sách người dùng
+	/// </summary>
+	public virtual ICollection<NguoiDung> DanhSachNguoiDung { get; set; } = new HashSet<NguoiDung>();
+
+	#endregion
 }

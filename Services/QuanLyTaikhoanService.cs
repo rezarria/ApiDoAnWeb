@@ -67,7 +67,7 @@ public class QuanLyTaiKhoan : IQuanLyTaiKhoan
 	public async Task<string> DangNhapEmailAsync(string email, string matKhau, CancellationToken cancellationToken = default)
 	{
 		if (await KiemTraEmail(email, cancellationToken))
-			if (await XacThucUsernameAsync(email, matKhau, cancellationToken))
+			if (await XacThucEmailAsync(email, matKhau, cancellationToken))
 			{
 				List<Claim> claims = await LayClaimAsync(email, cancellationToken);
 				return _tokenService.TaoTokenAsync(claims);
@@ -119,9 +119,9 @@ public class QuanLyTaiKhoan : IQuanLyTaiKhoan
 	}
 
 
-	public Task<bool> KiemTraUsername(string username, CancellationToken cancellationToken = default)
+	public async Task<bool> KiemTraUsername(string username, CancellationToken cancellationToken = default)
 	{
-		return _context.TaiKhoan.AnyAsync(predicate: x => x.Username == username, cancellationToken);
+		return await _context.TaiKhoan.AnyAsync(predicate: x => x.Username == username, cancellationToken);
 	}
 
 	public Task<bool> KiemTraId(Guid id, CancellationToken cancellationToken = default)
@@ -135,6 +135,7 @@ public class QuanLyTaiKhoan : IQuanLyTaiKhoan
 									     .Where(x => x.SoYeuLyLich != null && x.SoYeuLyLich.Email == email)
 									     .Select(x => x.IdTaiKhoan)
 									     .FirstOrDefaultAsync(cancellationToken);
+
 		if (idTaikhoan is null) return false;
 		return await KiemTraId(idTaikhoan.Value, cancellationToken);
 	}
@@ -144,39 +145,39 @@ public class QuanLyTaiKhoan : IQuanLyTaiKhoan
 		return LayClaimAsync(taiKhoan.Id, cancellationToken);
 	}
 
-	public Task<List<Claim>> LayClaimAsync(Guid idTaiKhoan, CancellationToken cancellationToken = default)
+	public async Task<List<Claim>> LayClaimAsync(Guid idTaiKhoan, CancellationToken cancellationToken = default)
 	{
 		List<Claim> claimList = new();
 
-		Task<List<Claim>> task1 = _context.ClaimTaikhoan
-										  .Where(x => x.IdTaiKhoan == idTaiKhoan)
-										  .Select(x => new Claim(x.Ten, x.GiaTri ?? "null"))
-										  .AsNoTracking()
-										  .ToListAsync(cancellationToken);
+		List<Claim> danhSachClalim = await _context.ClaimTaikhoan
+												   .Where(x => x.IdTaiKhoan == idTaiKhoan)
+												   .Select(x => new Claim(x.Ten, x.GiaTri ?? "null"))
+												   .AsNoTracking()
+												   .ToListAsync(cancellationToken);
 
-		var task2 = _context
-					.NguoiDung
-					.Where(x => x.IdTaiKhoan == idTaiKhoan)
-					.Select(x => new
-							     {
-								     idNguoiDung = x.Id,
-								     idSoYeuLyLich = x.IdSoYeuLyLich
-							     })
-					.FirstOrDefaultAsync(cancellationToken);
+		var capId = await _context
+						  .NguoiDung
+						  .Where(x => x.IdTaiKhoan == idTaiKhoan)
+						  .Select(x => new
+								       {
+									       idNguoiDung = x.Id,
+									       idSoYeuLyLich = x.IdSoYeuLyLich
+								       })
+						  .AsNoTracking()
+						  .FirstOrDefaultAsync(cancellationToken);
 
-		Task.WhenAll(task1, task2);
 
 		claimList.Add(new Claim("idTaiKhoan", idTaiKhoan.ToString()));
 
-		if (task2.Result is not null)
+		if (capId is not null)
 		{
-			claimList.Add(new Claim("idNguoiDung", task2.Result.idNguoiDung.ToString()));
-			claimList.Add(new Claim("idSoYeuLyLich", task2.Result.idSoYeuLyLich.ToString() ?? Guid.Empty.ToString()));
+			claimList.Add(new Claim("idNguoiDung", capId.idNguoiDung.ToString()));
+			claimList.Add(new Claim("idSoYeuLyLich", capId.idSoYeuLyLich.ToString() ?? Guid.Empty.ToString()));
 		}
 
-		claimList.AddRange(task1.Result);
+		claimList.AddRange(danhSachClalim);
 
-		return Task.FromResult(claimList);
+		return claimList;
 	}
 
 	public async Task<List<Claim>> LayClaimAsync(string username, CancellationToken cancellationToken = default)

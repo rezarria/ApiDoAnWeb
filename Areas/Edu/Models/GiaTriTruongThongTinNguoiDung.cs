@@ -12,16 +12,8 @@ namespace Api.Areas.Edu.Models;
 /// </summary>
 public class GiaTriTruongThongTinNguoiDung : IGiaTriTruongThongTinNguoiDungModel
 {
-	/// <summary>
-	///     Người dùng
-	/// </summary>
-	/// <value></value>
-	public NguoiDung? NguoiDung { get; set; }
+	#region Key
 
-	/// <summary>
-	///     Trường thông tin người dùng
-	/// </summary>
-	public TruongThongTinNguoiDung? TruongThongTinNguoiDung { get; set; }
 	/// <summary>
 	///     Id
 	/// </summary>
@@ -41,6 +33,8 @@ public class GiaTriTruongThongTinNguoiDung : IGiaTriTruongThongTinNguoiDungModel
 	[Required]
 	public Guid IdTruongThongTinNguoiDung { get; set; }
 
+	#endregion
+
 	/// <summary>
 	///     Giá trị
 	/// </summary>
@@ -52,4 +46,19 @@ public class GiaTriTruongThongTinNguoiDung : IGiaTriTruongThongTinNguoiDungModel
 	/// </summary>
 	[Timestamp]
 	public byte[]? RowVersion { get; set; }
+
+	#region Ref
+
+	/// <summary>
+	///     Người dùng
+	/// </summary>
+	/// <value></value>
+	public virtual NguoiDung? NguoiDung { get; set; }
+
+	/// <summary>
+	///     Trường thông tin người dùng
+	/// </summary>
+	public virtual TruongThongTinNguoiDung? TruongThongTinNguoiDung { get; set; }
+
+	#endregion
 }

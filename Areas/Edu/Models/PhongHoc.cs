@@ -12,26 +12,15 @@ namespace Api.Areas.Edu.Models;
 /// </summary>
 public class PhongHoc : IMetadata, IPhongHoc
 {
-	/// <summary>
-	///     Danh sách lớp học sử dụng phòng học
-	/// </summary>
-	public virtual ICollection<LopHoc> Lop { get; set; } = new HashSet<LopHoc>();
+	#region Key
 
-	/// <summary>
-	///     Danh sách lịch sử dụng lớp học
-	/// </summary>
-	public virtual ICollection<Lich> Lich { get; set; } = new HashSet<Lich>();
 	/// <summary>
 	///     Id
 	/// </summary>
 	[Key]
 	public Guid Id { get; set; }
 
-	/// <summary>
-	///     Timestamp
-	/// </summary>
-	[Timestamp]
-	public byte[]? RowVersion { get; set; } = null!;
+	#endregion
 
 	/// <summary>
 	///     Tên phòng học
@@ -44,4 +33,24 @@ public class PhongHoc : IMetadata, IPhongHoc
 	///     Vị trí phòng học
 	/// </summary>
 	public string ViTri { get; set; } = string.Empty;
+
+	/// <summary>
+	///     Timestamp
+	/// </summary>
+	[Timestamp]
+	public byte[]? RowVersion { get; set; } = null!;
+
+	#region Ref
+
+	/// <summary>
+	///     Danh sách lớp học sử dụng phòng học
+	/// </summary>
+	public virtual ICollection<LopHoc> Lop { get; set; } = new HashSet<LopHoc>();
+
+	/// <summary>
+	///     Danh sách lịch sử dụng lớp học
+	/// </summary>
+	public virtual ICollection<Lich> Lich { get; set; } = new HashSet<Lich>();
+
+	#endregion
 }

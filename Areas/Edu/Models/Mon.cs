@@ -13,22 +13,10 @@ namespace Api.Areas.Edu.Models;
 public class MonHoc : IMetadata, IMonHoc
 {
 	/// <summary>
-	///     Người tạo
-	/// </summary>
-	public virtual NguoiDung? NguoiTao { get; set; }
-
-	/// <summary>
-	///     Học phần
-	/// </summary>
-	public virtual ICollection<HocPhan> HocPhan { get; } = new List<HocPhan>();
-	/// <summary>
 	///     Id
 	/// </summary>
 	[Key]
 	public Guid Id { get; set; }
-
-	[Timestamp]
-	public virtual byte[]? RowVersion { get; set; } = null!;
 
 	/// <summary>
 	///     Tên
@@ -40,4 +28,23 @@ public class MonHoc : IMetadata, IMonHoc
 	///     Miêu tả
 	/// </summary>
 	public string? MieuTa { get; set; }
+
+	[Timestamp]
+	public virtual byte[]? RowVersion { get; set; } = null!;
+
+	#region Ref
+
+	/// <summary>
+	///     Người tạo
+	/// </summary>
+	public virtual NguoiDung? NguoiTao { get; set; }
+
+	/// <summary>
+	///     Học phần
+	/// </summary>
+	public virtual ICollection<HocPhan> HocPhan { get; } = new HashSet<HocPhan>();
+
+	public virtual ICollection<ChungNhan> ChungNhan { get; set; } = new HashSet<ChungNhan>();
+
+	#endregion
 }

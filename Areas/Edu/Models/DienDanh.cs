@@ -13,17 +13,25 @@ namespace Api.Areas.Edu.Models;
 /// </summary>
 public class DiemDanh : IMetadata, IDiemDanh
 {
+	#region Key
+
 	/// <summary>
-	///     Chi tiết lịch
+	///     Id
 	/// </summary>
-	[ForeignKey(nameof(IdChiTietLich))]
-	public virtual ChiTietLich? ChiTietLich { get; set; }
+	[Key]
+	public Guid Id { get; set; }
+
+	/// <summary>
+	///     Id chi tiết lịch
+	/// </summary>
+	public Guid? IdChiTietLich { get; set; }
+
+	#endregion
 
 	/// <summary>
 	///     Trạng thái
 	/// </summary>
 	public IDiemDanh.TrangThaiDiemDanh TrangThai { get; set; } = IDiemDanh.TrangThaiDiemDanh.Vang;
-
 
 	/// <summary>
 	///     Nhận xét
@@ -35,19 +43,19 @@ public class DiemDanh : IMetadata, IDiemDanh
 	/// </summary>
 	public DateTime ThoiDiemDiemDanh { get; set; } = DateTime.Now;
 
-	/// <summary>
-	///     Id chi tiết lịch
-	/// </summary>
-	public Guid? IdChiTietLich { get; set; }
-	/// <summary>
-	///     Id
-	/// </summary>
-	[Key]
-	public Guid Id { get; set; }
 
 	/// <summary>
 	///     Timestamp
 	/// </summary>
 	[Timestamp]
 	public byte[]? RowVersion { get; set; } = null!;
+
+	#region Ref
+
+	/// <summary>
+	///     Chi tiết lịch
+	/// </summary>
+	public virtual ChiTietLich? ChiTietLich { get; set; }
+
+	#endregion
 }

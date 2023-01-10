@@ -12,11 +12,19 @@ namespace Api.Areas.Edu.Models;
 /// </summary>
 public class Lich : IMetadata, ILich
 {
-	public virtual LopHoc? Lop { get; set; }
+	#region Key
 
-	public virtual PhongHoc? PhongHoc { get; set; }
+	/// <summary>
+	///     Guid
+	/// </summary>
+	[Key]
+	public Guid Id { get; set; }
 
-	public virtual ICollection<ChiTietLich> ChiTietLich { get; set; } = null!;
+	public Guid? IdLopHoc { get; set; }
+
+	public Guid? IdPhongHoc { get; set; }
+
+	#endregion
 
 	/// <summary>
 	///     Thời gian lịch bắt đầu
@@ -36,14 +44,19 @@ public class Lich : IMetadata, ILich
 	///     Tình trạng
 	/// </summary>
 	public ILich.TinhTrang TinhTrangLich { get; set; } = ILich.TinhTrang.ChuaBatDau;
-	/// <summary>
-	///     Guid
-	/// </summary>
-	[Key]
-	public Guid Id { get; set; }
 
 	/// <summary>
 	/// </summary>
 	[Timestamp]
 	public byte[]? RowVersion { get; set; } = null!;
+
+	#region Ref
+
+	public virtual LopHoc? Lop { get; set; }
+
+	public virtual PhongHoc? PhongHoc { get; set; }
+
+	public virtual ICollection<ChiTietLich> ChiTietLich { get; set; } = null!;
+
+	#endregion
 }

@@ -13,15 +13,13 @@ namespace Api.Areas.Edu.Models;
 public class DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung : IMetadata,
 																 IDanhSachTruongThongTinNguoiDungThuocKieuTaiKhoan
 {
-	/// <summary>
-	///     Kiểu người dùng
-	/// </summary>
-	public virtual KieuNguoiDung? KieuNguoiDung { get; set; }
+	#region Key
 
 	/// <summary>
-	///     Trường thông tin người dùng
+	///     Id
 	/// </summary>
-	public virtual TruongThongTinNguoiDung? TruongThongTinNguoiDung { get; set; }
+	[Key]
+	public Guid Id { get; set; }
 
 	/// <summary>
 	///     Id người dùng
@@ -32,15 +30,26 @@ public class DanhSachTruongThongTinNguoiDungThuocKieuNguoiDung : IMetadata,
 	///     Id trường thông tin người dùng
 	/// </summary>
 	public Guid IdTruongThongTinNguoiDung { get; set; }
-	/// <summary>
-	///     Id
-	/// </summary>
-	[Key]
-	public Guid Id { get; set; }
+
+	#endregion
 
 	/// <summary>
 	///     Timestamp
 	/// </summary>
 	[Timestamp]
 	public byte[]? RowVersion { get; set; }
+
+	#region Ref
+
+	/// <summary>
+	///     Kiểu người dùng
+	/// </summary>
+	public virtual KieuNguoiDung? KieuNguoiDung { get; set; }
+
+	/// <summary>
+	///     Trường thông tin người dùng
+	/// </summary>
+	public virtual TruongThongTinNguoiDung? TruongThongTinNguoiDung { get; set; }
+
+	#endregion
 }

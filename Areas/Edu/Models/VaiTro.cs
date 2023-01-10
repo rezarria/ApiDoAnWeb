@@ -5,10 +5,22 @@ namespace Api.Areas.Edu.Models;
 
 public class VaiTro : IMetadata
 {
-	[Required]
-	public string Ten { get; set; } = string.Empty;
+	#region Key
+
 	[Key]
 	public Guid Id { get; set; }
+
+	#endregion
+
+	[Required]
+	public string Ten { get; set; } = string.Empty;
+
 	[Timestamp]
 	public byte[]? RowVersion { get; set; }
+
+	#region Ref
+
+	public virtual ICollection<NguoiDung> NguoiDung { get; set; } = new HashSet<NguoiDung>();
+
+	#endregion
 }

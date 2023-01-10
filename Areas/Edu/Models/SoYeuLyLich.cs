@@ -12,27 +12,19 @@ namespace Api.Areas.Edu.Models;
 /// </summary>
 public class SoYeuLyLich : ISoYeuLyLichModel
 {
-	/// <summary>
-	///     Nơi ở hiện nay
-	/// </summary>
-	public string? NoiOHienNay { get; set; }
+	#region Key
 
-	/// <summary>
-	///     Căng cước công dân
-	/// </summary>
-	public virtual CanCuocCongDan? CanCuocCongDan { get; set; }
-
-	public virtual NguoiDung? NguoiDung { get; set; }
 	/// <summary>
 	///     Id
 	/// </summary>
 	[Key]
 	public Guid Id { get; set; }
 
+	#endregion
+
 	/// <summary>
 	///     Họ và tên
 	/// </summary>
-	[Required(ErrorMessage = "Vui lòng không bỏ trống!")]
 	public string? HoVaTen { get; set; }
 
 	/// <summary>
@@ -43,15 +35,17 @@ public class SoYeuLyLich : ISoYeuLyLichModel
 	/// <summary>
 	///     Ngày sinh
 	/// </summary>
-	[Required(ErrorMessage = "Vui lòng nhập ngày sinh")]
-	[DisplayFormat(DataFormatString = "dd/MM/yyyy", ApplyFormatInEditMode = true)]
-	[DataType(DataType.Date)]
 	public DateTime? NgaySinh { get; set; }
 
 	/// <summary>
 	///     Nơi sinh
 	/// </summary>
 	public string? NoiSinh { get; set; }
+
+	/// <summary>
+	///     Nơi ở hiện nay
+	/// </summary>
+	public string? NoiOHienNay { get; set; }
 
 	/// <summary>
 	///     Nguyên quán
@@ -66,17 +60,11 @@ public class SoYeuLyLich : ISoYeuLyLichModel
 	/// <summary>
 	///     Số điện thoại
 	/// </summary>
-	//[Phone(ErrorMessage = "Vui lòng nhập đúng định dạng số điện thoại")]
-	//[Required(ErrorMessage = "Vui lòng cung cấp số điện thoại")]
-	//[DataType(DataType.PhoneNumber)]
 	public string? SoDienThoai { get; set; }
 
 	/// <summary>
 	///     Email
 	/// </summary>
-	[EmailAddress(ErrorMessage = "Vui lòng nhập đúng định dạng email")]
-	[Required(ErrorMessage = "Vui lòng cung cấp địa chỉ email")]
-	[DataType(DataType.EmailAddress)]
 	public string? Email { get; set; }
 
 	/// <summary>
@@ -104,4 +92,18 @@ public class SoYeuLyLich : ISoYeuLyLichModel
 	/// </summary>
 	[Timestamp]
 	public byte[]? RowVersion { get; set; }
+
+	#region Ref
+
+	/// <summary>
+	///     Căng cước công dân
+	/// </summary>
+	public virtual CanCuocCongDan? CanCuocCongDan { get; set; }
+
+	/// <summary>
+	///		Người dùng
+	/// </summary>
+	public virtual NguoiDung? NguoiDung { get; set; }
+
+	#endregion
 }

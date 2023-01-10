@@ -13,28 +13,15 @@ namespace Api.Areas.Edu.Models;
 /// </summary>
 public class TaiKhoan : IMetadata, ITaiKhoan
 {
-	/// <summary>
-	///     Người dùng
-	/// </summary>
-	[ForeignKey(nameof(IdNguoiDung))]
-	public virtual NguoiDung? NguoiDung { get; set; } = null!;
+	#region Key
 
-	/// <summary>
-	///     Danh sách claim
-	/// </summary>
-	[InverseProperty(nameof(ClaimTaikhoan.TaiKhoan))]
-	public virtual List<ClaimTaikhoan> Claims { get; set; } = new();
 	/// <summary>
 	///     Id
 	/// </summary>
 	[Key]
 	public Guid Id { get; set; }
 
-	/// <summary>
-	///     Timestamp
-	/// </summary>
-	[Timestamp]
-	public byte[]? RowVersion { get; set; } = null!;
+	#endregion
 
 	/// <summary>
 	///     Username
@@ -59,7 +46,22 @@ public class TaiKhoan : IMetadata, ITaiKhoan
 	public DateTime ThoiGianDangNhapGanNhat { get; set; }
 
 	/// <summary>
-	///     Id người dùng
+	///     Timestamp
 	/// </summary>
-	public Guid? IdNguoiDung { get; set; }
+	[Timestamp]
+	public byte[]? RowVersion { get; set; } = null!;
+
+	#region Ref
+
+	/// <summary>
+	///     Danh sách claim
+	/// </summary>
+	public virtual List<ClaimTaikhoan> Claims { get; set; } = new();
+
+	/// <summary>
+	///     Người dùng
+	/// </summary>
+	public virtual NguoiDung? NguoiDung { get; set; } = null!;
+
+	#endregion
 }

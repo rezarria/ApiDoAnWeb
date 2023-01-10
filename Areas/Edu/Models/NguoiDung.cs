@@ -13,6 +13,37 @@ namespace Api.Areas.Edu.Models;
 /// </summary>
 public class NguoiDung : IMetadata, INguoiDung
 {
+	#region Key
+
+	[Key]
+	public Guid Id { get; set; }
+
+	/// <summary>
+	///     Id sơ yếu lý lịch
+	/// </summary>
+	public Guid? IdSoYeuLyLich { get; set; }
+
+	/// <summary>
+	///     Id kiểu người dùng
+	/// </summary>
+	public Guid? IdKieuNguoiDung { get; set; }
+	/// <summary>
+	///		Id Tài khoản
+	/// </summary>
+	public Guid? IdTaiKhoan { get; set; }
+
+	#endregion
+
+	public string? Avatar { get; set; }
+
+	/// <summary>
+	///     Timestamp
+	/// </summary>
+	[Timestamp]
+	public byte[]? RowVersion { get; set; } = null!;
+
+	#region Ref
+
 	/// <summary>
 	///     Sơ yếu lý lịch của người dùng
 	/// </summary>
@@ -26,7 +57,7 @@ public class NguoiDung : IMetadata, INguoiDung
 	/// <summary>
 	///     Danh sách lịch của người dùng
 	/// </summary>
-	public virtual ICollection<ChiTietLich> ChiTietLich { get; set; } = new List<ChiTietLich>();
+	public virtual ICollection<ChiTietLich> ChiTietLich { get; set; } = new HashSet<ChiTietLich>();
 
 	/// <summary>
 	///     Trường thông tin người dùng
@@ -37,31 +68,14 @@ public class NguoiDung : IMetadata, INguoiDung
 	///     Kiểu người dùng
 	/// </summary>
 	public virtual KieuNguoiDung? KieuNguoiDung { get; set; }
-	[Key]
-	public Guid Id { get; set; }
 
-	/// <summary>
-	///     Timestamp
-	/// </summary>
-	[Timestamp]
-	public byte[]? RowVersion { get; set; } = null!;
+	public virtual ICollection<ChiTietLich> ChiTietLichCoThaoTacLen { get; set; } = new HashSet<ChiTietLich>();
 
-	/// <summary>
-	///     Id sơ yếu lý lịch
-	/// </summary>
-	public Guid? IdSoYeuLyLich { get; set; }
+	public virtual ICollection<LopHoc> LopHocThamgia { get; set; } = new HashSet<LopHoc>();
 
-	/// <summary>
-	///     Id kiểu người dùng
-	/// </summary>
-	public Guid? IdKieuNguoiDung { get; set; }
+	public virtual ICollection<VaiTro> VaiTro { get; set; } = new HashSet<VaiTro>();
 
-	/// <summary>
-	///     Id tài khoản
-	/// </summary>
-	public Guid? IdTaiKhoan { get; set; }
-
-	public string? Avatar { get; set; }
+	#endregion
 
 	[NotMapped]
 	public string PhanLoai => GetType().Name;

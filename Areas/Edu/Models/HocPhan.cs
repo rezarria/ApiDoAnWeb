@@ -12,28 +12,21 @@ namespace Api.Areas.Edu.Models;
 /// </summary>
 public class HocPhan : IMetadata, IHocPhan
 {
+	#region Key
+
 	/// <summary>
-	///     Môn học
+	///     Id
+	/// </summary>
+	[Key]
+	public Guid Id { get; set; }
+
+	/// <summary>
+	///     Id môn học
 	/// </summary>
 	[Required]
-	public virtual MonHoc MonHoc { get; set; } = null!;
+	public Guid IdMonHoc { get; set; }
 
-	/// <summary>
-	///     Thời gian tạo học phần
-	/// </summary>
-	[DataType(DataType.Date)]
-	public DateTime ThoiGianTao { get; set; }
-
-
-	/// <summary>
-	///     Danh sách chứng nhận của học phần
-	/// </summary>
-	public virtual ICollection<ChungNhan> ChungNhan { get; set; } = new List<ChungNhan>();
-
-	/// <summary>
-	///     Những học phần ưu cầu cho học phần này
-	/// </summary>
-	public virtual ICollection<HocPhan> HocPhanYeuCau { get; set; } = new List<HocPhan>();
+	#endregion
 
 	/// <summary>
 	///     Tên học phần
@@ -42,29 +35,47 @@ public class HocPhan : IMetadata, IHocPhan
 	public string Ten { get; set; } = null!;
 
 	/// <summary>
+	///     Số buổi của học phần
+	/// </summary>
+	public int SoBuoi { get; set; }
+
+	/// <summary>
+	///     Thời gian tạo học phần
+	/// </summary>
+	[DataType(DataType.Date)]
+	public DateTime ThoiGianTao { get; set; }
+
+	/// <summary>
 	///     Miêu tả học phần
 	/// </summary>
 	public string MieuTa { get; set; } = string.Empty;
 
 	/// <summary>
-	///     Id môn học
-	/// </summary>
-	[Required]
-	public Guid IdMonHoc { get; set; }
-
-	/// <summary>
-	///     Số buổi của học phần
-	/// </summary>
-	public int SoBuoi { get; set; }
-	/// <summary>
-	///     Id
-	/// </summary>
-	[Key]
-	public Guid Id { get; set; }
-
-	/// <summary>
 	///     Timestamp
 	/// </summary>
 	[Timestamp]
-	public byte[]? RowVersion { get; set; } = null!;
+	public byte[]? RowVersion { get; set; }
+
+	#region Ref
+
+	/// <summary>
+	///     Môn học
+	/// </summary>
+	public virtual MonHoc? MonHoc { get; set; }
+
+	/// <summary>
+	///     Danh sách chứng nhận của học phần
+	/// </summary>
+	public virtual ICollection<ChungNhan> ChungNhan { get; set; } = new HashSet<ChungNhan>();
+
+	/// <summary>
+	///     Những học phần ưu cầu cho học phần này
+	/// </summary>
+	public virtual ICollection<HocPhan> HocPhanYeuCau { get; set; } = new HashSet<HocPhan>();
+
+	public virtual ICollection<HocPhan> HocPhanPhuThuoc { get; set; } = new HashSet<HocPhan>();
+
+	public virtual ICollection<LopHoc> LopHoc { get; set; } = new HashSet<LopHoc>();
+
+	#endregion
 }
